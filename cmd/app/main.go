@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"myapp/app/app"
 	"myapp/app/router"
 	"myapp/config"
 	lr "myapp/util/logger"
@@ -14,7 +15,9 @@ func main() {
 
 	logger := lr.New(appConf.Debug)
 
-	appRouter := router.New()
+	application := app.New(logger)
+
+	appRouter := router.New(application)
 
 	address := fmt.Sprintf(":%d", appConf.Server.Port)
 
