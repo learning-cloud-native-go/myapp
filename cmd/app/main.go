@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	dbConn "myapp/adapter/gorm"
 	"myapp/app/app"
 	"myapp/app/router"
 	"myapp/config"
@@ -15,7 +16,16 @@ func main() {
 
 	logger := lr.New(appConf.Debug)
 
-	application := app.New(logger)
+	db, err := dbConn.New(appConf)
+	if err != nil {
+		logger.Fatal().Err(err).Msg("")
+		return
+	}
+	if appConf.Debug {
+		db.LogMode(true)
+	}
+
+	application := app.New(logger, db)
 
 	appRouter := router.New(application)
 
