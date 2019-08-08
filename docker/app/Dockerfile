@@ -17,11 +17,14 @@ RUN go build -ldflags '-w -s' -a -o ./bin/app ./cmd/app \
 # Deployment environment
 # ----------------------
 FROM alpine
-RUN apk update && apk add --no-cache bash
+RUN apk update && apk add --no-cache bash mysql-client
 
 COPY --from=build-env /myapp/bin/app /myapp/
 COPY --from=build-env /myapp/bin/migrate /myapp/
 COPY --from=build-env /myapp/migrations /myapp/migrations
+
+COPY --from=build-env /myapp/docker/app/bin /usr/local/bin/myapp/
+RUN chmod +x /usr/local/bin/myapp/*
 
 EXPOSE 8080
 CMD ["/myapp/app"]
