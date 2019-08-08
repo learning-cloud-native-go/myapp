@@ -10,6 +10,7 @@ import (
 type Conf struct {
 	Debug  bool `env:"DEBUG,required"`
 	Server serverConf
+	Db     dbConf
 }
 
 type serverConf struct {
@@ -17,6 +18,14 @@ type serverConf struct {
 	TimeoutRead  time.Duration `env:"SERVER_TIMEOUT_READ,required"`
 	TimeoutWrite time.Duration `env:"SERVER_TIMEOUT_WRITE,required"`
 	TimeoutIdle  time.Duration `env:"SERVER_TIMEOUT_IDLE,required"`
+}
+
+type dbConf struct {
+	Host     string `env:"DB_HOST,required"`
+	Port     int    `env:"DB_PORT,required"`
+	Username string `env:"DB_USER,required"`
+	Password string `env:"DB_PASS,required"`
+	DbName   string `env:"DB_NAME,required"`
 }
 
 func AppConfig() *Conf {
