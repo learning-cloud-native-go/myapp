@@ -104,6 +104,47 @@ func (app *App) HandleReadBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) HandleUpdateBook(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
+	if err != nil || id == 0 {
+		app.logger.Info().Msgf("can not parse ID: %v", id)
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+
+	form := &model.BookForm{}
+	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
+		app.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		fmt.Fprintf(w, `{"error": "%v"}`, appErrFormDecodingFailure)
+		return
+	}
+
+	bookModel, err := form.ToModel()
+	if err != nil {
+		app.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		fmt.Fprintf(w, `{"error": "%v"}`, appErrFormDecodingFailure)
+		return
+	}
+
+	bookModel.ID = uint(id)
+	if err := repository.UpdateBook(app.db, bookModel); err != nil {
+		if err == gorm.ErrRecordNotFound {
+			w.WriteHeader(http.StatusNotFound)
+			return
+		}
+
+		app.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, appErrDataUpdateFailure)
+		return
+	}
+
+	app.logger.Info().Msgf("Book updated: %d", id)
 	w.WriteHeader(http.StatusAccepted)
 }
 

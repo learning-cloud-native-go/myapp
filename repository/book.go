@@ -36,6 +36,14 @@ func ReadBook(db *gorm.DB, id uint) (*model.Book, error) {
 	return book, nil
 }
 
+func UpdateBook(db *gorm.DB, book *model.Book) error {
+	if err := db.First(&model.Book{}, book.ID).Update(book).Error; err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func DeleteBook(db *gorm.DB, id uint) error {
 	book := &model.Book{}
 	if err := db.Where("id = ?", id).Delete(&book).Error; err != nil {
