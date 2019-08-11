@@ -7,8 +7,10 @@ import (
 )
 
 const (
+	appErrDataCreationFailure = "data creation failure"
 	appErrDataAccessFailure   = "data access failure"
 	appErrJsonCreationFailure = "json creation failure"
+	appErrFormDecodingFailure = "form decoding failure"
 )
 
 type App struct {

@@ -9,6 +9,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/jinzhu/gorm"
 
+	"myapp/model"
 	"myapp/repository"
 )
 
@@ -38,6 +39,34 @@ func (app *App) HandleListBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) HandleCreateBook(w http.ResponseWriter, r *http.Request) {
+	form := &model.BookForm{}
+	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
+		app.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		fmt.Fprintf(w, `{"error": "%v"}`, appErrFormDecodingFailure)
+		return
+	}
+
+	bookModel, err := form.ToModel()
+	if err != nil {
+		app.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		fmt.Fprintf(w, `{"error": "%v"}`, appErrFormDecodingFailure)
+		return
+	}
+
+	book, err := repository.CreateBook(app.db, bookModel)
+	if err != nil {
+		app.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, appErrDataCreationFailure)
+		return
+	}
+
+	app.logger.Info().Msgf("New book created: %d", book.ID)
 	w.WriteHeader(http.StatusCreated)
 }
 

@@ -47,3 +47,26 @@ func (bs Books) ToDto() BookDtos {
 
 	return dtos
 }
+
+type BookForm struct {
+	Title         string `json:"title"`
+	Author        string `json:"author"`
+	PublishedDate string `json:"published_date"`
+	ImageUrl      string `json:"image_url"`
+	Description   string `json:"description"`
+}
+
+func (f *BookForm) ToModel() (*Book, error) {
+	pubDate, err := time.Parse("2006-01-02", f.PublishedDate)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Book{
+		Title:         f.Title,
+		Author:        f.Author,
+		PublishedDate: pubDate,
+		ImageUrl:      f.ImageUrl,
+		Description:   f.Description,
+	}, nil
+}

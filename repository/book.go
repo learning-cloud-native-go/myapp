@@ -19,6 +19,14 @@ func ListBooks(db *gorm.DB) (model.Books, error) {
 	return books, nil
 }
 
+func CreateBook(db *gorm.DB, book *model.Book) (*model.Book, error) {
+	if err := db.Create(book).Error; err != nil {
+		return nil, err
+	}
+
+	return book, nil
+}
+
 func ReadBook(db *gorm.DB, id uint) (*model.Book, error) {
 	book := &model.Book{}
 	if err := db.Where("id = ?", id).First(&book).Error; err != nil {
