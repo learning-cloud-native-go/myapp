@@ -27,3 +27,12 @@ func ReadBook(db *gorm.DB, id uint) (*model.Book, error) {
 
 	return book, nil
 }
+
+func DeleteBook(db *gorm.DB, id uint) error {
+	book := &model.Book{}
+	if err := db.Where("id = ?", id).Delete(&book).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

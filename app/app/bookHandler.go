@@ -79,5 +79,22 @@ func (app *App) HandleUpdateBook(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *App) HandleDeleteBook(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
+	if err != nil || id == 0 {
+		app.logger.Info().Msgf("can not parse ID: %v", id)
+
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		return
+	}
+
+	if err := repository.DeleteBook(app.db, uint(id)); err != nil {
+		app.logger.Warn().Err(err).Msg("")
+
+		w.WriteHeader(http.StatusInternalServerError)
+		fmt.Fprintf(w, `{"error": "%v"}`, appErrDataAccessFailure)
+		return
+	}
+
+	app.logger.Info().Msgf("Book deleted: %d", id)
 	w.WriteHeader(http.StatusAccepted)
 }
