@@ -49,10 +49,10 @@ func (bs Books) ToDto() BookDtos {
 }
 
 type BookForm struct {
-	Title         string `json:"title"`
-	Author        string `json:"author"`
-	PublishedDate string `json:"published_date"`
-	ImageUrl      string `json:"image_url"`
+	Title         string `json:"title" form:"required,max=255"`
+	Author        string `json:"author" form:"required,max=255"`
+	PublishedDate string `json:"published_date" form:"required"`
+	ImageUrl      string `json:"image_url" form:"url"`
 	Description   string `json:"description"`
 }
 
