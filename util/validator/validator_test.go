@@ -34,6 +34,20 @@ var tests = []*testCase{
 		}{Image: "image.png"},
 		expected: "image must be a valid URL",
 	},
+	{
+		name: `alpha_space`,
+		input: struct {
+			Name string `json:"name" form:"alpha_space"`
+		}{Name: "Some Name 2"},
+		expected: "name can only contain alphabetic and space characters",
+	},
+	{
+		name: `date`,
+		input: struct {
+			Date string `json:"date" form:"date"`
+		}{Date: "2020-02-31"},
+		expected: "date must be a valid date",
+	},
 }
 
 func TestToErrResponse(t *testing.T) {
