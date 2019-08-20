@@ -11,6 +11,7 @@ import (
 
 	"myapp/model"
 	"myapp/repository"
+	"myapp/util/validator"
 )
 
 func (app *App) HandleListBooks(w http.ResponseWriter, r *http.Request) {
@@ -51,8 +52,24 @@ func (app *App) HandleCreateBook(w http.ResponseWriter, r *http.Request) {
 	if err := app.validator.Struct(form); err != nil {
 		app.logger.Warn().Err(err).Msg("")
 
+		resp := validator.ToErrResponse(err)
+		if resp == nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, appErrFormErrResponseFailure)
+			return
+		}
+
+		respBody, err := json.Marshal(resp)
+		if err != nil {
+			app.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, appErrJsonCreationFailure)
+			return
+		}
+
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		fmt.Fprintf(w, `{"error": "%v"}`, err.Error())
+		w.Write(respBody)
 		return
 	}
 
@@ -132,8 +149,24 @@ func (app *App) HandleUpdateBook(w http.ResponseWriter, r *http.Request) {
 	if err := app.validator.Struct(form); err != nil {
 		app.logger.Warn().Err(err).Msg("")
 
+		resp := validator.ToErrResponse(err)
+		if resp == nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, appErrFormErrResponseFailure)
+			return
+		}
+
+		respBody, err := json.Marshal(resp)
+		if err != nil {
+			app.logger.Warn().Err(err).Msg("")
+
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, `{"error": "%v"}`, appErrJsonCreationFailure)
+			return
+		}
+
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		fmt.Fprintf(w, `{"error": "%v"}`, err.Error())
+		w.Write(respBody)
 		return
 	}
 

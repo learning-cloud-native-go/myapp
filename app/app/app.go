@@ -8,11 +8,12 @@ import (
 )
 
 const (
-	appErrDataCreationFailure = "data creation failure"
-	appErrDataAccessFailure   = "data access failure"
-	appErrDataUpdateFailure   = "data update failure"
-	appErrJsonCreationFailure = "json creation failure"
-	appErrFormDecodingFailure = "form decoding failure"
+	appErrDataCreationFailure    = "data creation failure"
+	appErrDataAccessFailure      = "data access failure"
+	appErrDataUpdateFailure      = "data update failure"
+	appErrJsonCreationFailure    = "json creation failure"
+	appErrFormDecodingFailure    = "form decoding failure"
+	appErrFormErrResponseFailure = "form error response failure"
 )
 
 type App struct {
