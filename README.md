@@ -60,12 +60,12 @@ myapp_db                   latest              233MB
 ├── app
 │  ├── app
 │  │  ├── app.go
-│  │  ├── bookHandler.go
-│  │  ├── heathHandler.go
-│  │  └── indexHandler.go
-│  ├── handler
+│  │  ├── book_handler.go
+│  │  ├── health_handler.go
+│  │  └── index_handler.go
+│  ├── requestlog
 │  │  ├── handler.go
-│  │  └── logEntry.go
+│  │  └── log_entry.go
 │  └── router
 │     ├── middleware
 │     │  ├── content_type_json.go

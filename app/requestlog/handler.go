@@ -13,7 +13,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 // Source: https://github.com/google/go-cloud/blob/master/server/requestlog/requestlog.go
-package handler
+package requestlog
 
 import (
 	"io"

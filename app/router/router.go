@@ -4,7 +4,7 @@ import (
 	"github.com/go-chi/chi"
 
 	"myapp/app/app"
-	"myapp/app/handler"
+	"myapp/app/requestlog"
 	"myapp/app/router/middleware"
 )
 
@@ -15,21 +15,21 @@ func New(a *app.App) *chi.Mux {
 
 	// Routes for healthz
 	r.Get("/healthz/liveness", app.HandleLive)
-	r.Method("GET", "/healthz/readiness", handler.NewHandler(a.HandleReady, l))
+	r.Method("GET", "/healthz/readiness", requestlog.NewHandler(a.HandleReady, l))
 
 	// Routes for APIs
 	r.Route("/api/v1", func(r chi.Router) {
 		r.Use(middleware.ContentTypeJson)
 
 		// Routes for books
-		r.Method("GET", "/books", handler.NewHandler(a.HandleListBooks, l))
-		r.Method("POST", "/books", handler.NewHandler(a.HandleCreateBook, l))
-		r.Method("GET", "/books/{id}", handler.NewHandler(a.HandleReadBook, l))
-		r.Method("PUT", "/books/{id}", handler.NewHandler(a.HandleUpdateBook, l))
-		r.Method("DELETE", "/books/{id}", handler.NewHandler(a.HandleDeleteBook, l))
+		r.Method("GET", "/books", requestlog.NewHandler(a.HandleListBooks, l))
+		r.Method("POST", "/books", requestlog.NewHandler(a.HandleCreateBook, l))
+		r.Method("GET", "/books/{id}", requestlog.NewHandler(a.HandleReadBook, l))
+		r.Method("PUT", "/books/{id}", requestlog.NewHandler(a.HandleUpdateBook, l))
+		r.Method("DELETE", "/books/{id}", requestlog.NewHandler(a.HandleDeleteBook, l))
 	})
 
-	r.Method("GET", "/", handler.NewHandler(a.HandleIndex, l))
+	r.Method("GET", "/", requestlog.NewHandler(a.HandleIndex, l))
 
 	return r
 }
