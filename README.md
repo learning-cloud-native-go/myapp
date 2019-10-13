@@ -3,7 +3,7 @@ Cloud Native Application Development is a one way of speeding up building web ap
 
 As the first step, this repository shows **How to build a Dockerized RESTful API application using Go**. 
 
->💡Refer commit messages and `step-` branches for a step by step guild. (Blog: _Coming soon!_)
+>💡Refer [learning-cloud-native-go.github.io](https://learning-cloud-native-go.github.io) or commit messages and `step-` branches for a step by step guild.
 
 ## Points to Highlight
 - Usage of Docker and Docker Compose.
