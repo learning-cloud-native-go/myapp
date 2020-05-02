@@ -1,6 +1,10 @@
 .git
+.gitignore
 .idea
+.vscode
 .github
+.DS_Store
 doc
 README.md
 LICENSE
+docker-compose.yml
