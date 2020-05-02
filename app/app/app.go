@@ -1,8 +1,8 @@
 package app
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/jinzhu/gorm"
-	"gopkg.in/go-playground/validator.v9"
 
 	"myapp/util/logger"
 )

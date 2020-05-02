@@ -14,7 +14,7 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 - Usage of [GORM](https://gorm.io/) as the ORM.
 - Usage of [Chi](https://github.com/go-chi/chi) as the Router.
 - Usage of [Zerolog](https://github.com/rs/zerolog) as the Logger.
-- Usage of [Validator.v9](https://gopkg.in/go-playground/validator.v9) as the Form Validator.
+- Usage of [Validator.v10](https://github.com/go-playground/validator) as the Form Validator.
 
 💭 Hope to use [Wire](https://github.com/google/wire) for Compile-time Dependency Injection in the future.
 
@@ -24,7 +24,7 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 ### Docker Image Sizes
 ```bash
 REPOSITORY                 TAG                 SIZE
-myapp_app                  latest              58.7MB
+myapp_app                  latest              56.6MB
 myapp_db                   latest              233MB
 ```
 
