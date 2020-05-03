@@ -14,8 +14,7 @@ func New(a *app.App) *chi.Mux {
 	r := chi.NewRouter()
 
 	// Routes for healthz
-	r.Get("/healthz/liveness", app.HandleLive)
-	r.Method("GET", "/healthz/readiness", requestlog.NewHandler(a.HandleReady, l))
+	r.Get("/healthz", app.HandleHealth)
 
 	// Routes for APIs
 	r.Route("/api/v1", func(r chi.Router) {

@@ -3,7 +3,7 @@ Cloud Native Application Development is a one way of speeding up building web ap
 
 As the first step, this repository shows **How to build a Dockerized RESTful API application using Go**. 
 
->💡Refer [learning-cloud-native-go.github.io](https://learning-cloud-native-go.github.io) or commit messages and `step-` branches for a step by step guild.
+>💡 Refer [learning-cloud-native-go.github.io](https://learning-cloud-native-go.github.io) or commit messages and `step-` branches for a step by step guild.
 
 ## Points to Highlight
 - Usage of Docker and Docker Compose.
@@ -22,12 +22,13 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 ![endpoints](doc/assets/endpoints.png)
 
 ### Docker Image Sizes
-```bash
-REPOSITORY                 TAG                 SIZE
-myapp_app                  latest              56.6MB
-myapp_db                   latest              233MB
-```
+- DB: 229MB
+- App
+    - Development environment: 728MB
+    - Production environment: 21.8MB
 
+> 💡 Building Docker image for production
+> `docker build -f docker/app/prod.Dockerfile . -t myapp_app`
 
 ## Design Decisions & Project Folder Structure
 - Store Docker related files inside the `docker` folder. But keep the `docker-compose.yml` file in the project root.
@@ -36,15 +37,13 @@ myapp_db                   latest              233MB
 - Store main application code inside the `app` folder.
 - Store reusable packages like configs, utils, models and repositories in separate folders. This will be helpful if you are adding more executable applications to support web front-ends, [publish/subscribe systems](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern), [document stores](https://en.wikipedia.org/wiki/Document-oriented_database) and etc.
 
-```bash
+```
 .
 ├── docker
-│  ├── app
-│  │  ├── bin
-│  │  │  ├── init.sh
-│  │  │  └── wait-for-mysql.sh
-│  │  └── Dockerfile
-│  └── mariadb
+│  └── app
+│     ├── bin
+│     │  ├── init.sh
+│     │  └── wait-for-mysql.sh
 │     └── Dockerfile
 ├── docker-compose.yml
 │
@@ -87,7 +86,7 @@ myapp_db                   latest              233MB
 │  │  └── logger_test.go
 │  └── validator
 │     └── validator.go
-|     └── validator_test.go
+│     └── validator_test.go
 │
 ├── model
 │  └── book.go
@@ -98,7 +97,7 @@ myapp_db                   latest              233MB
 └── go.sum
 ```
 
->💡About `app/app/app.go`; Some prefer `app/server/server.go` or `http/app/app.go`
+>💡 About `app/app/app.go`; Some prefer `app/server/server.go` or `http/app/app.go`
 
 ### Form Validation
 ![Form validation](doc/assets/form_validation.png)

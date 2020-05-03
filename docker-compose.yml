@@ -8,13 +8,13 @@ services:
     env_file:
       - ./docker/app/.env
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - db
-    command: ["/usr/local/bin/myapp/wait-for-mysql.sh", "db", "/usr/local/bin/myapp/init.sh"]
+    command: ["/myapp/docker/app/bin/wait-for-mysql.sh", "db", "/myapp/docker/app/bin/init.sh"]
 
   db:
-    build: ./docker/mariadb/
+    image: yobasystems/alpine-mariadb:latest
     environment:
       MYSQL_ROOT_PASSWORD: myapp_root_pass
       MYSQL_DATABASE: myapp_db
