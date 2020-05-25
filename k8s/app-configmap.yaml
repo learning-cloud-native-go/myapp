@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp-app-config
+  namespace: myapp
+  labels:
+    app: myapp-app-config
+data:
+  DEBUG: 'false'
+  SERVER_PORT: '8080'
+  SERVER_TIMEOUT_READ: '5s'
+  SERVER_TIMEOUT_WRITE: '10s'
+  SERVER_TIMEOUT_IDLE: '15s'
+  DB_HOST: 'TODO: Update according to production env'
+  DB_PORT: '3306'
+  DB_USER: 'TODO: Update according to production env'
+  DB_NAME: 'TODO: Update according to production env'
