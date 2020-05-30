@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-app
+  namespace: myapp
+  labels:
+    app: myapp-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp-app
+  template:
+    metadata:
+      labels:
+        app: myapp-app
+    spec:
+      containers:
+      - name: myapp-app
+        image: learningcloudnativego/myapp-app:0.0.1
+        imagePullPolicy: IfNotPresent
+        command: ["/myapp/app"]
+        ports:
+        - name: httpport
+          containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: myapp-app-config
+        - secretRef:
+            name: myapp-app-secret
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          successThreshold: 2
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 15
+          timeoutSeconds: 5
+          failureThreshold: 3
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
