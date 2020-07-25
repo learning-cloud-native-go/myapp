@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"time"
 
 	dbConn "myapp/adapter/gorm"
 	"myapp/app/app"
@@ -48,21 +47,16 @@ func main() {
 		IdleTimeout:  appConf.Server.TimeoutIdle,
 	}
 
-	// Make a channel to listen for errors coming from the listener. Use a buffered
-	// channel so the goroutine exits if we dont get this error
 	serverErrors := make(chan error, 1)
 
-	// Start server in a goroutine so that its does not block
 	go func() {
 		logger.Info().Msgf("main :  API listening on %s.", s.Addr)
 		serverErrors <- s.ListenAndServe()
 	}()
 
-	// Make a channel to listen for an interrupt or terminate signal from the OS.
 	shutdown := make(chan os.Signal, 1)
 	signal.Notify(shutdown, os.Interrupt, os.Kill)
 
-	// Block main until signal is received
 	select {
 	case err := <-serverErrors:
 		logger.Info().Msgf("error : listening and serving %s", err)
@@ -70,16 +64,13 @@ func main() {
 	case <-shutdown:
 		logger.Info().Msg("main : Start shutdown")
 
-		// Give outstanding requests a deadline for completion
-		const timeout = 30 * time.Second
+		timeout := appConf.Server.TimeoutIdle
 		ctx, cancel := context.WithTimeout(context.Background(), timeout)
 		defer cancel()
 
-		// Asking for listener to shutdown and load shed
 		if err := s.Shutdown(ctx); err != nil {
 			logger.Info().Msgf("main : Graceful shutdown did not complete in %v : %v", timeout, err)
 
-			// Immediately closes all active net.Listeners
 			if err = s.Close(); err != nil {
 				logger.Fatal().Err(err).Msgf("main : Could not stop server gracefully %v", err)
 			}
