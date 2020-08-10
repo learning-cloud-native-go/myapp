@@ -1,8 +1,12 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 
 	dbConn "myapp/adapter/gorm"
 	"myapp/app/app"
@@ -34,9 +38,7 @@ func main() {
 
 	address := fmt.Sprintf(":%d", appConf.Server.Port)
 
-	logger.Info().Msgf("Starting server %v", address)
-
-	s := &http.Server{
+	srv := &http.Server{
 		Addr:         address,
 		Handler:      appRouter,
 		ReadTimeout:  appConf.Server.TimeoutRead,
@@ -44,7 +46,31 @@ func main() {
 		IdleTimeout:  appConf.Server.TimeoutIdle,
 	}
 
-	if err := s.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		logger.Fatal().Err(err).Msg("Server startup failed")
+	closed := make(chan struct{})
+	go func() {
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt, syscall.SIGTERM)
+		<-sigint
+
+		logger.Info().Msgf("Shutting down server %v", address)
+
+		ctx, cancel := context.WithTimeout(context.Background(), appConf.Server.TimeoutIdle)
+		defer cancel()
+
+		if err := srv.Shutdown(ctx); err != nil {
+			logger.Warn().Err(err).Msg("Server shutdown failure")
+		}
+
+		if err = db.Close(); err != nil {
+			logger.Warn().Err(err).Msg("Db connection closing failure")
+		}
+		close(closed)
+	}()
+
+	logger.Info().Msgf("Starting server %v", address)
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		logger.Fatal().Err(err).Msg("Server startup failure")
 	}
+
+	<-closed
 }
