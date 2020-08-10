@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 
 	dbConn "myapp/adapter/gorm"
 	"myapp/app/app"
@@ -37,9 +38,7 @@ func main() {
 
 	address := fmt.Sprintf(":%d", appConf.Server.Port)
 
-	logger.Info().Msgf("Starting server %v", address)
-
-	s := &http.Server{
+	srv := &http.Server{
 		Addr:         address,
 		Handler:      appRouter,
 		ReadTimeout:  appConf.Server.TimeoutRead,
@@ -47,35 +46,31 @@ func main() {
 		IdleTimeout:  appConf.Server.TimeoutIdle,
 	}
 
-	serverErrors := make(chan error, 1)
-
+	closed := make(chan struct{})
 	go func() {
-		logger.Info().Msgf("main :  API listening on %s.", s.Addr)
-		serverErrors <- s.ListenAndServe()
-	}()
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt, syscall.SIGTERM)
+		<-sigint
 
-	shutdown := make(chan os.Signal, 1)
-	signal.Notify(shutdown, os.Interrupt, os.Kill)
+		logger.Info().Msgf("Shutting down server %v", address)
 
-	select {
-	case err := <-serverErrors:
-		logger.Info().Msgf("error : listening and serving %s", err)
-
-	case <-shutdown:
-		logger.Info().Msg("main : Start shutdown")
-
-		timeout := appConf.Server.TimeoutIdle
-		ctx, cancel := context.WithTimeout(context.Background(), timeout)
+		ctx, cancel := context.WithTimeout(context.Background(), appConf.Server.TimeoutIdle)
 		defer cancel()
 
-		if err := s.Shutdown(ctx); err != nil {
-			logger.Info().Msgf("main : Graceful shutdown did not complete in %v : %v", timeout, err)
-
-			if err = s.Close(); err != nil {
-				logger.Fatal().Err(err).Msgf("main : Could not stop server gracefully %v", err)
-			}
+		if err := srv.Shutdown(ctx); err != nil {
+			logger.Warn().Err(err).Msg("Server shutdown failure")
 		}
 
+		if err = db.Close(); err != nil {
+			logger.Warn().Err(err).Msg("Db connection closing failure")
+		}
+		close(closed)
+	}()
+
+	logger.Info().Msgf("Starting server %v", address)
+	if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		logger.Fatal().Err(err).Msg("Server startup failure")
 	}
 
+	<-closed
 }
