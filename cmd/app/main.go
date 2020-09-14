@@ -26,9 +26,6 @@ func main() {
 		logger.Fatal().Err(err).Msg("")
 		return
 	}
-	if appConf.Debug {
-		db.LogMode(true)
-	}
 
 	validator := vr.New()
 
@@ -61,9 +58,13 @@ func main() {
 			logger.Warn().Err(err).Msg("Server shutdown failure")
 		}
 
-		if err = db.Close(); err != nil {
-			logger.Warn().Err(err).Msg("Db connection closing failure")
+		sqlDB, err := db.DB()
+		if err == nil {
+			if err = sqlDB.Close(); err != nil {
+				logger.Warn().Err(err).Msg("Db connection closing failure")
+			}
 		}
+
 		close(closed)
 	}()
 

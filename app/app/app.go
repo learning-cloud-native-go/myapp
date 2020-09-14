@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/go-playground/validator/v10"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 
 	"myapp/util/logger"
 )

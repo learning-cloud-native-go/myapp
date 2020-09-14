@@ -3,7 +3,7 @@ package model
 import (
 	"time"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type Books []*Book

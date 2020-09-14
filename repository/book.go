@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 
 	"myapp/model"
 )
@@ -37,7 +37,7 @@ func ReadBook(db *gorm.DB, id uint) (*model.Book, error) {
 }
 
 func UpdateBook(db *gorm.DB, book *model.Book) error {
-	if err := db.First(&model.Book{}, book.ID).Update(book).Error; err != nil {
+	if err := db.First(&model.Book{}, book.ID).Updates(book).Error; err != nil {
 		return err
 	}
 

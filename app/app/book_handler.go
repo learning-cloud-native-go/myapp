@@ -7,7 +7,7 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi"
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 
 	"myapp/model"
 	"myapp/repository"

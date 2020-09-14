@@ -3,14 +3,16 @@ package gorm
 import (
 	"fmt"
 
-	"github.com/go-sql-driver/mysql"
-	"github.com/jinzhu/gorm"
+	gosql "github.com/go-sql-driver/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 
 	"myapp/config"
 )
 
 func New(conf *config.Conf) (*gorm.DB, error) {
-	cfg := &mysql.Config{
+	cfg := &gosql.Config{
 		Net:                  "tcp",
 		Addr:                 fmt.Sprintf("%v:%v", conf.Db.Host, conf.Db.Port),
 		DBName:               conf.Db.DbName,
@@ -20,5 +22,14 @@ func New(conf *config.Conf) (*gorm.DB, error) {
 		ParseTime:            true,
 	}
 
-	return gorm.Open("mysql", cfg.FormatDSN())
+	var logLevel logger.LogLevel
+	if conf.Debug {
+		logLevel = logger.Info
+	} else {
+		logLevel = logger.Error
+	}
+
+	return gorm.Open(mysql.Open(cfg.FormatDSN()), &gorm.Config{
+		Logger: logger.Default.LogMode(logLevel),
+	})
 }
