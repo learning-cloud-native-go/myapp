@@ -11,7 +11,8 @@ services:
       - 8080:8080
     depends_on:
       - db
-    command: ["/myapp/docker/app/bin/wait-for-mysql.sh", "db", "/myapp/docker/app/bin/init.sh"]
+    command: /bin/sh -c 'while ! nc -z db 3306; do sleep 1; done; ./docker/app/bin/init.sh;'
+    restart: always
 
   db:
     image: yobasystems/alpine-mariadb:latest

@@ -24,7 +24,7 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 ### Docker Image Sizes
 - DB: 217MB
 - App
-    - Development environment: 682MB
+    - Development environment: 650MB
     - Production environment: 20.9MB
 
 > 💡 Building Docker image for production
