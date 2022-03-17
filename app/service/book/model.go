@@ -1,4 +1,4 @@
-package model
+package book
 
 import (
 	"time"
@@ -48,7 +48,7 @@ func (bs Books) ToDto() BookDtos {
 	return dtos
 }
 
-type BookForm struct {
+type FormBook struct {
 	Title         string `json:"title" form:"required,max=255"`
 	Author        string `json:"author" form:"required,alpha_space,max=255"`
 	PublishedDate string `json:"published_date" form:"required,date"`
@@ -56,7 +56,7 @@ type BookForm struct {
 	Description   string `json:"description"`
 }
 
-func (f *BookForm) ToModel() (*Book, error) {
+func (f *FormBook) ToModel() (*Book, error) {
 	pubDate, err := time.Parse("2006-01-02", f.PublishedDate)
 	if err != nil {
 		return nil, err

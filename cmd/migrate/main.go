@@ -16,7 +16,7 @@ const dialect = "mysql"
 
 var (
 	flags = flag.NewFlagSet("migrate", flag.ExitOnError)
-	dir   = flags.String("dir", "/myapp/migrations", "directory with migration files")
+	dir   = flags.String("dir", "migrations", "directory with migration files")
 )
 
 func main() {
@@ -43,8 +43,7 @@ func main() {
 		return
 	}
 
-	appConf := config.AppConfig()
-	appDb, err := db.New(appConf)
+	appDb, err := db.New(config.DbConfig())
 	if err != nil {
 		log.Fatalf(err.Error())
 	}

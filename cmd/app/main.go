@@ -9,7 +9,6 @@ import (
 	"syscall"
 
 	dbConn "myapp/adapter/gorm"
-	"myapp/app/app"
 	"myapp/app/router"
 	"myapp/config"
 	lr "myapp/util/logger"
@@ -21,20 +20,16 @@ func main() {
 
 	logger := lr.New(appConf.Debug)
 
-	db, err := dbConn.New(appConf)
+	validator := vr.New()
+
+	db, err := dbConn.New(&appConf.Db)
 	if err != nil {
 		logger.Fatal().Err(err).Msg("")
 		return
 	}
 
-	validator := vr.New()
-
-	application := app.New(logger, db, validator)
-
-	appRouter := router.New(application)
-
+	appRouter := router.New(logger, validator, db)
 	address := fmt.Sprintf(":%d", appConf.Server.Port)
-
 	srv := &http.Server{
 		Addr:         address,
 		Handler:      appRouter,

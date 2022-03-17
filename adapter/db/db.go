@@ -9,13 +9,13 @@ import (
 	"myapp/config"
 )
 
-func New(conf *config.Conf) (*sql.DB, error) {
+func New(conf *config.DbConf) (*sql.DB, error) {
 	cfg := &mysql.Config{
 		Net:                  "tcp",
-		Addr:                 fmt.Sprintf("%v:%v", conf.Db.Host, conf.Db.Port),
-		DBName:               conf.Db.DbName,
-		User:                 conf.Db.Username,
-		Passwd:               conf.Db.Password,
+		Addr:                 fmt.Sprintf("%v:%v", conf.Host, conf.Port),
+		DBName:               conf.DbName,
+		User:                 conf.Username,
+		Passwd:               conf.Password,
 		AllowNativePasswords: true,
 		ParseTime:            true,
 	}

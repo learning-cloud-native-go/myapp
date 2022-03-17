@@ -10,7 +10,7 @@ import (
 type Conf struct {
 	Debug  bool `env:"DEBUG,required"`
 	Server serverConf
-	Db     dbConf
+	Db     DbConf
 }
 
 type serverConf struct {
@@ -20,16 +20,26 @@ type serverConf struct {
 	TimeoutIdle  time.Duration `env:"SERVER_TIMEOUT_IDLE,required"`
 }
 
-type dbConf struct {
+type DbConf struct {
 	Host     string `env:"DB_HOST,required"`
 	Port     int    `env:"DB_PORT,required"`
 	Username string `env:"DB_USER,required"`
 	Password string `env:"DB_PASS,required"`
 	DbName   string `env:"DB_NAME,required"`
+	Debug    bool   `env:"DB_DEBUG,required"`
 }
 
 func AppConfig() *Conf {
 	var c Conf
+	if err := envdecode.StrictDecode(&c); err != nil {
+		log.Fatalf("Failed to decode: %s", err)
+	}
+
+	return &c
+}
+
+func DbConfig() *DbConf {
+	var c DbConf
 	if err := envdecode.StrictDecode(&c); err != nil {
 		log.Fatalf("Failed to decode: %s", err)
 	}
