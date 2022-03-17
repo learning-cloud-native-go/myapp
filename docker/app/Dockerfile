@@ -1,6 +1,6 @@
 # Development environment
 # -----------------------
-FROM golang:1.15-alpine
+FROM golang:1.18-alpine
 WORKDIR /myapp
 
 RUN apk update && apk add --no-cache gcc musl-dev git
