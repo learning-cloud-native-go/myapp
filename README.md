@@ -3,20 +3,16 @@ Cloud Native Application Development is a one way of speeding up building web ap
 
 As the first step, this repository shows **How to build a Dockerized RESTful API application using Go**. 
 
->💡 Refer [learning-cloud-native-go.github.io](https://learning-cloud-native-go.github.io) or commit messages and `step-` branches for a step by step guild.
-
 ## Points to Highlight
 - Usage of Docker and Docker Compose.
 - Usage of Golang and MySQL Alpine images.
 - Usage of Docker Multistage builds.
-- [Liveness and Readiness APIs for K8s](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/).
+- [Health API for K8s liveness & readiness](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/).
 - Usage of [Goose](https://github.com/pressly/goose) for Migrations.
 - Usage of [GORM](https://gorm.io/) as the ORM.
 - Usage of [Chi](https://github.com/go-chi/chi) as the Router.
 - Usage of [Zerolog](https://github.com/rs/zerolog) as the Logger.
 - Usage of [Validator.v10](https://github.com/go-playground/validator) as the Form Validator.
-
-💭 Hope to use [Wire](https://github.com/google/wire) for Compile-time Dependency Injection in the future.
 
 ### Endpoints
 ![endpoints](doc/assets/endpoints.png)
@@ -35,17 +31,17 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 - Store executable packages inside the `cmd` folder.
 - Store database migrations inside the `migrations` folder.
 - Store main application code inside the `app` folder.
-- Store reusable packages like configs, utils, models and repositories in separate folders. This will be helpful if you are adding more executable applications to support web front-ends, [publish/subscribe systems](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern), [document stores](https://en.wikipedia.org/wiki/Document-oriented_database) and etc.
+- Store reusable packages like configs, utils in separate folders. This will be helpful if you are adding more executable applications to support web front-ends, [publish/subscribe systems](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern), [document stores](https://en.wikipedia.org/wiki/Document-oriented_database) and etc.
 
 ```
 .
+├── docker-compose.yml
 ├── docker
 │  └── app
 │     ├── bin
-│     │  ├── init.sh
-│     │  └── wait-for-mysql.sh
-│     └── Dockerfile
-├── docker-compose.yml
+│     │  └── init.sh
+│     ├── Dockerfile
+│     └── prod.Dockerfile
 │
 ├── cmd
 │  ├── app
@@ -57,19 +53,26 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 │  └── 20190805170000_create_books_table.sql
 │
 ├── app
-│  ├── app
-│  │  ├── app.go
-│  │  ├── book_handler.go
-│  │  ├── health_handler.go
-│  │  └── index_handler.go
-│  ├── requestlog
-│  │  ├── handler.go
-│  │  └── log_entry.go
-│  └── router
-│     ├── middleware
-│     │  ├── content_type_json.go
-│     │  └── content_type_json_test.go
-│     └── router.go
+│  ├── service
+│  │  ├── health
+│  │  │  └── handler.go
+│  │  ├── book
+│  │  │  ├── app.go
+│  │  │  ├── handler.go
+│  │  │  ├── model.go
+│  │  │  └── repository.go
+│  │  └── error
+│  │     └── handler.go
+│  │
+│  ├── router
+│  │  ├── router.go
+│  │  └── middleware
+│  │     ├── content_type_json.go
+│  │     └── content_type_json_test.go
+│  │
+│  └── requestlog
+│     ├── handler.go
+│     └── log_entry.go
 │
 ├── config
 │  └── config.go
@@ -88,16 +91,15 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 │     └── validator.go
 │     └── validator_test.go
 │
-├── model
-│  └── book.go
-├── repository
-│  └── book.go
+├── k8s
+│  ├── app-configmap.yaml
+│  ├── app-secret.yaml
+│  ├── app-deployment.yaml
+│  └── app-service.yaml
 │
 ├── go.mod
 └── go.sum
 ```
-
->💡 About `app/app/app.go`; Some prefer `app/server/server.go` or `http/app/app.go`
 
 ### Form Validation
 ![Form validation](doc/assets/form_validation.png)
