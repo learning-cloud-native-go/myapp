@@ -53,7 +53,7 @@ func (app *App) HandleCreateBook(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		e.FormValError(w, respBody)
+		e.FormValErrors(w, respBody)
 		return
 	}
 
@@ -130,7 +130,7 @@ func (app *App) HandleUpdateBook(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		e.FormValError(w, respBody)
+		e.FormValErrors(w, respBody)
 		return
 	}
 

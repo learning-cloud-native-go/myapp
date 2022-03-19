@@ -28,7 +28,7 @@ func ValError(w http.ResponseWriter, msg string) {
 	fmt.Fprintf(w, `{"error": "%v"}`, msg)
 }
 
-func FormValError(w http.ResponseWriter, reps []byte) {
+func FormValErrors(w http.ResponseWriter, reps []byte) {
 	w.WriteHeader(http.StatusUnprocessableEntity)
 	w.Write(reps)
 }
