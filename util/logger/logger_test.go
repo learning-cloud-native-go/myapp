@@ -56,6 +56,25 @@ func ExampleLogger_Log() {
 	// Output: {"time":1199811905,"message":"hello world"}
 }
 
+// Example of a conditional level based on the presence of an error.
+func ExampleLogger_Err() {
+	l := setup()
+	err := errors.New("some error")
+	l.Err(err).Msg("hello world")
+	l.Err(nil).Msg("hello world")
+
+	// Output: {"level":"error","error":"some error","time":1199811905,"message":"hello world"}
+	// {"level":"info","time":1199811905,"message":"hello world"}
+}
+
+// Example of a log at a particular "level" (in this case, "trace")
+func ExampleLogger_Trace() {
+	l := setup()
+	l.Trace().Msg("hello world")
+
+	// Output: {"level":"trace","time":1199811905,"message":"hello world"}
+}
+
 // Example of a log at a particular "level" (in this case, "debug")
 func ExampleLogger_Debug() {
 	l := setup()

@@ -2,6 +2,7 @@ package logger
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"os"
 
@@ -15,7 +16,7 @@ type Logger struct {
 func New(isDebug bool) *Logger {
 	logLevel := zerolog.InfoLevel
 	if isDebug {
-		logLevel = zerolog.DebugLevel
+		logLevel = zerolog.TraceLevel
 	}
 
 	zerolog.SetGlobalLevel(logLevel)
@@ -27,7 +28,7 @@ func New(isDebug bool) *Logger {
 func NewConsole(isDebug bool) *Logger {
 	logLevel := zerolog.InfoLevel
 	if isDebug {
-		logLevel = zerolog.DebugLevel
+		logLevel = zerolog.TraceLevel
 	}
 
 	zerolog.SetGlobalLevel(logLevel)
@@ -59,6 +60,21 @@ func (l *Logger) Sample(s zerolog.Sampler) zerolog.Logger {
 // Hook returns a logger with the h Hook.
 func (l *Logger) Hook(h zerolog.Hook) zerolog.Logger {
 	return l.logger.Hook(h)
+}
+
+// Err starts a new message with error level with err as a field if not nil or
+// with info level if err is nil.
+//
+// You must call Msg on the returned event in order to send the event.
+func (l *Logger) Err(err error) *zerolog.Event {
+	return l.logger.Err(err)
+}
+
+// Trace starts a new message with trace level.
+//
+// You must call Msg on the returned event in order to send the event.
+func (l *Logger) Trace() *zerolog.Event {
+	return l.logger.Trace()
 }
 
 // Debug starts a new message with debug level.
@@ -123,13 +139,13 @@ func (l *Logger) Log() *zerolog.Event {
 // Print sends a log event using debug level and no extra field.
 // Arguments are handled in the manner of fmt.Print.
 func (l *Logger) Print(v ...interface{}) {
-	l.logger.Print(v...)
+	l.logger.Debug().CallerSkipFrame(1).Msg(fmt.Sprint(v...))
 }
 
 // Printf sends a log event using debug level and no extra field.
 // Arguments are handled in the manner of fmt.Printf.
 func (l *Logger) Printf(format string, v ...interface{}) {
-	l.logger.Printf(format, v...)
+	l.logger.Debug().CallerSkipFrame(1).Msgf(format, v...)
 }
 
 // Ctx returns the Logger associated with the ctx. If no logger
