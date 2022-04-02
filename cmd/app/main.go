@@ -24,7 +24,7 @@ func main() {
 
 	db, err := dbConn.New(&appConf.Db)
 	if err != nil {
-		logger.Fatal().Err(err).Msg("")
+		logger.Fatal().Err(err).Msg("Db connection start failure")
 		return
 	}
 
@@ -50,13 +50,13 @@ func main() {
 		defer cancel()
 
 		if err := srv.Shutdown(ctx); err != nil {
-			logger.Warn().Err(err).Msg("Server shutdown failure")
+			logger.Error().Err(err).Msg("Server shutdown failure")
 		}
 
 		sqlDB, err := db.DB()
 		if err == nil {
 			if err = sqlDB.Close(); err != nil {
-				logger.Warn().Err(err).Msg("Db connection closing failure")
+				logger.Error().Err(err).Msg("Db connection closing failure")
 			}
 		}
 
