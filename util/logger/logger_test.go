@@ -1,3 +1,4 @@
+//go:build !binary_log
 // +build !binary_log
 
 package logger_test
@@ -24,7 +25,7 @@ func setup() *logger.Logger {
 	// examples to pass, we need to override zerolog.TimestampFunc
 	// and log.Logger globals -- you would not normally need to do this
 	zerolog.TimestampFunc = func() time.Time {
-		return time.Date(2008, 1, 8, 17, 5, 05, 0, time.UTC)
+		return time.Date(2008, 1, 8, 17, 5, 5, 0, time.UTC)
 	}
 
 	return logger.NewConsole(true)
@@ -32,7 +33,7 @@ func setup() *logger.Logger {
 
 // Simple logging example using the Print function in the log package
 // Note that both Print and Printf are at the debug log level by default
-func ExamplePrint() {
+func ExampleLogger_Print() {
 	l := setup()
 	l.Print("hello world")
 
@@ -40,7 +41,7 @@ func ExamplePrint() {
 }
 
 // Simple logging example using the Printf function in the log package
-func ExamplePrintf() {
+func ExampleLogger_Printf() {
 	l := setup()
 	l.Printf("hello %s", "world")
 
@@ -48,7 +49,7 @@ func ExamplePrintf() {
 }
 
 // Example of a log with no particular "level"
-func ExampleLog() {
+func ExampleLogger_Log() {
 	l := setup()
 	l.Log().Msg("hello world")
 
@@ -56,7 +57,7 @@ func ExampleLog() {
 }
 
 // Example of a log at a particular "level" (in this case, "debug")
-func ExampleDebug() {
+func ExampleLogger_Debug() {
 	l := setup()
 	l.Debug().Msg("hello world")
 
@@ -64,7 +65,7 @@ func ExampleDebug() {
 }
 
 // Example of a log at a particular "level" (in this case, "info")
-func ExampleInfo() {
+func ExampleLogger_Info() {
 	l := setup()
 	l.Info().Msg("hello world")
 
@@ -72,7 +73,7 @@ func ExampleInfo() {
 }
 
 // Example of a log at a particular "level" (in this case, "warn")
-func ExampleWarn() {
+func ExampleLogger_Warn() {
 	l := setup()
 	l.Warn().Msg("hello world")
 
@@ -80,7 +81,7 @@ func ExampleWarn() {
 }
 
 // Example of a log at a particular "level" (in this case, "error")
-func ExampleError() {
+func ExampleLogger_Error() {
 	l := setup()
 	l.Error().Msg("hello world")
 
@@ -88,7 +89,7 @@ func ExampleError() {
 }
 
 // Example of a log at a particular "level" (in this case, "fatal")
-func ExampleFatal() {
+func ExampleLogger_Fatal() {
 	l := setup()
 	err := errors.New("A repo man spends his life getting into tense situations")
 	service := "myservice"
