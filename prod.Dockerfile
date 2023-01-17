@@ -3,7 +3,7 @@
 FROM golang:1.19-alpine as build-env
 WORKDIR /myapp
 
-RUN apk update && apk add --no-cache gcc musl-dev git
+RUN apk add --no-cache gcc musl-dev
 
 COPY go.mod go.sum ./
 RUN go mod download
@@ -17,7 +17,6 @@ RUN go build -ldflags '-w -s' -a -o ./bin/api ./cmd/api \
 # Deployment environment
 # ----------------------
 FROM alpine
-RUN apk update
 
 COPY --from=build-env /myapp/bin/api /myapp/
 COPY --from=build-env /myapp/bin/migrate /myapp/
