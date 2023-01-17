@@ -35,15 +35,11 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 ```
 .
 ├── docker-compose.yml
-├── docker
-│  └── app
-│     ├── bin
-│     │  └── init.sh
-│     ├── Dockerfile
-│     └── prod.Dockerfile
+├── Dockerfile
+├── prod.Dockerfile
 │
 ├── cmd
-│  ├── app
+│  ├── api
 │  │  └── main.go
 │  └── migrate
 │     └── main.go
@@ -51,8 +47,8 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 ├── migrations
 │  └── 20190805170000_create_books_table.sql
 │
-├── app
-│  ├── service
+├── api
+│  ├── resource
 │  │  ├── health
 │  │  │  └── handler.go
 │  │  ├── book
@@ -75,12 +71,6 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 │
 ├── config
 │  └── config.go
-│
-├── adapter
-│  ├── db
-│  │  └── db.go
-│  └── gorm
-│     └── gorm.go
 │
 ├── util
 │  ├── logger

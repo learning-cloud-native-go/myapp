@@ -17,7 +17,6 @@ package requestlog
 
 import (
 	"io"
-	"io/ioutil"
 	"net"
 	"net/http"
 	"time"
@@ -66,7 +65,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if rcc.err == nil && rcc.r != nil {
 		// If the handler hasn't encountered an error in the Body (like EOF),
 		// then consume the rest of the Body to provide an accurate rcc.n.
-		io.Copy(ioutil.Discard, rcc)
+		io.Copy(io.Discard, rcc)
 	}
 	le.RequestBodySize = rcc.n
 	le.Status = w2.code
