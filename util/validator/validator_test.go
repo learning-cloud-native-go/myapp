@@ -44,7 +44,7 @@ var tests = []*testCase{
 	{
 		name: `date`,
 		input: struct {
-			Date string `json:"date" form:"date"`
+			Date string `json:"date" form:"datetime=2006-01-02"`
 		}{Date: "2020-02-31"},
 		expected: "date must be a valid date",
 	},

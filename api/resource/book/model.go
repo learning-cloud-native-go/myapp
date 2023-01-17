@@ -51,16 +51,13 @@ func (bs Books) ToDto() BookDtos {
 type FormBook struct {
 	Title         string `json:"title" form:"required,max=255"`
 	Author        string `json:"author" form:"required,alpha_space,max=255"`
-	PublishedDate string `json:"published_date" form:"required,date"`
+	PublishedDate string `json:"published_date" form:"required,datetime=2006-01-02"`
 	ImageUrl      string `json:"image_url" form:"url"`
 	Description   string `json:"description"`
 }
 
-func (f *FormBook) ToModel() (*Book, error) {
-	pubDate, err := time.Parse("2006-01-02", f.PublishedDate)
-	if err != nil {
-		return nil, err
-	}
+func (f *FormBook) ToModel() *Book {
+	pubDate, _ := time.Parse("2006-01-02", f.PublishedDate)
 
 	return &Book{
 		Title:         f.Title,
@@ -68,5 +65,5 @@ func (f *FormBook) ToModel() (*Book, error) {
 		PublishedDate: pubDate,
 		ImageUrl:      f.ImageUrl,
 		Description:   f.Description,
-	}, nil
+	}
 }

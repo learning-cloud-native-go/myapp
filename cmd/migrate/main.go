@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/pressly/goose"
+	"github.com/go-sql-driver/mysql"
+	"github.com/pressly/goose/v3"
 
-	"myapp/adapter/db"
 	"myapp/config"
 )
 
@@ -30,32 +30,31 @@ func main() {
 	}
 
 	command := args[0]
-	switch command {
-	case "create":
-		if err := goose.Run("create", nil, *dir, args[1:]...); err != nil {
-			log.Fatalf("migrate run: %v", err)
-		}
-		return
-	case "fix":
-		if err := goose.Run("fix", nil, *dir); err != nil {
-			log.Fatalf("migrate run: %v", err)
-		}
-		return
+
+	c := config.NewDB()
+	cfg := &mysql.Config{
+		Net:                  "tcp",
+		Addr:                 fmt.Sprintf("%v:%v", c.Host, c.Port),
+		DBName:               c.DBName,
+		User:                 c.Username,
+		Passwd:               c.Password,
+		AllowNativePasswords: true,
+		ParseTime:            true,
 	}
 
-	appDb, err := db.New(config.DbConfig())
+	db, err := goose.OpenDBWithDriver(dialect, cfg.FormatDSN())
 	if err != nil {
 		log.Fatalf(err.Error())
 	}
 
-	defer appDb.Close()
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Fatalf(err.Error())
+		}
+	}()
 
-	if err := goose.SetDialect(dialect); err != nil {
-		log.Fatal(err)
-	}
-
-	if err := goose.Run(command, appDb, *dir, args[1:]...); err != nil {
-		log.Fatalf("migrate run: %v", err)
+	if err := goose.Run(command, db, *dir, args[1:]...); err != nil {
+		log.Fatalf("migrate %v: %v", command, err)
 	}
 }
 
@@ -66,10 +65,9 @@ func usage() {
 }
 
 var (
-	usagePrefix = `Usage: migrate [OPTIONS] COMMAND
+	usagePrefix = `Usage: migrate COMMAND
 Examples:
     migrate status
-Options:
 `
 
 	usageCommands = `
@@ -84,6 +82,5 @@ Commands:
     status               Dump the migration status for the current DB
     version              Print the current version of the database
     create NAME [sql|go] Creates new migration file with the current timestamp
-    fix                  Apply sequential ordering to migrations
-`
+    fix                  Apply sequential ordering to migrations`
 )

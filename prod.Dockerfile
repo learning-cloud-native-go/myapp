@@ -1,6 +1,6 @@
 # Build environment
 # -----------------
-FROM golang:1.18-alpine as build-env
+FROM golang:1.19-alpine as build-env
 WORKDIR /myapp
 
 RUN apk update && apk add --no-cache gcc musl-dev git
@@ -10,7 +10,7 @@ RUN go mod download
 
 COPY . .
 
-RUN go build -ldflags '-w -s' -a -o ./bin/app ./cmd/app \
+RUN go build -ldflags '-w -s' -a -o ./bin/api ./cmd/api \
     && go build -ldflags '-w -s' -a -o ./bin/migrate ./cmd/migrate
 
 
@@ -19,7 +19,7 @@ RUN go build -ldflags '-w -s' -a -o ./bin/app ./cmd/app \
 FROM alpine
 RUN apk update
 
-COPY --from=build-env /myapp/bin/app /myapp/
+COPY --from=build-env /myapp/bin/api /myapp/
 COPY --from=build-env /myapp/bin/migrate /myapp/
 COPY --from=build-env /myapp/migrations /myapp/migrations
 

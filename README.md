@@ -24,10 +24,9 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
     - Production environment: 21MB
 
 > 💡 Building Docker image for production
-> `docker build -f docker/app/prod.Dockerfile . -t myapp_app`
+> `docker build -f prod.Dockerfile . -t myapp_app`
 
 ## Design Decisions & Project Folder Structure
-- Store Docker related files inside the `docker` folder. But keep the `docker-compose.yml` file in the project root.
 - Store executable packages inside the `cmd` folder.
 - Store database migrations inside the `migrations` folder.
 - Store main application code inside the `app` folder.

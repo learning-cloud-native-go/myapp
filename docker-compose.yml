@@ -1,17 +1,16 @@
-version: '3'
+version: '3.9'
 services:
 
   app:
-    build:
-      context: .
-      dockerfile: ./docker/app/Dockerfile
+    build: .
     env_file:
-      - ./docker/app/.env
+      - .env
     ports:
       - 8080:8080
     depends_on:
-      - db
-    command: /bin/sh -c 'while ! nc -z db 3306; do sleep 1; done; ./docker/app/bin/init.sh;'
+      db:
+        condition: service_healthy
+    command: [ "sh", "-c", "/myapp/bin/migrate up && /myapp/bin/api" ]
     restart: always
 
   db:
@@ -21,6 +20,12 @@ services:
       MYSQL_DATABASE: myapp_db
       MYSQL_USER: myapp_user
       MYSQL_PASSWORD: myapp_pass
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-pmyapp_root_pass" ]
+      interval: 3s
+      timeout: 5s
+      retries: 5
+      start_period: 1s
     ports:
       - 3306:3306
     restart: always

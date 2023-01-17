@@ -9,11 +9,11 @@ import (
 	"github.com/go-chi/chi/v5"
 	"gorm.io/gorm"
 
-	e "myapp/app/service/error"
+	e "myapp/api/resource/error"
 	"myapp/util/validator"
 )
 
-func (app *App) HandleListBooks(w http.ResponseWriter, r *http.Request) {
+func (app *App) List(w http.ResponseWriter, r *http.Request) {
 	books, err := app.repository.ListBooks()
 	if err != nil {
 		app.logger.Error().Err(err).Msg("")
@@ -32,7 +32,7 @@ func (app *App) HandleListBooks(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *App) HandleCreateBook(w http.ResponseWriter, r *http.Request) {
+func (app *App) Create(w http.ResponseWriter, r *http.Request) {
 	form := &FormBook{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
 		e.ValError(w, e.ErrFormDecodingFailure)
@@ -57,14 +57,7 @@ func (app *App) HandleCreateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bookModel, err := form.ToModel()
-	if err != nil {
-		app.logger.Error().Err(err).Msg("")
-		e.ValError(w, e.ErrFormDecodingFailure)
-		return
-	}
-
-	book, err := app.repository.CreateBook(bookModel)
+	book, err := app.repository.CreateBook(form.ToModel())
 	if err != nil {
 		app.logger.Error().Err(err).Msg("")
 		e.AppError(w, e.ErrDataCreationFailure)
@@ -75,7 +68,7 @@ func (app *App) HandleCreateBook(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (app *App) HandleReadBook(w http.ResponseWriter, r *http.Request) {
+func (app *App) Read(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || id == 0 {
 		e.ValError(w, e.ErrInvalidIdInUrlParam)
@@ -102,7 +95,7 @@ func (app *App) HandleReadBook(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *App) HandleUpdateBook(w http.ResponseWriter, r *http.Request) {
+func (app *App) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || id == 0 {
 		e.ValError(w, e.ErrInvalidIdInUrlParam)
@@ -134,14 +127,9 @@ func (app *App) HandleUpdateBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bookModel, err := form.ToModel()
-	if err != nil {
-		app.logger.Error().Err(err).Msg("")
-		e.ValError(w, e.ErrFormDecodingFailure)
-		return
-	}
-
+	bookModel := form.ToModel()
 	bookModel.ID = uint(id)
+
 	if err := app.repository.UpdateBook(bookModel); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
@@ -157,7 +145,7 @@ func (app *App) HandleUpdateBook(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 }
 
-func (app *App) HandleDeleteBook(w http.ResponseWriter, r *http.Request) {
+func (app *App) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || id == 0 {
 		e.ValError(w, e.ErrInvalidIdInUrlParam)

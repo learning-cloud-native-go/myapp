@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"myapp/app/router/middleware"
+	"myapp/api/router/middleware"
 )
 
 var (
