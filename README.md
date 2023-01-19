@@ -49,14 +49,15 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 │
 ├── api
 │  ├── resource
-│  │  ├── health
-│  │  │  └── handler.go
 │  │  ├── book
-│  │  │  ├── app.go
+│  │  │  ├── api.go
 │  │  │  ├── handler.go
 │  │  │  ├── model.go
 │  │  │  └── repository.go
-│  │  └── error
+│  │  ├── common
+│  │  │  └── err
+│  │  │     └── err.go
+│  │  └── health
 │  │     └── handler.go
 │  │
 │  ├── router
