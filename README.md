@@ -45,7 +45,7 @@ As the first step, this repository shows **How to build a Dockerized RESTful API
 │     └── main.go
 │
 ├── migrations
-│  └── 20190805170000_create_books_table.sql
+│  └── 00001_create_books_table.sql
 │
 ├── api
 │  ├── resource
