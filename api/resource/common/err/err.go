@@ -1,4 +1,4 @@
-package error
+package err
 
 import (
 	"fmt"
@@ -6,16 +6,17 @@ import (
 )
 
 const (
-	ErrDataCreationFailure = "data creation failure"
-	ErrDataAccessFailure   = "data access failure"
-	ErrDataUpdateFailure   = "data update failure"
-	ErrDataDeletionFailure = "data deletion failure"
+	DataCreationFailure = "data creation failure"
+	DataAccessFailure   = "data access failure"
+	DataUpdateFailure   = "data update failure"
+	DataDeletionFailure = "data deletion failure"
 
-	ErrJsonCreationFailure    = "json creation failure"
-	ErrFormDecodingFailure    = "form decoding failure"
-	ErrFormErrResponseFailure = "form error response failure"
+	JsonEncodingFailure = "json encoding failure"
+	JsonDecodingFailure = "json decoding failure"
 
-	ErrInvalidIdInUrlParam = "invalid id in url param"
+	FormErrResponseFailure = "form error response failure"
+
+	InvalidIdInUrlParam = "invalid id in url param"
 )
 
 func AppError(w http.ResponseWriter, msg string) {

@@ -9,47 +9,48 @@ import (
 	"github.com/go-chi/chi/v5"
 	"gorm.io/gorm"
 
-	e "myapp/api/resource/error"
+	e "myapp/api/resource/common/err"
 	"myapp/util/validator"
 )
 
-func (app *App) List(w http.ResponseWriter, r *http.Request) {
-	books, err := app.repository.ListBooks()
+func (a *API) List(w http.ResponseWriter, r *http.Request) {
+	books, err := a.repository.ListBooks()
 	if err != nil {
-		app.logger.Error().Err(err).Msg("")
-		e.AppError(w, e.ErrDataAccessFailure)
+		a.logger.Error().Err(err).Msg("")
+		e.AppError(w, e.DataAccessFailure)
 		return
 	}
+
 	if books == nil {
 		fmt.Fprint(w, "[]")
 		return
 	}
 
 	if err := json.NewEncoder(w).Encode(books.ToDto()); err != nil {
-		app.logger.Error().Err(err).Msg("")
-		e.AppError(w, e.ErrJsonCreationFailure)
+		a.logger.Error().Err(err).Msg("")
+		e.AppError(w, e.JsonEncodingFailure)
 		return
 	}
 }
 
-func (app *App) Create(w http.ResponseWriter, r *http.Request) {
+func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	form := &FormBook{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
-		e.ValError(w, e.ErrFormDecodingFailure)
+		e.ValError(w, e.JsonDecodingFailure)
 		return
 	}
 
-	if err := app.validator.Struct(form); err != nil {
+	if err := a.validator.Struct(form); err != nil {
 		resp := validator.ToErrResponse(err)
 		if resp == nil {
-			e.AppError(w, e.ErrFormErrResponseFailure)
+			e.AppError(w, e.FormErrResponseFailure)
 			return
 		}
 
 		respBody, err := json.Marshal(resp)
 		if err != nil {
-			app.logger.Error().Err(err).Msg("")
-			e.AppError(w, e.ErrJsonCreationFailure)
+			a.logger.Error().Err(err).Msg("")
+			e.AppError(w, e.JsonEncodingFailure)
 			return
 		}
 
@@ -57,69 +58,69 @@ func (app *App) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := app.repository.CreateBook(form.ToModel())
+	book, err := a.repository.CreateBook(form.ToModel())
 	if err != nil {
-		app.logger.Error().Err(err).Msg("")
-		e.AppError(w, e.ErrDataCreationFailure)
+		a.logger.Error().Err(err).Msg("")
+		e.AppError(w, e.DataCreationFailure)
 		return
 	}
 
-	app.logger.Info().Uint("id", book.ID).Msg("new book created")
+	a.logger.Info().Uint("id", book.ID).Msg("new book created")
 	w.WriteHeader(http.StatusCreated)
 }
 
-func (app *App) Read(w http.ResponseWriter, r *http.Request) {
+func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || id == 0 {
-		e.ValError(w, e.ErrInvalidIdInUrlParam)
+		e.ValError(w, e.InvalidIdInUrlParam)
 		return
 	}
 
-	book, err := app.repository.ReadBook(uint(id))
+	book, err := a.repository.ReadBook(uint(id))
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
 
-		app.logger.Error().Err(err).Msg("")
-		e.AppError(w, e.ErrDataAccessFailure)
+		a.logger.Error().Err(err).Msg("")
+		e.AppError(w, e.DataAccessFailure)
 		return
 	}
 
 	dto := book.ToDto()
 	if err := json.NewEncoder(w).Encode(dto); err != nil {
-		app.logger.Error().Err(err).Msg("")
-		e.AppError(w, e.ErrJsonCreationFailure)
+		a.logger.Error().Err(err).Msg("")
+		e.AppError(w, e.JsonEncodingFailure)
 		return
 	}
 }
 
-func (app *App) Update(w http.ResponseWriter, r *http.Request) {
+func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || id == 0 {
-		e.ValError(w, e.ErrInvalidIdInUrlParam)
+		e.ValError(w, e.InvalidIdInUrlParam)
 		return
 	}
 
 	form := &FormBook{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
-		app.logger.Error().Err(err).Msg("")
-		e.ValError(w, e.ErrFormDecodingFailure)
+		a.logger.Error().Err(err).Msg("")
+		e.ValError(w, e.JsonDecodingFailure)
 		return
 	}
 
-	if err := app.validator.Struct(form); err != nil {
+	if err := a.validator.Struct(form); err != nil {
 		resp := validator.ToErrResponse(err)
 		if resp == nil {
-			e.AppError(w, e.ErrFormErrResponseFailure)
+			e.AppError(w, e.FormErrResponseFailure)
 			return
 		}
 
 		respBody, err := json.Marshal(resp)
 		if err != nil {
-			app.logger.Error().Err(err).Msg("")
-			e.AppError(w, e.ErrJsonCreationFailure)
+			a.logger.Error().Err(err).Msg("")
+			e.AppError(w, e.JsonEncodingFailure)
 			return
 		}
 
@@ -130,34 +131,32 @@ func (app *App) Update(w http.ResponseWriter, r *http.Request) {
 	bookModel := form.ToModel()
 	bookModel.ID = uint(id)
 
-	if err := app.repository.UpdateBook(bookModel); err != nil {
+	if err := a.repository.UpdateBook(bookModel); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
 			return
 		}
 
-		app.logger.Error().Err(err).Msg("")
-		e.AppError(w, e.ErrDataUpdateFailure)
+		a.logger.Error().Err(err).Msg("")
+		e.AppError(w, e.DataUpdateFailure)
 		return
 	}
 
-	app.logger.Info().Uint64("id", id).Msg("book updated")
-	w.WriteHeader(http.StatusAccepted)
+	a.logger.Info().Uint64("id", id).Msg("book updated")
 }
 
-func (app *App) Delete(w http.ResponseWriter, r *http.Request) {
+func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(chi.URLParam(r, "id"), 0, 64)
 	if err != nil || id == 0 {
-		e.ValError(w, e.ErrInvalidIdInUrlParam)
+		e.ValError(w, e.InvalidIdInUrlParam)
 		return
 	}
 
-	if err := app.repository.DeleteBook(uint(id)); err != nil {
-		app.logger.Error().Err(err).Msg("")
-		e.AppError(w, e.ErrDataDeletionFailure)
+	if err := a.repository.DeleteBook(uint(id)); err != nil {
+		a.logger.Error().Err(err).Msg("")
+		e.AppError(w, e.DataDeletionFailure)
 		return
 	}
 
-	app.logger.Info().Uint64("id", id).Msg("book deleted")
-	w.WriteHeader(http.StatusAccepted)
+	a.logger.Info().Uint64("id", id).Msg("book deleted")
 }

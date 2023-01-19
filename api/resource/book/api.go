@@ -7,14 +7,14 @@ import (
 	"myapp/util/logger"
 )
 
-type App struct {
+type API struct {
 	logger     *logger.Logger
 	validator  *validator.Validate
 	repository *Repository
 }
 
-func NewApp(logger *logger.Logger, validator *validator.Validate, db *gorm.DB) *App {
-	return &App{
+func New(logger *logger.Logger, validator *validator.Validate, db *gorm.DB) *API {
+	return &API{
 		logger:     logger,
 		validator:  validator,
 		repository: NewRepository(db),

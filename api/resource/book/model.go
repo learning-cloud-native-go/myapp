@@ -6,7 +6,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type Books []*Book
+type FormBook struct {
+	Title         string `json:"title" form:"required,max=255"`
+	Author        string `json:"author" form:"required,alpha_space,max=255"`
+	PublishedDate string `json:"published_date" form:"required,datetime=2006-01-02"`
+	ImageUrl      string `json:"image_url" form:"url"`
+	Description   string `json:"description"`
+}
 
 type Book struct {
 	gorm.Model
@@ -17,7 +23,7 @@ type Book struct {
 	Description   string
 }
 
-type BookDtos []*BookDto
+type Books []*Book
 
 type BookDto struct {
 	ID            uint   `json:"id"`
@@ -39,21 +45,13 @@ func (b Book) ToDto() *BookDto {
 	}
 }
 
-func (bs Books) ToDto() BookDtos {
+func (bs Books) ToDto() []*BookDto {
 	dtos := make([]*BookDto, len(bs))
-	for i, b := range bs {
-		dtos[i] = b.ToDto()
+	for i, v := range bs {
+		dtos[i] = v.ToDto()
 	}
 
 	return dtos
-}
-
-type FormBook struct {
-	Title         string `json:"title" form:"required,max=255"`
-	Author        string `json:"author" form:"required,alpha_space,max=255"`
-	PublishedDate string `json:"published_date" form:"required,datetime=2006-01-02"`
-	ImageUrl      string `json:"image_url" form:"url"`
-	Description   string `json:"description"`
 }
 
 func (f *FormBook) ToModel() *Book {

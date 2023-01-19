@@ -25,7 +25,6 @@ services:
       interval: 3s
       timeout: 5s
       retries: 5
-      start_period: 1s
     ports:
       - 3306:3306
     restart: always
