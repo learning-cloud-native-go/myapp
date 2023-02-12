@@ -15,9 +15,9 @@ import (
 func New(l *logger.Logger, v *validator.Validate, db *gorm.DB) *chi.Mux {
 	r := chi.NewRouter()
 
-	r.Get("/healthz", health.Read)
+	r.Get("/livez", health.Read)
 
-	r.Route("/api/v1", func(r chi.Router) {
+	r.Route("/v1", func(r chi.Router) {
 		r.Use(middleware.ContentTypeJson)
 
 		bookAPI := book.New(l, v, db)

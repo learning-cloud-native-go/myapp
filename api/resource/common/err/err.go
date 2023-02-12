@@ -19,17 +19,25 @@ const (
 	InvalidIdInUrlParam = "invalid id in url param"
 )
 
-func AppError(w http.ResponseWriter, msg string) {
+type Error struct {
+	Error string `json:"error"`
+}
+
+type Errors struct {
+	Errors []string `json:"errors"`
+}
+
+func ServerError(w http.ResponseWriter, msg string) {
 	w.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(w, `{"error": "%v"}`, msg)
 }
 
-func ValError(w http.ResponseWriter, msg string) {
-	w.WriteHeader(http.StatusUnprocessableEntity)
+func BadRequest(w http.ResponseWriter, msg string) {
+	w.WriteHeader(http.StatusBadRequest)
 	fmt.Fprintf(w, `{"error": "%v"}`, msg)
 }
 
-func FormValErrors(w http.ResponseWriter, reps []byte) {
+func ValidationErrors(w http.ResponseWriter, reps []byte) {
 	w.WriteHeader(http.StatusUnprocessableEntity)
 	w.Write(reps)
 }

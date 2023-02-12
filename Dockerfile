@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine
+FROM golang:1.20-alpine
 WORKDIR /myapp
 
 RUN apk add --no-cache gcc musl-dev

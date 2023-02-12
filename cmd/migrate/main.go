@@ -6,13 +6,16 @@ import (
 	"log"
 	"os"
 
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
 
 	"myapp/config"
 )
 
-const dialect = "mysql"
+const (
+	dialect     = "pgx"
+	fmtDBString = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disable"
+)
 
 var (
 	flags = flag.NewFlagSet("migrate", flag.ExitOnError)
@@ -32,17 +35,9 @@ func main() {
 	command := args[0]
 
 	c := config.NewDB()
-	cfg := &mysql.Config{
-		Net:                  "tcp",
-		Addr:                 fmt.Sprintf("%v:%v", c.Host, c.Port),
-		DBName:               c.DBName,
-		User:                 c.Username,
-		Passwd:               c.Password,
-		AllowNativePasswords: true,
-		ParseTime:            true,
-	}
+	dbString := fmt.Sprintf(fmtDBString, c.Host, c.Username, c.Password, c.DBName, c.Port)
 
-	db, err := goose.OpenDBWithDriver(dialect, cfg.FormatDSN())
+	db, err := goose.OpenDBWithDriver(dialect, dbString)
 	if err != nil {
 		log.Fatalf(err.Error())
 	}

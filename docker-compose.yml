@@ -3,10 +3,9 @@ services:
 
   app:
     build: .
-    env_file:
-      - .env
+    env_file: .env
     ports:
-      - 8080:8080
+      - "8080:8080"
     depends_on:
       db:
         condition: service_healthy
@@ -14,17 +13,16 @@ services:
     restart: always
 
   db:
-    image: yobasystems/alpine-mariadb:latest
+    image: postgres:alpine
     environment:
-      MYSQL_ROOT_PASSWORD: myapp_root_pass
-      MYSQL_DATABASE: myapp_db
-      MYSQL_USER: myapp_user
-      MYSQL_PASSWORD: myapp_pass
+      - POSTGRES_DB=myapp_db
+      - POSTGRES_USER=myapp_user
+      - POSTGRES_PASSWORD=myapp_pass
+    ports:
+      - "5432:5432"
     healthcheck:
-      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost", "-uroot", "-pmyapp_root_pass" ]
+      test: [ "CMD-SHELL", "pg_isready -U myapp_user -d myapp_db" ]
       interval: 3s
       timeout: 5s
       retries: 5
-    ports:
-      - 3306:3306
     restart: always

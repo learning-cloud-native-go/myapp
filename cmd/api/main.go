@@ -8,8 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	gosql "github.com/go-sql-driver/mysql"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
 
@@ -19,20 +18,24 @@ import (
 	"myapp/util/validator"
 )
 
+const fmtDBString = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disable"
+
+//	@title			MYAPP API
+//	@version		1.0
+//	@description	This is a sample RESTful API with a CRUD
+
+//	@contact.name	Dumindu Madunuwan
+//	@contact.url	https://learning-cloud-native-go.github.io
+
+//	@license.name	MIT License
+//	@license.url	https://github.com/learning-cloud-native-go/myapp/blob/master/LICENSE
+
+// @host		localhost:8080
+// @basePath	/v1
 func main() {
 	c := config.New()
 	l := logger.New(c.Server.Debug)
 	v := validator.New()
-
-	cfg := &gosql.Config{
-		Net:                  "tcp",
-		Addr:                 fmt.Sprintf("%v:%v", c.DB.Host, c.DB.Port),
-		DBName:               c.DB.DBName,
-		User:                 c.DB.Username,
-		Passwd:               c.DB.Password,
-		AllowNativePasswords: true,
-		ParseTime:            true,
-	}
 
 	var logLevel gormlogger.LogLevel
 	if c.DB.Debug {
@@ -41,7 +44,8 @@ func main() {
 		logLevel = gormlogger.Error
 	}
 
-	db, err := gorm.Open(mysql.Open(cfg.FormatDSN()), &gorm.Config{Logger: gormlogger.Default.LogMode(logLevel)})
+	dbString := fmt.Sprintf(fmtDBString, c.DB.Host, c.DB.Username, c.DB.Password, c.DB.DBName, c.DB.Port)
+	db, err := gorm.Open(postgres.Open(dbString), &gorm.Config{Logger: gormlogger.Default.LogMode(logLevel)})
 	if err != nil {
 		l.Fatal().Err(err).Msg("DB connection start failure")
 		return

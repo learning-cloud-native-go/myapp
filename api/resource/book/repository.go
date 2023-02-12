@@ -1,6 +1,7 @@
 package book
 
 import (
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
@@ -35,7 +36,7 @@ func (r *Repository) CreateBook(book *Book) (*Book, error) {
 	return book, nil
 }
 
-func (r *Repository) ReadBook(id uint) (*Book, error) {
+func (r *Repository) ReadBook(id uuid.UUID) (*Book, error) {
 	book := &Book{}
 	if err := r.db.Where("id = ?", id).First(&book).Error; err != nil {
 		return nil, err
@@ -52,7 +53,7 @@ func (r *Repository) UpdateBook(book *Book) error {
 	return nil
 }
 
-func (r *Repository) DeleteBook(id uint) error {
+func (r *Repository) DeleteBook(id uuid.UUID) error {
 	book := &Book{}
 	if err := r.db.Where("id = ?", id).Delete(&book).Error; err != nil {
 		return err

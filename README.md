@@ -1,99 +1,106 @@
 # Learning Cloud Native Go - myapp
-Cloud Native Application Development is a one way of speeding up building web applications, using micro-services, containers and orchestration tools.
+> 🌱 Cloud Native Application Development is one way of speeding up the building of web applications using microservices, containers, and orchestration tools.
 
-As the first step, this repository shows **How to build a Dockerized RESTful API application using Go**. 
+This repository shows how to build a Dockerized RESTful API application in Go for a simple bookshelf.
 
-## Points to Highlight
-- Usage of Docker and Docker Compose.
-- Usage of Golang and MySQL Alpine images.
-- Usage of Docker Multistage builds.
-- [Health API for K8s liveness & readiness](https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/).
-- Usage of [Goose](https://github.com/pressly/goose) for Migrations.
-- Usage of [GORM](https://gorm.io/) as the ORM.
-- Usage of [Chi](https://github.com/go-chi/chi) as the Router.
-- Usage of [Zerolog](https://github.com/rs/zerolog) as the Logger.
-- Usage of [Validator.v10](https://github.com/go-playground/validator) as the Form Validator.
+## 🔋 Batteries included
 
-### Endpoints
-![endpoints](doc/assets/endpoints.png)
+- The idiomatic structure based on the resource-oriented design.
+- The usage of Docker, Docker compose, Alpine images, and linters on development.
+- Healthcheck and CRUD API implementations with OpenAPI specifications.
+- The usage of [Goose](https://github.com/pressly/goose) for the database migrations and [GORM](https://gorm.io/) as the database ORM.
+- The usage of [Zerolog](https://github.com/rs/zerolog) as the centralized Syslog logger.
+- The usage of [Validator.v10](https://github.com/go-playground/validator) as the form validator.
 
-### Docker Image Sizes
-- DB: 230MB
-- App
-    - Development environment: 667MB
-    - Production environment: 21MB
+## 🚀 Endpoints
 
-> 💡 Building Docker image for production
-> `docker build -f prod.Dockerfile . -t myapp_app`
+| Name        | HTTP Method | Route              |
+|-------------|-------------|--------------------|
+| Health      | GET         | /livez             |
+|             |             |                    |
+| List Books  | GET         | /api/v1/books      |
+| Create Book | POST        | /api/v1/books      |
+| Read Book   | GET         | /api/v1/books/{id} |
+| Update Book | PUT         | /api/v1/books/{id} |
+| Delete Book | DELETE      | /api/v1/books/{id} |
 
-## Design Decisions & Project Folder Structure
-- Store executable packages inside the `cmd` folder.
-- Store database migrations inside the `migrations` folder.
-- Store main application code inside the `app` folder.
-- Store reusable packages like configs, utils in separate folders. This will be helpful if you are adding more executable applications to support web front-ends, [publish/subscribe systems](https://en.wikipedia.org/wiki/Publish%E2%80%93subscribe_pattern), [document stores](https://en.wikipedia.org/wiki/Document-oriented_database) and etc.
+## 🗄️ Database design
 
-```
-.
-├── docker-compose.yml
-├── Dockerfile
-├── prod.Dockerfile
-│
+| Column Name    | Datatype  | Not Null | Primary Key |
+|----------------|-----------|----------|-------------|
+| id             | UUID      | ✅        | ✅           |
+| title          | TEXT      | ✅        |             |
+| author         | TEXT      | ✅        |             |
+| published_date | DATE      | ✅        |             |
+| image_url      | TEXT      |          |             |
+| description    | TEXT      |          |             |
+| created_at     | TIMESTAMP | ✅        |             |
+| updated_at     | TIMESTAMP | ✅        |             |
+| deleted_at     | TIMESTAMP |          |             |
+
+## 📦 Container image sizes
+
+- DB: 241MB
+- API
+    - Development environment: 655MB
+    - Production environment: 28MB ; 💡`docker build -f prod.Dockerfile . -t myapp_app`
+
+## 📁 Project structure
+
+```shell
+myapp
 ├── cmd
 │  ├── api
 │  │  └── main.go
 │  └── migrate
 │     └── main.go
 │
+├── api
+│  ├── router
+│  │  └── router.go
+│  │
+│  └── resource
+│     ├── health
+│     │  └── handler.go
+│     ├── book
+│     │  ├── api.go
+│     │  ├── handler.go
+│     │  ├── model.go
+│     │  └── repository.go
+│     └── common
+│        └── err
+│           └── err.go
+│
 ├── migrations
 │  └── 00001_create_books_table.sql
-│
-├── api
-│  ├── resource
-│  │  ├── book
-│  │  │  ├── api.go
-│  │  │  ├── handler.go
-│  │  │  ├── model.go
-│  │  │  └── repository.go
-│  │  ├── common
-│  │  │  └── err
-│  │  │     └── err.go
-│  │  └── health
-│  │     └── handler.go
-│  │
-│  ├── router
-│  │  ├── router.go
-│  │  └── middleware
-│  │     ├── content_type_json.go
-│  │     └── content_type_json_test.go
-│  │
-│  └── requestlog
-│     ├── handler.go
-│     └── log_entry.go
 │
 ├── config
 │  └── config.go
 │
 ├── util
 │  ├── logger
-│  │  ├── logger.go
-│  │  └── logger_test.go
+│  │  └── logger.go
 │  └── validator
 │     └── validator.go
-│     └── validator_test.go
 │
-├── k8s
-│  ├── app-configmap.yaml
-│  ├── app-secret.yaml
-│  ├── app-deployment.yaml
-│  └── app-service.yaml
+├── .env
 │
 ├── go.mod
-└── go.sum
+├── go.sum
+│
+├── docker-compose.yml
+├── Dockerfile
+│
+├── prod.Dockerfile
+└── k8s
+   ├── app-configmap.yaml
+   ├── app-secret.yaml
+   ├── app-deployment.yaml
+   └── app-service.yaml
 ```
 
-### Form Validation
+## 📸 Form validations and logs
 ![Form validation](doc/assets/form_validation.png)
 
-### Logs
 ![Logs in app init](doc/assets/logs_app_init.png)
 ![Logs in crud](doc/assets/logs_crud.png)
