@@ -23,4 +23,4 @@ COPY --from=build-env /myapp/bin/migrate /myapp/
 COPY --from=build-env /myapp/migrations /myapp/migrations
 
 EXPOSE 8080
-CMD ["/myapp/app"]
+CMD ["/myapp/api"]
