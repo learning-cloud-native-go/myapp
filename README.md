@@ -24,6 +24,8 @@ This repository shows how to build a Dockerized RESTful API application in Go fo
 | Update Book | PUT         | /api/v1/books/{id} |
 | Delete Book | DELETE      | /api/v1/books/{id} |
 
+💡 [swaggo/swag](https://github.com/swaggo/swag) : `swag init -g cmd/api/main.go -o .swagger -ot yaml`
+
 ## 🗄️ Database design
 
 | Column Name    | Datatype  | Not Null | Primary Key |
