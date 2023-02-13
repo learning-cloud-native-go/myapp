@@ -33,7 +33,7 @@ type Book struct {
 	Description   string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
-	DeletedAt     gorm.DeletedAt `gorm:"index"`
+	DeletedAt     gorm.DeletedAt
 }
 
 type Books []*Book
