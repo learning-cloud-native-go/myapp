@@ -44,7 +44,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: learning-cloud-native-go/myapp
+          images: ghcr.io/learning-cloud-native-go/myapp
 
       - name: Build and push
         uses: docker/build-push-action@v4
@@ -53,6 +53,6 @@ jobs:
           file: ./prod.Dockerfile
           platforms: linux/amd64,linux/arm64
           tags: |
-            learning-cloud-native-go/myapp:latest
-            learning-cloud-native-go/myapp:${{github.ref_name}}
+            ghcr.io/learning-cloud-native-go/myapp:latest
+            ghcr.io/learning-cloud-native-go/myapp:${{github.ref_name}}
           labels: ${{ steps.meta.outputs.labels }}
