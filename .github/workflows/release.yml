@@ -18,6 +18,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Generate OpenAPI specifications
+        run: ./bin/swag init -g cmd/api/main.go -o .swagger -ot yaml
+
+      - name: Upload OpenAPI specifications to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ github.token }}
+          file: .swagger/swagger.yaml
+          asset_name: swagger.yaml
+          tag: ${{ github.ref }}
+
       - name: Setup Docker Buildx
         id: buildx
         uses: docker/setup-buildx-action@v2

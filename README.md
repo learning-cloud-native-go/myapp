@@ -11,6 +11,7 @@ This repository shows how to build a Dockerized RESTful API application in Go fo
 - The usage of [Goose](https://github.com/pressly/goose) for the database migrations and [GORM](https://gorm.io/) as the database ORM.
 - The usage of [Zerolog](https://github.com/rs/zerolog) as the centralized Syslog logger.
 - The usage of [Validator.v10](https://github.com/go-playground/validator) as the form validator.
+- The usage of GitHub actions to run tests and linters, generate OpenAPI specifications, and build and push production images to the Docker registry.
 
 ## 🚀 Endpoints
 
