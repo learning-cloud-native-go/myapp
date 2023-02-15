@@ -15,15 +15,15 @@ This repository shows how to build a Dockerized RESTful API application in Go fo
 
 ## 🚀 Endpoints
 
-| Name        | HTTP Method | Route              |
-|-------------|-------------|--------------------|
-| Health      | GET         | /livez             |
-|             |             |                    |
-| List Books  | GET         | /api/v1/books      |
-| Create Book | POST        | /api/v1/books      |
-| Read Book   | GET         | /api/v1/books/{id} |
-| Update Book | PUT         | /api/v1/books/{id} |
-| Delete Book | DELETE      | /api/v1/books/{id} |
+| Name        | HTTP Method | Route          |
+|-------------|-------------|----------------|
+| Health      | GET         | /livez         |
+|             |             |                |
+| List Books  | GET         | /v1/books      |
+| Create Book | POST        | /v1/books      |
+| Read Book   | GET         | /v1/books/{id} |
+| Update Book | PUT         | /v1/books/{id} |
+| Delete Book | DELETE      | /v1/books/{id} |
 
 💡 [swaggo/swag](https://github.com/swaggo/swag) : `swag init -g cmd/api/main.go -o .swagger -ot yaml`
 
