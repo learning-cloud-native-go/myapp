@@ -46,7 +46,7 @@ func (r *Repository) ReadBook(id uuid.UUID) (*Book, error) {
 }
 
 func (r *Repository) UpdateBook(book *Book) error {
-	if err := r.db.First(&Book{}, book.ID).Updates(book).Error; err != nil {
+	if err := r.db.Updates(book).Where("id = %s", book.ID).Error; err != nil {
 		return err
 	}
 
