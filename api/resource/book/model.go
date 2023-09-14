@@ -12,7 +12,7 @@ type DTO struct {
 	Title         string `json:"title"`
 	Author        string `json:"author"`
 	PublishedDate string `json:"published_date"`
-	ImageUrl      string `json:"image_url"`
+	ImageURL      string `json:"image_url"`
 	Description   string `json:"description"`
 }
 
@@ -29,7 +29,7 @@ type Book struct {
 	Title         string
 	Author        string
 	PublishedDate time.Time
-	ImageUrl      string
+	ImageURL      string
 	Description   string
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
@@ -44,7 +44,7 @@ func (b *Book) ToDto() *DTO {
 		Title:         b.Title,
 		Author:        b.Author,
 		PublishedDate: b.PublishedDate.Format("2006-01-02"),
-		ImageUrl:      b.ImageUrl,
+		ImageURL:      b.ImageURL,
 		Description:   b.Description,
 	}
 }
@@ -66,7 +66,7 @@ func (f *Form) ToModel() *Book {
 		Title:         f.Title,
 		Author:        f.Author,
 		PublishedDate: pubDate,
-		ImageUrl:      f.ImageURL,
+		ImageURL:      f.ImageURL,
 		Description:   f.Description,
 	}
 }
