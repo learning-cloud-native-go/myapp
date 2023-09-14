@@ -13,6 +13,8 @@ import (
 )
 
 func TestRepository_List(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
@@ -30,6 +32,8 @@ func TestRepository_List(t *testing.T) {
 }
 
 func TestRepository_Create(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
@@ -48,6 +52,8 @@ func TestRepository_Create(t *testing.T) {
 }
 
 func TestRepository_Read(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
@@ -67,6 +73,8 @@ func TestRepository_Read(t *testing.T) {
 }
 
 func TestRepository_Update(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
@@ -85,6 +93,8 @@ func TestRepository_Update(t *testing.T) {
 }
 
 func TestRepository_Delete(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
