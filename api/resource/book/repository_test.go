@@ -38,7 +38,7 @@ func TestRepository_Create(t *testing.T) {
 	id := uuid.New()
 	mock.ExpectBegin()
 	mock.ExpectExec("^INSERT INTO \"books\" ").
-		WithArgs(id, "Title", "Author", testUtil.AnyTime{}, "", "", testUtil.AnyTime{}, testUtil.AnyTime{}, nil).
+		WithArgs(id, "Title", "Author", mockDB.AnyTime{}, "", "", mockDB.AnyTime{}, mockDB.AnyTime{}, nil).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
@@ -75,7 +75,7 @@ func TestRepository_Update(t *testing.T) {
 	id := uuid.New()
 	mock.ExpectBegin()
 	mock.ExpectExec("^UPDATE \"books\" SET").
-		WithArgs("Title", "Author", testUtil.AnyTime{}, id).
+		WithArgs("Title", "Author", mockDB.AnyTime{}, id).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
@@ -93,7 +93,7 @@ func TestRepository_Delete(t *testing.T) {
 	id := uuid.New()
 	mock.ExpectBegin()
 	mock.ExpectExec("^UPDATE \"books\" SET \"deleted_at\"").
-		WithArgs(testUtil.AnyTime{}, id).
+		WithArgs(mockDB.AnyTime{}, id).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
