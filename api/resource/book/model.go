@@ -62,7 +62,6 @@ func (f *Form) ToModel() *Book {
 	pubDate, _ := time.Parse("2006-01-02", f.PublishedDate)
 
 	return &Book{
-		ID:            uuid.New(),
 		Title:         f.Title,
 		Author:        f.Author,
 		PublishedDate: pubDate,

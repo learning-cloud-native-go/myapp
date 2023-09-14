@@ -20,11 +20,11 @@ func TestRepository_List(t *testing.T) {
 
 	repo := book.NewRepository(db)
 
-	rows := sqlmock.NewRows([]string{"id", "title", "author"}).
+	mockRows := sqlmock.NewRows([]string{"id", "title", "author"}).
 		AddRow(uuid.New(), "Book1", "Author1").
 		AddRow(uuid.New(), "Book2", "Author2")
 
-	mock.ExpectQuery("^SELECT (.+) FROM \"books\"").WillReturnRows(rows)
+	mock.ExpectQuery("^SELECT (.+) FROM \"books\"").WillReturnRows(mockRows)
 
 	books, err := repo.List()
 	testUtil.NoError(t, err)
@@ -60,12 +60,12 @@ func TestRepository_Read(t *testing.T) {
 	repo := book.NewRepository(db)
 
 	id := uuid.New()
-	rows := sqlmock.NewRows([]string{"id", "title", "author"}).
+	mockRows := sqlmock.NewRows([]string{"id", "title", "author"}).
 		AddRow(id, "Book1", "Author1")
 
 	mock.ExpectQuery("^SELECT (.+) FROM \"books\" WHERE (.+)").
 		WithArgs(id).
-		WillReturnRows(rows)
+		WillReturnRows(mockRows)
 
 	book, err := repo.Read(id)
 	testUtil.NoError(t, err)
@@ -81,15 +81,19 @@ func TestRepository_Update(t *testing.T) {
 	repo := book.NewRepository(db)
 
 	id := uuid.New()
+	_ = sqlmock.NewRows([]string{"id", "title", "author"}).
+		AddRow(id, "Book1", "Author1")
+
 	mock.ExpectBegin()
 	mock.ExpectExec("^UPDATE \"books\" SET").
-		WithArgs("Title", "Author", mockDB.AnyTime{}, id).
+		WithArgs("Title", "Author", mockDB.AnyTime{}, "", "", mockDB.AnyTime{}, id).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
 	book := &book.Book{ID: id, Title: "Title", Author: "Author"}
-	err = repo.Update(book)
+	rows, err := repo.Update(book)
 	testUtil.NoError(t, err)
+	testUtil.Equal(t, 1, rows)
 }
 
 func TestRepository_Delete(t *testing.T) {
@@ -101,12 +105,16 @@ func TestRepository_Delete(t *testing.T) {
 	repo := book.NewRepository(db)
 
 	id := uuid.New()
+	_ = sqlmock.NewRows([]string{"id", "title", "author"}).
+		AddRow(id, "Book1", "Author1")
+
 	mock.ExpectBegin()
 	mock.ExpectExec("^UPDATE \"books\" SET \"deleted_at\"").
 		WithArgs(mockDB.AnyTime{}, id).
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = repo.Delete(id)
+	rows, err := repo.Delete(id)
 	testUtil.NoError(t, err)
+	testUtil.Equal(t, 1, rows)
 }

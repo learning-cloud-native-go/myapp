@@ -47,7 +47,7 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if books == nil {
+	if len(books) == 0 {
 		fmt.Fprint(w, "[]")
 		return
 	}
@@ -98,7 +98,10 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := a.repository.Create(form.ToModel())
+	newBook := form.ToModel()
+	newBook.ID = uuid.New()
+
+	book, err := a.repository.Create(newBook)
 	if err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.DataCreationFailure)
@@ -196,17 +199,17 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bookModel := form.ToModel()
-	bookModel.ID = id
+	book := form.ToModel()
+	book.ID = id
 
-	if err := a.repository.Update(bookModel); err != nil {
-		if err == gorm.ErrRecordNotFound {
-			w.WriteHeader(http.StatusNotFound)
-			return
-		}
-
+	rows, err := a.repository.Update(book)
+	if err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.DataUpdateFailure)
+		return
+	}
+	if rows == 0 {
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 
@@ -233,9 +236,14 @@ func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := a.repository.Delete(id); err != nil {
+	rows, err := a.repository.Delete(id)
+	if err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.DataDeletionFailure)
+		return
+	}
+	if rows == 0 {
+		w.WriteHeader(http.StatusNotFound)
 		return
 	}
 

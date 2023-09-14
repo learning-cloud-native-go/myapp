@@ -21,10 +21,6 @@ func (r *Repository) List() (Books, error) {
 		return nil, err
 	}
 
-	if len(books) == 0 {
-		return nil, nil
-	}
-
 	return books, nil
 }
 
@@ -45,10 +41,18 @@ func (r *Repository) Read(id uuid.UUID) (*Book, error) {
 	return book, nil
 }
 
-func (r *Repository) Update(book *Book) error {
-	return r.db.Updates(book).Where("id = %s", book.ID).Error
+func (r *Repository) Update(book *Book) (int64, error) {
+	result := r.db.Model(&Book{}).
+		Select("Title", "Author", "PublishedDate", "ImageURL", "Description", "UpdatedAt").
+		Where("id = ?", book.ID).
+		Updates(book)
+
+	return result.RowsAffected, result.Error
 }
 
-func (r *Repository) Delete(id uuid.UUID) error {
-	return r.db.Where("id = ?", id).Delete(&Book{}).Error
+func (r *Repository) Delete(id uuid.UUID) (int64, error) {
+	result := r.db.Where("id = ?", id).Delete(&Book{})
+
+	return result.RowsAffected, result.Error
+
 }
