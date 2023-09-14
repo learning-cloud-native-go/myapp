@@ -6,12 +6,28 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
 	e "myapp/api/resource/common/err"
-	"myapp/util/validator"
+	"myapp/util/logger"
+	validatorUtil "myapp/util/validator"
 )
+
+type API struct {
+	logger     *logger.Logger
+	validator  *validator.Validate
+	repository *Repository
+}
+
+func New(logger *logger.Logger, validator *validator.Validate, db *gorm.DB) *API {
+	return &API{
+		logger:     logger,
+		validator:  validator,
+		repository: NewRepository(db),
+	}
+}
 
 // List godoc
 //
@@ -65,7 +81,7 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := a.validator.Struct(form); err != nil {
-		resp := validator.ToErrResponse(err)
+		resp := validatorUtil.ToErrResponse(err)
 		if resp == nil {
 			e.ServerError(w, e.FormErrResponseFailure)
 			return
@@ -163,7 +179,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := a.validator.Struct(form); err != nil {
-		resp := validator.ToErrResponse(err)
+		resp := validatorUtil.ToErrResponse(err)
 		if resp == nil {
 			e.ServerError(w, e.FormErrResponseFailure)
 			return
