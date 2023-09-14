@@ -46,18 +46,9 @@ func (r *Repository) Read(id uuid.UUID) (*Book, error) {
 }
 
 func (r *Repository) Update(book *Book) error {
-	if err := r.db.Updates(book).Where("id = %s", book.ID).Error; err != nil {
-		return err
-	}
-
-	return nil
+	return r.db.Updates(book).Where("id = %s", book.ID).Error
 }
 
 func (r *Repository) Delete(id uuid.UUID) error {
-	book := &Book{}
-	if err := r.db.Where("id = ?", id).Delete(&book).Error; err != nil {
-		return err
-	}
-
-	return nil
+	return r.db.Where("id = ?", id).Delete(&Book{}).Error
 }
