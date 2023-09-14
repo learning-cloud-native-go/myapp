@@ -15,7 +15,7 @@ func NewRepository(db *gorm.DB) *Repository {
 	}
 }
 
-func (r *Repository) ListBooks() (Books, error) {
+func (r *Repository) List() (Books, error) {
 	books := make([]*Book, 0)
 	if err := r.db.Find(&books).Error; err != nil {
 		return nil, err
@@ -28,7 +28,7 @@ func (r *Repository) ListBooks() (Books, error) {
 	return books, nil
 }
 
-func (r *Repository) CreateBook(book *Book) (*Book, error) {
+func (r *Repository) Create(book *Book) (*Book, error) {
 	if err := r.db.Create(book).Error; err != nil {
 		return nil, err
 	}
@@ -36,7 +36,7 @@ func (r *Repository) CreateBook(book *Book) (*Book, error) {
 	return book, nil
 }
 
-func (r *Repository) ReadBook(id uuid.UUID) (*Book, error) {
+func (r *Repository) Read(id uuid.UUID) (*Book, error) {
 	book := &Book{}
 	if err := r.db.Where("id = ?", id).First(&book).Error; err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (r *Repository) ReadBook(id uuid.UUID) (*Book, error) {
 	return book, nil
 }
 
-func (r *Repository) UpdateBook(book *Book) error {
+func (r *Repository) Update(book *Book) error {
 	if err := r.db.Updates(book).Where("id = %s", book.ID).Error; err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (r *Repository) UpdateBook(book *Book) error {
 	return nil
 }
 
-func (r *Repository) DeleteBook(id uuid.UUID) error {
+func (r *Repository) Delete(id uuid.UUID) error {
 	book := &Book{}
 	if err := r.db.Where("id = ?", id).Delete(&book).Error; err != nil {
 		return err

@@ -24,7 +24,7 @@ import (
 //	@failure		500	{object}	err.Error
 //	@router			/books [get]
 func (a *API) List(w http.ResponseWriter, r *http.Request) {
-	books, err := a.repository.ListBooks()
+	books, err := a.repository.List()
 	if err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.DataAccessFailure)
@@ -82,7 +82,7 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := a.repository.CreateBook(form.ToModel())
+	book, err := a.repository.Create(form.ToModel())
 	if err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.DataCreationFailure)
@@ -113,7 +113,7 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := a.repository.ReadBook(id)
+	book, err := a.repository.Read(id)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
@@ -183,7 +183,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	bookModel := form.ToModel()
 	bookModel.ID = id
 
-	if err := a.repository.UpdateBook(bookModel); err != nil {
+	if err := a.repository.Update(bookModel); err != nil {
 		if err == gorm.ErrRecordNotFound {
 			w.WriteHeader(http.StatusNotFound)
 			return
@@ -217,7 +217,7 @@ func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := a.repository.DeleteBook(id); err != nil {
+	if err := a.repository.Delete(id); err != nil {
 		a.logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.DataDeletionFailure)
 		return

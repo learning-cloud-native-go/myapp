@@ -12,7 +12,7 @@ import (
 	testUtil "myapp/util/test"
 )
 
-func TestListBooks(t *testing.T) {
+func TestRepository_List(t *testing.T) {
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
@@ -24,12 +24,12 @@ func TestListBooks(t *testing.T) {
 
 	mock.ExpectQuery("^SELECT (.+) FROM \"books\"").WillReturnRows(rows)
 
-	books, err := repo.ListBooks()
+	books, err := repo.List()
 	testUtil.NoError(t, err)
 	testUtil.Equal(t, len(books), 2)
 }
 
-func TestCreateBook(t *testing.T) {
+func TestRepository_Create(t *testing.T) {
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
@@ -43,11 +43,11 @@ func TestCreateBook(t *testing.T) {
 	mock.ExpectCommit()
 
 	book := &book.Book{ID: id, Title: "Title", Author: "Author", PublishedDate: time.Now()}
-	_, err = repo.CreateBook(book)
+	_, err = repo.Create(book)
 	testUtil.NoError(t, err)
 }
 
-func TestReadBook(t *testing.T) {
+func TestRepository_Read(t *testing.T) {
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
@@ -61,12 +61,12 @@ func TestReadBook(t *testing.T) {
 		WithArgs(id).
 		WillReturnRows(rows)
 
-	book, err := repo.ReadBook(id)
+	book, err := repo.Read(id)
 	testUtil.NoError(t, err)
 	testUtil.Equal(t, "Book1", book.Title)
 }
 
-func TestUpdateBook(t *testing.T) {
+func TestRepository_Update(t *testing.T) {
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
@@ -80,11 +80,11 @@ func TestUpdateBook(t *testing.T) {
 	mock.ExpectCommit()
 
 	book := &book.Book{ID: id, Title: "Title", Author: "Author"}
-	err = repo.UpdateBook(book)
+	err = repo.Update(book)
 	testUtil.NoError(t, err)
 }
 
-func TestDeleteBook(t *testing.T) {
+func TestRepository_Delete(t *testing.T) {
 	db, mock, err := mockDB.NewMockDB()
 	testUtil.NoError(t, err)
 
@@ -97,6 +97,6 @@ func TestDeleteBook(t *testing.T) {
 		WillReturnResult(sqlmock.NewResult(1, 1))
 	mock.ExpectCommit()
 
-	err = repo.DeleteBook(id)
+	err = repo.Delete(id)
 	testUtil.NoError(t, err)
 }
