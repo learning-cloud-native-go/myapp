@@ -92,4 +92,5 @@ func main() {
 	}
 
 	<-closed
+	l.Info().Msgf("Server shutdown successfully")
 }
