@@ -54,5 +54,4 @@ func (r *Repository) Delete(id uuid.UUID) (int64, error) {
 	result := r.db.Where("id = ?", id).Delete(&Book{})
 
 	return result.RowsAffected, result.Error
-
 }
