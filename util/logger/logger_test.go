@@ -28,7 +28,7 @@ func setup() *logger.Logger {
 		return time.Date(2008, 1, 8, 17, 5, 5, 0, time.UTC)
 	}
 
-	return logger.NewConsole(true)
+	return logger.New(true)
 }
 
 // Simple logging example using the Print function in the log package

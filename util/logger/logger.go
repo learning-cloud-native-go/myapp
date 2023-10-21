@@ -20,18 +20,6 @@ func New(isDebug bool) *Logger {
 	}
 
 	zerolog.SetGlobalLevel(logLevel)
-	logger := zerolog.New(os.Stderr).With().Timestamp().Logger()
-
-	return &Logger{logger: &logger}
-}
-
-func NewConsole(isDebug bool) *Logger {
-	logLevel := zerolog.InfoLevel
-	if isDebug {
-		logLevel = zerolog.TraceLevel
-	}
-
-	zerolog.SetGlobalLevel(logLevel)
 	logger := zerolog.New(os.Stdout).With().Timestamp().Logger()
 
 	return &Logger{logger: &logger}
