@@ -1,22 +1,19 @@
 package err
 
 import (
-	"fmt"
 	"net/http"
 )
 
-const (
-	DataCreationFailure = "data creation failure"
-	DataAccessFailure   = "data access failure"
-	DataUpdateFailure   = "data update failure"
-	DataDeletionFailure = "data deletion failure"
+var (
+	RespDBDataInsertFailure = []byte(`{"error": "db data insert failure"}`)
+	RespDBDataAccessFailure = []byte(`{"error": "db data access failure"}`)
+	RespDBDataUpdateFailure = []byte(`{"error": "db data update failure"}`)
+	RespDBDataRemoveFailure = []byte(`{"error": "db data remove failure"}`)
 
-	JsonEncodingFailure = "json encoding failure"
-	JsonDecodingFailure = "json decoding failure"
+	RespJSONEncodeFailure = []byte(`{"error": "json encode failure"}`)
+	RespJSONDecodeFailure = []byte(`{"error": "json decode failure"}`)
 
-	FormErrResponseFailure = "form error response failure"
-
-	InvalidIdInUrlParam = "invalid id in url param"
+	RespInvalidURLParamID = []byte(`{"error": "invalid url param-id"}`)
 )
 
 type Error struct {
@@ -27,14 +24,14 @@ type Errors struct {
 	Errors []string `json:"errors"`
 }
 
-func ServerError(w http.ResponseWriter, msg string) {
+func ServerError(w http.ResponseWriter, error []byte) {
 	w.WriteHeader(http.StatusInternalServerError)
-	fmt.Fprintf(w, `{"error": "%v"}`, msg)
+	w.Write(error)
 }
 
-func BadRequest(w http.ResponseWriter, msg string) {
+func BadRequest(w http.ResponseWriter, error []byte) {
 	w.WriteHeader(http.StatusBadRequest)
-	fmt.Fprintf(w, `{"error": "%v"}`, msg)
+	w.Write(error)
 }
 
 func ValidationErrors(w http.ResponseWriter, reps []byte) {
