@@ -3,16 +3,16 @@ package router
 import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
+	"github.com/rs/zerolog"
 	"gorm.io/gorm"
 
 	"myapp/api/requestlog"
 	"myapp/api/resource/book"
 	"myapp/api/resource/health"
 	"myapp/api/router/middleware"
-	"myapp/util/logger"
 )
 
-func New(l *logger.Logger, v *validator.Validate, db *gorm.DB) *chi.Mux {
+func New(l *zerolog.Logger, v *validator.Validate, db *gorm.DB) *chi.Mux {
 	r := chi.NewRouter()
 
 	r.Get("/livez", health.Read)

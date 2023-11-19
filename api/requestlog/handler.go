@@ -21,15 +21,15 @@ import (
 	"net/http"
 	"time"
 
-	"myapp/util/logger"
+	"github.com/rs/zerolog"
 )
 
 type Handler struct {
 	handler http.Handler
-	logger  *logger.Logger
+	logger  *zerolog.Logger
 }
 
-func NewHandler(h http.HandlerFunc, l *logger.Logger) *Handler {
+func NewHandler(h http.HandlerFunc, l *zerolog.Logger) *Handler {
 	return &Handler{
 		handler: h,
 		logger:  l,

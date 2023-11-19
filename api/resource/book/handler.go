@@ -8,20 +8,20 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog"
 	"gorm.io/gorm"
 
 	e "myapp/api/resource/common/err"
-	"myapp/util/logger"
 	validatorUtil "myapp/util/validator"
 )
 
 type API struct {
-	logger     *logger.Logger
+	logger     *zerolog.Logger
 	validator  *validator.Validate
 	repository *Repository
 }
 
-func New(logger *logger.Logger, validator *validator.Validate, db *gorm.DB) *API {
+func New(logger *zerolog.Logger, validator *validator.Validate, db *gorm.DB) *API {
 	return &API{
 		logger:     logger,
 		validator:  validator,
