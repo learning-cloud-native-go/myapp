@@ -59,20 +59,26 @@ myapp
 │     └── main.go
 │
 ├── api
-│  ├── router
-│  │  └── router.go
+│  ├── resource
+│  │  ├── book
+│  │  │  ├── handler.go
+│  │  │  ├── model.go
+│  │  │  ├── repository.go
+│  │  │  └── repository_test.go
+│  │  ├── common
+│  │  │  └── err
+│  │  │     └── err.go
+│  │  └── health
+│  │     └── handler.go
 │  │
-│  └── resource
-│     ├── health
-│     │  └── handler.go
-│     ├── book
-│     │  ├── api.go
-│     │  ├── handler.go
-│     │  ├── model.go
-│     │  └── repository.go
-│     └── common
-│        └── err
-│           └── err.go
+│  └── router
+│     ├── middleware
+│     │  ├── content_type_json.go
+│     │  ├── content_type_json_test.go
+│     │  └── requestlog
+│     │     ├── handler.go
+│     │     └── log_entry.go
+│     └── router.go
 │
 ├── migrations
 │  └── 00001_create_books_table.sql

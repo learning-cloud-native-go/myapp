@@ -6,10 +6,10 @@ import (
 	"github.com/rs/zerolog"
 	"gorm.io/gorm"
 
-	"myapp/api/requestlog"
 	"myapp/api/resource/book"
 	"myapp/api/resource/health"
 	"myapp/api/router/middleware"
+	"myapp/api/router/middleware/requestlog"
 )
 
 func New(l *zerolog.Logger, v *validator.Validate, db *gorm.DB) *chi.Mux {
