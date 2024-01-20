@@ -10,6 +10,7 @@ require (
 	github.com/jackc/pgx/v5 v5.5.2
 	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
 	github.com/pressly/goose/v3 v3.17.0
+	github.com/rs/xid v1.5.0
 	github.com/rs/zerolog v1.31.0
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5

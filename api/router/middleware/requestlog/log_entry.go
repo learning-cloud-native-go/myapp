@@ -24,6 +24,7 @@ import (
 )
 
 type logEntry struct {
+	RequestID         string
 	ReceivedTime      time.Time
 	RequestMethod     string
 	RequestURL        string

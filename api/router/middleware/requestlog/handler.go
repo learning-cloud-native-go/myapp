@@ -22,6 +22,8 @@ import (
 	"time"
 
 	"github.com/rs/zerolog"
+
+	ctxUtil "myapp/util/ctx"
 )
 
 type Handler struct {
@@ -40,6 +42,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	start := time.Now()
 
 	le := &logEntry{
+		RequestID:         ctxUtil.RequestID(r.Context()),
 		ReceivedTime:      start,
 		RequestMethod:     r.Method,
 		RequestURL:        r.URL.String(),
@@ -74,6 +77,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	le.ResponseHeaderSize, le.ResponseBodySize = w2.size()
 	h.logger.Info().
+		Str("request_id", le.RequestID).
 		Time("received_time", le.ReceivedTime).
 		Str("method", le.RequestMethod).
 		Str("url", le.RequestURL).

@@ -12,6 +12,8 @@ import (
 	"gorm.io/gorm"
 
 	e "myapp/api/resource/common/err"
+	l "myapp/api/resource/common/log"
+	ctxUtil "myapp/util/ctx"
 	validatorUtil "myapp/util/validator"
 )
 
@@ -40,9 +42,11 @@ func New(logger *zerolog.Logger, validator *validator.Validate, db *gorm.DB) *AP
 //	@failure		500	{object}	err.Error
 //	@router			/books [get]
 func (a *API) List(w http.ResponseWriter, r *http.Request) {
+	reqID := ctxUtil.RequestID(r.Context())
+
 	books, err := a.repository.List()
 	if err != nil {
-		a.logger.Error().Err(err).Msg("")
+		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataAccessFailure)
 		return
 	}
@@ -53,7 +57,7 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.NewEncoder(w).Encode(books.ToDto()); err != nil {
-		a.logger.Error().Err(err).Msg("")
+		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
 	}
@@ -73,9 +77,11 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 //	@failure		500	{object}	err.Error
 //	@router			/books [post]
 func (a *API) Create(w http.ResponseWriter, r *http.Request) {
+	reqID := ctxUtil.RequestID(r.Context())
+
 	form := &Form{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
-		a.logger.Error().Err(err).Msg("")
+		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.BadRequest(w, e.RespJSONDecodeFailure)
 		return
 	}
@@ -83,7 +89,7 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	if err := a.validator.Struct(form); err != nil {
 		respBody, err := json.Marshal(validatorUtil.ToErrResponse(err))
 		if err != nil {
-			a.logger.Error().Err(err).Msg("")
+			a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 			e.ServerError(w, e.RespJSONEncodeFailure)
 			return
 		}
@@ -97,12 +103,12 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 
 	book, err := a.repository.Create(newBook)
 	if err != nil {
-		a.logger.Error().Err(err).Msg("")
+		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataInsertFailure)
 		return
 	}
 
-	a.logger.Info().Str("id", book.ID.String()).Msg("new book created")
+	a.logger.Info().Str(l.KeyReqID, reqID).Str("id", book.ID.String()).Msg("new book created")
 	w.WriteHeader(http.StatusCreated)
 }
 
@@ -120,6 +126,8 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 //	@failure		500	{object}	err.Error
 //	@router			/books/{id} [get]
 func (a *API) Read(w http.ResponseWriter, r *http.Request) {
+	reqID := ctxUtil.RequestID(r.Context())
+
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		e.BadRequest(w, e.RespInvalidURLParamID)
@@ -133,14 +141,14 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		a.logger.Error().Err(err).Msg("")
+		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataAccessFailure)
 		return
 	}
 
 	dto := book.ToDto()
 	if err := json.NewEncoder(w).Encode(dto); err != nil {
-		a.logger.Error().Err(err).Msg("")
+		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
 	}
@@ -162,6 +170,8 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 //	@failure		500	{object}	err.Error
 //	@router			/books/{id} [put]
 func (a *API) Update(w http.ResponseWriter, r *http.Request) {
+	reqID := ctxUtil.RequestID(r.Context())
+
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		e.BadRequest(w, e.RespInvalidURLParamID)
@@ -170,7 +180,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 
 	form := &Form{}
 	if err := json.NewDecoder(r.Body).Decode(form); err != nil {
-		a.logger.Error().Err(err).Msg("")
+		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.BadRequest(w, e.RespJSONDecodeFailure)
 		return
 	}
@@ -178,7 +188,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	if err := a.validator.Struct(form); err != nil {
 		respBody, err := json.Marshal(validatorUtil.ToErrResponse(err))
 		if err != nil {
-			a.logger.Error().Err(err).Msg("")
+			a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 			e.ServerError(w, e.RespJSONEncodeFailure)
 			return
 		}
@@ -192,7 +202,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := a.repository.Update(book)
 	if err != nil {
-		a.logger.Error().Err(err).Msg("")
+		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataUpdateFailure)
 		return
 	}
@@ -201,7 +211,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	a.logger.Info().Str("id", id.String()).Msg("book updated")
+	a.logger.Info().Str(l.KeyReqID, reqID).Str("id", id.String()).Msg("book updated")
 }
 
 // Delete godoc
@@ -218,6 +228,8 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 //	@failure		500	{object}	err.Error
 //	@router			/books/{id} [delete]
 func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
+	reqID := ctxUtil.RequestID(r.Context())
+
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
 		e.BadRequest(w, e.RespInvalidURLParamID)
@@ -226,7 +238,7 @@ func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 
 	rows, err := a.repository.Delete(id)
 	if err != nil {
-		a.logger.Error().Err(err).Msg("")
+		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataRemoveFailure)
 		return
 	}
@@ -235,5 +247,5 @@ func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	a.logger.Info().Str("id", id.String()).Msg("book deleted")
+	a.logger.Info().Str(l.KeyReqID, reqID).Str("id", id.String()).Msg("book deleted")
 }
