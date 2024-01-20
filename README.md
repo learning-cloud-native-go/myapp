@@ -73,6 +73,8 @@ myapp
 │  │
 │  └── router
 │     ├── middleware
+│     │  ├── request_id.go
+│     │  ├── request_id_test.go
 │     │  ├── requestlog
 │     │  │  ├── handler.go
 │     │  │  └── log_entry.go
