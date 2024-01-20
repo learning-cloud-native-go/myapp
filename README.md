@@ -73,11 +73,11 @@ myapp
 │  │
 │  └── router
 │     ├── middleware
-│     │  ├── content_type_json.go
-│     │  ├── content_type_json_test.go
-│     │  └── requestlog
-│     │     ├── handler.go
-│     │     └── log_entry.go
+│     │  ├── requestlog
+│     │  │  ├── handler.go
+│     │  │  └── log_entry.go
+│     │  ├── content_type.go
+│     │  └── content_type_test.go
 │     └── router.go
 │
 ├── migrations

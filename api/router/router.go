@@ -18,7 +18,7 @@ func New(l *zerolog.Logger, v *validator.Validate, db *gorm.DB) *chi.Mux {
 	r.Get("/livez", health.Read)
 
 	r.Route("/v1", func(r chi.Router) {
-		r.Use(middleware.ContentTypeJson)
+		r.Use(middleware.ContentTypeJSON)
 
 		bookAPI := book.New(l, v, db)
 		r.Method("GET", "/books", requestlog.NewHandler(bookAPI.List, l))
