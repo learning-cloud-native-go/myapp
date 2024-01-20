@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"log"
@@ -48,7 +49,7 @@ func main() {
 		}
 	}()
 
-	if err := goose.Run(command, db, *dir, args[1:]...); err != nil {
+	if err := goose.RunContext(context.Background(), command, db, *dir, args[1:]...); err != nil {
 		log.Fatalf("migrate %v: %v", command, err)
 	}
 }
