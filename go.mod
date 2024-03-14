@@ -7,7 +7,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/go-playground/validator/v10 v10.17.0
 	github.com/google/uuid v1.5.0
-	github.com/jackc/pgx/v5 v5.5.2
+	github.com/jackc/pgx/v5 v5.5.4
 	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
 	github.com/pressly/goose/v3 v3.17.0
 	github.com/rs/xid v1.5.0
