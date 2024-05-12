@@ -64,7 +64,7 @@ func TestRepository_Read(t *testing.T) {
 		AddRow(id, "Book1", "Author1")
 
 	mock.ExpectQuery("^SELECT (.+) FROM \"books\" WHERE (.+)").
-		WithArgs(id).
+		WithArgs(id, 1).
 		WillReturnRows(mockRows)
 
 	book, err := repo.Read(id)
