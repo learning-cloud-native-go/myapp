@@ -40,12 +40,12 @@ func main() {
 
 	db, err := goose.OpenDBWithDriver(dialect, dbString)
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 	}
 
 	defer func() {
 		if err := db.Close(); err != nil {
-			log.Fatalf(err.Error())
+			log.Fatal(err.Error())
 		}
 	}()
 
