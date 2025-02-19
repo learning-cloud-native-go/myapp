@@ -11,12 +11,12 @@ jobs:
 
     steps:
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
-          go-version: 1.23.x
+          go-version: 1.24.x
 
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Generate OpenAPI specifications
         run: ./bin/swag init -g cmd/api/main.go -o .swagger -ot yaml
@@ -26,15 +26,15 @@ jobs:
         with:
           repo_token: ${{ github.token }}
           file: .swagger/swagger.yaml
-          asset_name: swagger.yaml
+          asset_name: swagger-myapp-${{ github.ref }}.yaml
           tag: ${{ github.ref }}
 
       - name: Setup Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -42,12 +42,12 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/learning-cloud-native-go/myapp
 
       - name: Build and push
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           push: true
           file: ./prod.Dockerfile
