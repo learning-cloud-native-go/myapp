@@ -21,7 +21,6 @@ This repository shows how to build a Dockerized RESTful API application in Go fo
 | Name        | HTTP Method | Route          |
 |-------------|-------------|----------------|
 | Health      | GET         | /livez         |
-|             |             |                |
 | List Books  | GET         | /v1/books      |
 | Create Book | POST        | /v1/books      |
 | Read Book   | GET         | /v1/books/{id} |
@@ -46,10 +45,10 @@ This repository shows how to build a Dockerized RESTful API application in Go fo
 
 ## 📦 Container image sizes
 
-- DB: 241MB
+- DB: 270MB
 - API
-    - Development environment: 655MB
-    - Production environment: 28MB ; 💡`docker build -f prod.Dockerfile . -t myapp_app`
+    - Development environment: ~800 MB
+    - Production environment: ~30 MB ; 💡`docker build -f prod.Dockerfile . -t myapp_app`
 
 ## 📁 Project structure
 
