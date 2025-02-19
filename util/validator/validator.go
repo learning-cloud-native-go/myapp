@@ -19,7 +19,6 @@ type ErrResponse struct {
 
 func New() *validator.Validate {
 	validate := validator.New()
-	validate.SetTagName("form")
 
 	// Using the names which have been specified for JSON representations of structs, rather than normal Go field names
 	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
