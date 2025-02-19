@@ -16,35 +16,35 @@ var tests = []*testCase{
 	{
 		name: `required`,
 		input: struct {
-			Title string `json:"title" form:"required"`
+			Title string `json:"title" validate:"required"`
 		}{},
 		expected: "title is a required field",
 	},
 	{
 		name: `max`,
 		input: struct {
-			Course string `json:"course" form:"max=7"`
+			Course string `json:"course" validate:"max=7"`
 		}{Course: "CS-0001."},
 		expected: "course must be a maximum of 7 in length",
 	},
 	{
 		name: `url`,
 		input: struct {
-			Image string `json:"image" form:"url"`
+			Image string `json:"image" validate:"url"`
 		}{Image: "image.png"},
 		expected: "image must be a valid URL",
 	},
 	{
 		name: `alpha_space`,
 		input: struct {
-			Name string `json:"name" form:"alpha_space"`
+			Name string `json:"name" validate:"alpha_space"`
 		}{Name: "Some Name 2"},
 		expected: "name can only contain alphabetic and space characters",
 	},
 	{
 		name: `date`,
 		input: struct {
-			Date string `json:"date" form:"datetime=2006-01-02"`
+			Date string `json:"date" validate:"datetime=2006-01-02"`
 		}{Date: "2020-02-31"},
 		expected: "date must be a valid date",
 	},
