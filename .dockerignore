@@ -7,5 +7,5 @@
 doc
 README.md
 LICENSE
-docker-compose.yml
+compose.yml
 .swagger

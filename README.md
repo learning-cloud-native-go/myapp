@@ -101,7 +101,7 @@ myapp
 ├── go.mod
 ├── go.sum
 │
-├── docker-compose.yml
+├── compose.yml
 ├── Dockerfile
 │
 ├── prod.Dockerfile
