@@ -34,7 +34,7 @@ func (r *Repository) Create(book *Book) (*Book, error) {
 
 func (r *Repository) Read(id uuid.UUID) (*Book, error) {
 	book := &Book{}
-	if err := r.db.Where("id = ?", id).First(&book).Error; err != nil {
+	if err := r.db.Where("id = ?", id).First(book).Error; err != nil {
 		return nil, err
 	}
 
