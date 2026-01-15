@@ -58,6 +58,8 @@ myapp
 │  ├── api
 │  │  └── main.go
 │  └── migrate
+│     ├── migrations
+│     │     └── 00001_create_books_table.sql
 │     └── main.go
 │
 ├── api
@@ -83,9 +85,6 @@ myapp
 │     │  ├── content_type.go
 │     │  └── content_type_test.go
 │     └── router.go
-│
-├── migrations
-│  └── 00001_create_books_table.sql
 │
 ├── config
 │  └── config.go
