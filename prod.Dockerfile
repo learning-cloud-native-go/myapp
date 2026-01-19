@@ -1,26 +1,38 @@
 # Build environment
 # -----------------
-FROM golang:1.24-alpine as build-env
+FROM --platform=$BUILDPLATFORM golang:1.26rc2-alpine as build-env
 WORKDIR /myapp
 
-RUN apk add --no-cache gcc musl-dev
+ENV GOEXPERIMENT=jsonv2
+
+RUN apk add --no-cache tzdata ca-certificates
 
 COPY go.mod go.sum ./
-RUN go mod download
+RUN --mount=type=cache,target=/go/pkg/mod go mod download
 
 COPY . .
 
-RUN go build -ldflags '-w -s' -a -o ./bin/api ./cmd/api \
-    && go build -ldflags '-w -s' -a -o ./bin/migrate ./cmd/migrate
+ARG TARGETOS TARGETARCH
+
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg/mod \
+    CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
+    go build -ldflags '-w -s' -o ./bin/app ./cmd/app \
+    && go build -ldflags '-w -s' -o ./bin/migrate ./cmd/migrate
 
 
 # Deployment environment
 # ----------------------
-FROM alpine
+FROM gcr.io/distroless/static-debian12
 
-COPY --from=build-env /myapp/bin/api /myapp/
+ENV TZ=Asia/Singapore
+
+COPY --from=build-env /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=build-env /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+COPY --from=build-env /myapp/bin/app /myapp/
 COPY --from=build-env /myapp/bin/migrate /myapp/
-COPY --from=build-env /myapp/migrations /myapp/migrations
 
-EXPOSE 8080
-CMD ["/myapp/api"]
+USER 65532:65532
+
+CMD ["/myapp/app"]

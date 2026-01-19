@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"embed"
 	"flag"
 	"fmt"
 	"log"
@@ -20,7 +21,9 @@ const (
 
 var (
 	flags = flag.NewFlagSet("migrate", flag.ExitOnError)
-	dir   = flags.String("dir", "migrations", "directory with migration files")
+
+	//go:embed migrations/*.sql
+	embedMigrations embed.FS
 )
 
 func main() {
@@ -49,7 +52,9 @@ func main() {
 		}
 	}()
 
-	if err := goose.RunContext(context.Background(), command, db, *dir, args[1:]...); err != nil {
+	goose.SetBaseFS(embedMigrations)
+
+	if err := goose.RunContext(context.Background(), command, db, "migrations", args[1:]...); err != nil {
 		log.Fatalf("migrate %v: %v", command, err)
 	}
 }
