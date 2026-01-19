@@ -14,7 +14,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.26rc1
+          go-version: '1.26.0-rc.2'
 
       - name: Checkout code
         uses: actions/checkout@v4

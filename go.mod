@@ -1,6 +1,6 @@
 module myapp
 
-go 1.26rc1
+go 1.26rc2
 
 require (
 	github.com/caarlos0/env/v11 v11.3.1
