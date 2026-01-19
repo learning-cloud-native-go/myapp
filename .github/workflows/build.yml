@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      GOEXPERIMENT: jsonv2
 
     steps:
       - name: Setup Go
