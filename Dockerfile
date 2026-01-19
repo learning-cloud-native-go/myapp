@@ -1,14 +1,16 @@
-FROM golang:1.24-alpine
+FROM golang:1.26rc2-alpine
 WORKDIR /myapp
 
-RUN apk add --no-cache gcc musl-dev
+ENV GOEXPERIMENT=jsonv2
+
+RUN apk add --no-cache gcc musl-dev tzdata
 
 COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 
-RUN go build -ldflags '-w -s' -a -o ./bin/api ./cmd/api \
+RUN go build -ldflags '-w -s' -a -o ./bin/app ./cmd/app \
     && go build -ldflags '-w -s' -a -o ./bin/migrate ./cmd/migrate
 
-CMD ["/myapp/bin/api"]
+CMD ["/myapp/bin/app"]
 EXPOSE 8080

@@ -4,10 +4,11 @@ import (
 	"log"
 	"time"
 
-	"github.com/joeshaw/envdecode"
+	"github.com/caarlos0/env/v11"
 )
 
 type Conf struct {
+	TZ     string `env:"TZ,required"`
 	Server ConfServer
 	DB     ConfDB
 }
@@ -31,7 +32,7 @@ type ConfDB struct {
 
 func New() *Conf {
 	var c Conf
-	if err := envdecode.StrictDecode(&c); err != nil {
+	if err := env.Parse(&c); err != nil {
 		log.Fatalf("Failed to decode: %s", err)
 	}
 
@@ -40,7 +41,7 @@ func New() *Conf {
 
 func NewDB() *ConfDB {
 	var c ConfDB
-	if err := envdecode.StrictDecode(&c); err != nil {
+	if err := env.Parse(&c); err != nil {
 		log.Fatalf("Failed to decode: %s", err)
 	}
 
