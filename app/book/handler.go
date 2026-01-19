@@ -16,6 +16,7 @@ import (
 	"myapp/pkg/ctxutil"
 	e "myapp/pkg/errors"
 	l "myapp/pkg/logger"
+	"myapp/pkg/paramsutil"
 )
 
 type API struct {
@@ -39,14 +40,17 @@ func New(logger *l.Logger, validator *validator.Validate, db *gorm.DB) *API {
 //	@tags			books
 //	@accept			json
 //	@produce		json
-//	@success		200	{array}		model.BookDTO
-//	@failure		500	{object}	e.Error
+//	@Param			page		query		int64	false	"Page number for pagination"	default(1)	minimum(1)
+//	@Param			pageSize	query		int64	false	"Number of items per page"		default(10)	minimum(1)	maximum(100)
+//	@success		200			{array}		model.BookDTO
+//	@failure		500			{object}	e.Error
 //	@router			/books [get]
 func (a *API) List(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	reqID := ctxutil.RequestID(ctx)
 
-	books, err := a.bookRepo.ListBooks(ctx, 10, 0)
+	limit, offset := paramsutil.LimitOffset(r)
+	books, err := a.bookRepo.ListBooks(ctx, limit, offset)
 	if err != nil {
 		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataAccessFailure)

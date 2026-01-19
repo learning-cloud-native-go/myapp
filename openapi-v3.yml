@@ -53,7 +53,7 @@ externalDocs:
 info:
   contact:
     name: Dumindu Madunuwan
-    url: https://learning-cloud-native-go.github.io
+    url: https://github.com/dumindu
   description: This is a sample RESTful API with a CRUD
   license:
     name: MIT License
@@ -65,6 +65,22 @@ paths:
   /books:
     get:
       description: List books
+      parameters:
+      - description: Page number for pagination
+        in: query
+        name: page
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+      - description: Number of items per page
+        in: query
+        name: pageSize
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          type: integer
       requestBody:
         content:
           application/json:

@@ -27,7 +27,7 @@ const fmtDBString = "host=%s user=%s password=%s dbname=%s port=%d sslmode=disab
 //	@description	This is a sample RESTful API with a CRUD
 
 //	@contact.name	Dumindu Madunuwan
-//	@contact.url	https://learning-cloud-native-go.github.io
+//	@contact.url	https://github.com/dumindu
 
 //	@license.name	MIT License
 //	@license.url	https://github.com/learning-cloud-native-go/myapp/blob/master/LICENSE

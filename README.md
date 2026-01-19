@@ -2,9 +2,6 @@
 
 # Learning Cloud Native Go - myapp
 
-> [!TIP]
-> "Write idiomatic Go code, not Java in Go syntax!"
-
 ## 🔋 Batteries Included
 
 - Use of Go linters, Docker, Docker Compose, Alpine development images, and Distroless production images.
@@ -130,7 +127,7 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 │   │   └── repository.go
 │   └── router
 │       └── router.go
-├── form    # 💡Form validation middleware rely on this and pkg folder
+├── form    # 💡Form validation middleware rely on this and pkg folder only
 │   └── book.go
 ├── model
 │   └── book.go
@@ -146,5 +143,5 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 │       └── migrations
 │           └── 00001_create_books_table.sql
 │
-└── pkg (middleware, logger, validator, ctxutil, errors)
+└── pkg (middleware, logger, validator, ctxutil, paramsutil, errors)
 ```
