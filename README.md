@@ -1,22 +1,42 @@
 [![buymeacoffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-dumindu-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=ffffff&labelColor=333333)](https://www.buymeacoffee.com/dumindu)
 
-
 # Learning Cloud Native Go - myapp
-> 🌱 Cloud Native Application Development is one way of speeding up the building of web applications using microservices, containers, and orchestration tools.
 
-This repository shows how to build a Dockerized RESTful API application in Go for a simple bookshelf.
+## 🔋 Batteries Included
 
-## 🔋 Batteries included
+- Use of Go linters, Docker, Docker Compose, Alpine development images, and Distroless production images.
+- Use of [GORM CLI](https://gorm.io/cli/) to generate Go generics-based database repositories.
+- Use of [Goose](https://github.com/pressly/goose) to build a DB migration CLI with embedded migrations.
+- Use of [Validator.v10](https://github.com/go-playground/validator) to validate forms via Go generics-based, fail-fast validation middleware.
+- Use of [Zerolog](https://github.com/rs/zerolog) to generate request logs and centralized Syslog logging.
+- Use of [Swag.v2](https://github.com/swaggo/swag) to generate OpenAPI v3 specifications.
+- Use of GitHub Actions to run linters and tests, and to build and push production images to the registry.
 
-- The idiomatic structure based on the resource-oriented design.
-- The usage of Docker, Docker compose, Alpine images, and linters on development.
-- Healthcheck and CRUD API implementations with OpenAPI specifications.
-- The usage of [Goose](https://github.com/pressly/goose) for the database migrations and [GORM](https://gorm.io/) as the database ORM.
-- The usage of [Zerolog](https://github.com/rs/zerolog) as the centralized Syslog logger.
-- The usage of [Validator.v10](https://github.com/go-playground/validator) as the form validator.
-- The usage of GitHub actions to run tests and linters, generate OpenAPI specifications, and build and push production images to the Docker registry.
+> 💡 Go v1.26rc2 for json/v2 and new compiler features.
 
-## 🚀 Endpoints
+| Environment    | Go 1.26rc2 Image Size | Postgres v18 Image Size |
+|----------------|-----------------------|-------------------------|
+| Development    | 777 MB                | 300MB                   |
+| Production     | 30 MB                 |                         |
+
+## 📟 Available Commands
+
+```just
+$ just
+🚀MYAPP
+    help                    # List available commands
+    go-run cmd="app"        # Run a specific cmd (defaults to app)
+    go-run-migrate cmd="up" # Run database migrations (defaults to up)
+    build                   # Run docker compose build
+    up cmd=""               # Run docker compose up
+    down                    # Run docker compose down
+    lint                    # Run lints using gofumpt, go vet, staticcheck and govulncheck
+    test                    # Run tests
+    gen-openapi             # Generate openapi v3 specification using swag v2
+    gen-gorm-repos          # Generate gorm repositories using gorm cli
+```
+
+## 🛬 Endpoints
 
 | Name        | HTTP Method | Route          |
 |-------------|-------------|----------------|
@@ -27,9 +47,7 @@ This repository shows how to build a Dockerized RESTful API application in Go fo
 | Update Book | PUT         | /v1/books/{id} |
 | Delete Book | DELETE      | /v1/books/{id} |
 
-💡 [swaggo/swag](https://github.com/swaggo/swag) : `swag init -g cmd/api/main.go -o .swagger -ot yaml`
-
-## 🗄️ Database design
+## 🗄️ Database Design
 
 | Column Name    | Datatype  | Not Null | Primary Key |
 |----------------|-----------|----------|-------------|
@@ -41,78 +59,89 @@ This repository shows how to build a Dockerized RESTful API application in Go fo
 | description    | TEXT      |          |             |
 | created_at     | TIMESTAMP | ✅        |             |
 | updated_at     | TIMESTAMP | ✅        |             |
-| deleted_at     | TIMESTAMP |          |             |
 
-## 📦 Container image sizes
+## ⛔️ Form Validation
 
-- DB: 270MB
-- API
-    - Development environment: ~800 MB
-    - Production environment: ~30 MB ; 💡`docker build -f prod.Dockerfile . -t myapp_app`
+```json
+{
+  "errors": {
+    "title": "This is a required field",
+    "author": "This can only contain alphabetic and space characters",
+    "published_date": "This must be a valid date",
+    "image_url": "This must be a valid URL"
+  }
+}
+```
 
-## 📁 Project structure
+## 📝 Request Logs and Centralized Syslog Logging
+
+```json lines
+db-1  | 2018-01-10 01:00:00.000 +08 [1] LOG:  database system is ready to accept connections
+Container myapp-db-1 Healthy
+app-1  | 2018/01/10 01:00:00 OK   00001_create_books_table.sql (2.21ms)
+app-1  | 2018/01/10 01:00:00 goose: successfully migrated database to version: 1
+app-1  |
+app-1  | {"level":"info","time":"2018-01-10T02:00:00+08:00","message":"Starting server :8080"}
+app-1  |
+app-1  | [7.218ms] [rows:1] INSERT INTO books (id, created_at, updated_at, title, author, published_date, image_url, description) VALUES ('38ba23d1-9565-40ed-b781-aacd2f84018d', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 'Death Note', 'Light Yagami', '2006-10-04 00:00:00', 'https://static.wikia.nocookie.net/deathnote/images/9/94/A_Death_Note.jpg', 'A supernatural volume dropped into the human world by the Shinigami Ryuk') RETURNING *
+app-1  | {"level":"info","request_id":"d5mq7oi6hkls7397s43g","received_time":"2018-01-10T03:00:00+08:00","method":"POST","url":"/v1/books","header_size":135,"body_size":0,"agent":"yaak","referer":"","proto":"HTTP/1.1","remote_ip":"192.168.65.1","server_ip":"172.19.0.3","status":201,"resp_header_size":47,"resp_body_size":296,"latency":8.307,"time":"2018-01-10T03:00:00+08:00"}
+app-1  | {"level":"info","request_id":"d5mq7oi6hkls7397s43g","id":"38ba23d1-9565-40ed-b781-aacd2f84018d","time":"2018-01-10T03:00:00+08:00","message":"new book created"}
+app-1  |
+app-1  | [2.541ms] [rows:1] SELECT * FROM books WHERE id = '38ba23d1-9565-40ed-b781-aacd2f84018d'
+app-1  | {"level":"info","request_id":"d5mqa6a6hkls7397s44g","received_time":"2018-01-10T04:00:00+08:00","method":"GET","url":"/v1/books/38ba23d1-9565-40ed-b781-aacd2f84018d","header_size":82,"body_size":0,"agent":"yaak","referer":"","proto":"HTTP/1.1","remote_ip":"192.168.65.1","server_ip":"172.19.0.3","status":200,"resp_header_size":47,"resp_body_size":296,"latency":2.674625,"time":"2018-01-10T04:00:00+08:00"}
+app-1  |
+app-1  | [3.744ms] [rows:1] UPDATE books SET updated_at=CURRENT_TIMESTAMP, title='Death Note', author='Misa Amane', published_date='2004-11-04 00:00:00', image_url='https://static.wikia.nocookie.net/deathnote/images/9/94/A_Death_Note.jpg', description='Light Yagami''s buried notebook' WHERE id = '38ba23d1-9565-40ed-b781-aacd2f84018d' RETURNING *
+app-1  | {"level":"info","request_id":"d5mqesa6hkls7397s45g","id":"38ba23d1-9565-40ed-b781-aacd2f84018d","time":"2018-01-10T05:00:00+08:00","message":"book updated"}
+app-1  | {"level":"info","request_id":"d5mqesa6hkls7397s45g","received_time":"2018-01-10T05:00:00+08:00","method":"PUT","url":"/v1/books/38ba23d1-9565-40ed-b781-aacd2f84018d","header_size":135,"body_size":0,"agent":"yaak","referer":"","proto":"HTTP/1.1","remote_ip":"192.168.65.1","server_ip":"172.19.0.3","status":200,"resp_header_size":47,"resp_body_size":252,"latency":4.018875,"time":"2018-01-10T05:00:00+08:00"}
+app-1  |
+app-1  | [3.035ms] [rows:1] DELETE FROM books WHERE id = '38ba23d1-9565-40ed-b781-aacd2f84018d' RETURNING true
+app-1  | {"level":"info","request_id":"d5mqfgi6hkls7397s460","received_time":"2018-01-10T06:00:00+08:00","method":"DELETE","url":"/v1/books/38ba23d1-9565-40ed-b781-aacd2f84018d","header_size":82,"body_size":0,"agent":"yaak","referer":"","proto":"HTTP/1.1","remote_ip":"192.168.65.1","server_ip":"172.19.0.3","status":200,"resp_header_size":47,"resp_body_size":0,"latency":3.265,"time":"2018-01-10T06:00:00+08:00"}
+app-1  | {"level":"info","request_id":"d5mqfgi6hkls7397s460","id":"38ba23d1-9565-40ed-b781-aacd2f84018d","time":"2018-01-10T06:00:00+08:00","message":"book deleted"}
+app-1  |
+app-1  | [2.573ms] [rows:1] SELECT * FROM books LIMIT 10 OFFSET 0
+app-1  | {"level":"info","request_id":"d5mq9gi6hkls7397s440","received_time":"2018-01-10T07:00:00+08:00","method":"GET","url":"/v1/books","header_size":82,"body_size":0,"agent":"yaak","referer":"","proto":"HTTP/1.1","remote_ip":"192.168.65.1","server_ip":"172.19.0.3","status":200,"resp_header_size":47,"resp_body_size":298,"latency":2.926916,"time":"2018-01-10T07:00:00+08:00"}
+app-1  |
+app-1  |
+app-1  | [1.661ms] [rows:0] DELETE FROM books WHERE id = '38ba23d1-9565-40ed-b781-aacd2f84018d' RETURNING true
+app-1  | {"level":"info","request_id":"d5mrj8ppsdvs73dkfct0","received_time":"2018-02-01T01:00:00+08:00","method":"DELETE","url":"/v1/books/38ba23d1-9565-40ed-b781-aacd2f84018d","header_size":82,"body_size":0,"agent":"yaak","referer":"","proto":"HTTP/1.1","remote_ip":"192.168.65.1","server_ip":"172.19.0.3","status":404,"resp_header_size":47,"resp_body_size":0,"latency":1.80125,"time":"2018-02-01T01:00:00+08:00"}
+app-1  | [1.384ms] [rows:0] UPDATE books SET updated_at=CURRENT_TIMESTAMP, title='Death Note', author='Misa Amane', published_date='2004-11-04 00:00:00', image_url='https://static.wikia.nocookie.net/deathnote/images/9/94/A_Death_Note.jpg', description='Light Yagami''s buried notebook' WHERE id = '38ba23d1-9565-40ed-b781-aacd2f84018d' RETURNING *
+app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"2018-02-02T08:00:00:00","method":"PUT","url":"/v1/books/38ba23d1-9565-40ed-b781-aacd2f84018d","header_size":135,"body_size":0,"agent":"yaak","referer":"","proto":"HTTP/1.1","remote_ip":"192.168.65.1","server_ip":"172.19.0.3","status":404,"resp_header_size":47,"resp_body_size":0,"latency":1.576,"time":"2018-02-02T08:00:00+08:00"}
+
+// 💯 Real logs collected locally but with few rearrangements to make it easier to read.
+```
+
+## 🗂️ Project Folder Structure
 
 ```shell
-myapp
-├── cmd
-│  ├── api
-│  │  └── main.go
-│  └── migrate
-│     ├── migrations
-│     │     └── 00001_create_books_table.sql
-│     └── main.go
-│
-├── api
-│  ├── resource
-│  │  ├── book
-│  │  │  ├── handler.go
-│  │  │  ├── model.go
-│  │  │  ├── repository.go
-│  │  │  └── repository_test.go
-│  │  ├── common
-│  │  │  └── err
-│  │  │     └── err.go
-│  │  └── health
-│  │     └── handler.go
-│  │
-│  └── router
-│     ├── middleware
-│     │  ├── request_id.go
-│     │  ├── request_id_test.go
-│     │  ├── requestlog
-│     │  │  ├── handler.go
-│     │  │  └── log_entry.go
-│     │  ├── content_type.go
-│     │  └── content_type_test.go
-│     └── router.go
-│
-├── config
-│  └── config.go
-│
-├── util
-│  ├── logger
-│  │  └── logger.go
-│  └── validator
-│     └── validator.go
-│
-├── .env
-│
-├── go.mod
-├── go.sum
-│
 ├── compose.yml
 ├── Dockerfile
 │
-├── prod.Dockerfile
-└── k8s
-   ├── app-configmap.yaml
-   ├── app-secret.yaml
-   ├── app-deployment.yaml
-   └── app-service.yaml
+├── openapi-v3.yml
+│
+├── app
+│   ├── book
+│   │   ├── bookrepo      # 💡generated with gorm-cli via the interface in book/repository.go
+│   │   │   └── repository.go
+│   │   ├── form_util.go
+│   │   ├── handler.go
+│   │   └── repository.go
+│   └── router
+│       └── router.go
+├── form    # 💡Form validation middleware rely on this and pkg folder only
+│   └── book.go
+├── model
+│   └── book.go
+│
+├── config
+│   └── config.go
+│
+├── cmd   # 💡Entrypoint for app and migrate executables
+│   ├── app
+│   │   └── main.go
+│   └── migrate
+│       ├── main.go
+│       └── migrations
+│           └── 00001_create_books_table.sql
+│
+└── pkg (middleware, logger, validator, ctxutil, paramsutil, errors)
 ```
-
-## 📸 Form validations and logs
-![Form validation](doc/assets/form_validation.png)
-
-![Logs in app init](doc/assets/logs_app_init.png)
-![Logs in crud](doc/assets/logs_crud.png)
