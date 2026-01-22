@@ -10,18 +10,7 @@ import (
 )
 
 func CreateFormToModel(f *form.BookForm) *model.Book {
-	pubDate, _ := time.Parse("2006-01-02", f.PublishedDate)
-
-	return &model.Book{
-		ID:            uuid.New(),
-		Title:         f.Title,
-		Author:        f.Author,
-		PublishedDate: pubDate,
-		ImageURL:      f.ImageURL,
-		Description:   f.Description,
-		CreatedAt:     time.Now(),
-		UpdatedAt:     time.Now(),
-	}
+	return UpdateFormToModel(f, uuid.New())
 }
 
 func UpdateFormToModel(f *form.BookForm, id uuid.UUID) *model.Book {
@@ -34,6 +23,5 @@ func UpdateFormToModel(f *form.BookForm, id uuid.UUID) *model.Book {
 		PublishedDate: pubDate,
 		ImageURL:      f.ImageURL,
 		Description:   f.Description,
-		UpdatedAt:     time.Now(),
 	}
 }

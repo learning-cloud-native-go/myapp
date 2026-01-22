@@ -20,6 +20,10 @@ go-run-migrate cmd="up":
     DB_PORT={{db_port}} DB_HOST={{db_host}} SERVER_PORT={{server_port}} \
     go run ./cmd/migrate {{cmd}}
 
+# Run go generate for all packages
+go-gen:
+    go generate ./...
+
 # Run docker compose build
 build:
     @docker compose build

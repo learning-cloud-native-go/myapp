@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: myapp-stage
+  labels:
+    istio.io/dataplane-mode: ambient
