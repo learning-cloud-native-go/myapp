@@ -2,10 +2,11 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: hub-sg-01
+  namespace: argocd
   labels:
     argocd.argoproj.io/secret-type: cluster
 type: Opaque
 stringData:
-  name: hub-sg-01
-  server: https://kubernetes.default.svc
-  config: "{'tlsClientConfig':{'insecure':false}}"
+  name: "hub-sg-01"
+  server: "https://kubernetes.default.svc"
+  config: '{"tlsClientConfig":{"insecure":true}}'

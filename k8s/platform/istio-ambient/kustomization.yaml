@@ -5,5 +5,7 @@ namespace: istio-system
 
 resources:
   - namespace.yaml
-  - gateway-api-crds.yaml
   - istio-ambient-manifest.yaml
+
+commonAnnotations:
+  argocd.argoproj.io/sync-wave: "3"
