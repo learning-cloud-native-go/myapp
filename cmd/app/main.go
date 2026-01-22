@@ -1,5 +1,7 @@
 package main
 
+//go:generate sh -c "cd ../.. && swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi-v3.yml"
+
 import (
 	"context"
 	"fmt"
