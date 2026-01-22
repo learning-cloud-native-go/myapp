@@ -10,7 +10,7 @@ spec:
           - list:
               elements:
                 - cluster: hub-sg-01
-                  url: https://kubernetes.default.svc
+                  targetNamespace: kube-system
           - git:
               repoURL: "https://github.com/learning-cloud-native-go/myapp.git"
               revision: HEAD
@@ -18,6 +18,15 @@ spec:
                 - path: k8s/platform/metrics-server
                 - path: k8s/platform/gateway-api
                 - path: k8s/platform/istio-ambient
+                - path: k8s/platform/cloudnative-pg
+    - list:
+        elements:
+          - cluster: hub-sg-01
+            path: k8s/platform/istio-ambient
+            targetNamespace: istio-system
+          - cluster: hub-sg-01
+            path: k8s/platform/cloudnative-pg
+            targetNamespace: cnpg-system
   template:
     metadata:
       name: '{{cluster}}-{{path.basename}}'
@@ -32,7 +41,7 @@ spec:
             managed-by: argocd-appset
       destination:
         name: '{{cluster}}'
-        namespace: '{{if eq .path.basename "istio-ambient"}}istio-system{{else}}kube-system{{end}}'
+        namespace: '{{targetNamespace}}'
       syncPolicy:
         automated:
           prune: true

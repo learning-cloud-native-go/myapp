@@ -9,10 +9,6 @@ spec:
         elements:
           - env: dev
             cluster: hub-sg-01
-          - env: stage
-            cluster: hub-sg-01
-          - env: prod
-            cluster: hub-sg-01
   template:
     metadata:
       name: '{{env}}-myapp'

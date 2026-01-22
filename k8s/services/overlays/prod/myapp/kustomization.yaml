@@ -1,9 +1,14 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namePrefix: prod-
+
 resources:
   - namespace.yaml
   - ../../../base/myapp
+
+components:
+  - ../../../../components/myapp-db
 
 # 1. Image override
 images:
@@ -16,18 +21,38 @@ configMapGenerator:
   - name: myapp-config
     behavior: merge
     literals:
-      - DEBUG="true"
-      - DB_HOST="postgres-prod.db-system.svc.cluster.local"
-      - DB_USER="prod_user"
+      - DB_HOST="prod-myapp-db-rw"
+      - DB_NAME="prod-myapp-db"
+      - DB_USER="prod-myapp-user"
 
 secretGenerator:
   - name: myapp-secret
     behavior: merge
     literals:
-      - DB_PASS="prod-password-123"
+      - DB_PASS="prod-myapp-pass"
 
 # 3. Resource Limits override (using a patch)
 patches:
+  - target:
+      group: postgresql.cnpg.io
+      version: v1
+      kind: Cluster
+      name: myapp-db
+    patch: |-
+      - op: replace
+        path: /spec/bootstrap/initdb
+        value:
+          database: prod-myapp-db
+          owner: prod-myapp-user
+          secret:
+            name: prod-myapp-pass
+      - op: replace
+        path: /spec/instances
+        value: 3
+      - op: replace
+        path: /spec/storage/size
+        value: 10Gi
+
   - target:
       kind: Job
       name: myapp-migrate

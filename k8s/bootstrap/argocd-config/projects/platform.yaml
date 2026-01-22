@@ -1,21 +1,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
+
 metadata:
   name: platform
   namespace: argocd
 spec:
   description: "Governance for Cluster Infrastructure"
-
   sourceRepos:
     - "https://github.com/learning-cloud-native-go/myapp.git"
 
   destinations:
-    - namespace: 'istio-system'
-      server: https://kubernetes.default.svc
-    - namespace: 'kube-system'
-      server: https://kubernetes.default.svc
+    - name: 'hub-sg-01'
+      namespace: 'kube-system'
+    - name: 'hub-sg-01'
+      namespace: 'istio-system'
+    - name: 'hub-sg-01'
+      namespace: 'cnpg-system'
+    - name: 'hub-sg-01'
+      namespace: 'default'
 
-  # Allow creation of Cluster-wide resources
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'

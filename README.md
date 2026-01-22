@@ -32,6 +32,7 @@ $ just
     down                    # Run docker compose down
     lint                    # Run lints using gofumpt, go vet, staticcheck and govulncheck
     test                    # Run tests
+    gen                     # Run go generate for all packages
     gen-openapi             # Generate openapi v3 specification using swag v2
     gen-gorm-repos          # Generate gorm repositories using gorm cli
 ```

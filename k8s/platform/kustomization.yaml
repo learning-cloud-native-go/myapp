@@ -5,3 +5,4 @@ resources:
   - metrics-server/
   - gateway-api/
   - istio-ambient/
+  - cloudnative-pg/

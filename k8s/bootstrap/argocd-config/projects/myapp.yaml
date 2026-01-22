@@ -1,5 +1,6 @@
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
+
 metadata:
   name: myapp
   namespace: argocd
@@ -8,8 +9,23 @@ spec:
   sourceRepos:
     - "https://github.com/learning-cloud-native-go/myapp.git"
   destinations:
-    - namespace: 'myapp-*'
+    - namespace: '*-myapp'
       server: https://kubernetes.default.svc
+
   clusterResourceWhitelist:
     - group: ''
       kind: Namespace
+
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: Service
+    - group: apps
+      kind: Deployment
+    - group: batch
+      kind: Job
+    - group: postgresql.cnpg.io
+      kind: Cluster
