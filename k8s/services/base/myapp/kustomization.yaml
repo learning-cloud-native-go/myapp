@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - job.yaml
+  - deployment.yaml
+  - service.yaml
+
+labels:
+  - includeSelectors: false
+    pairs:
+      app: myapp
+
+configMapGenerator:
+  - name: myapp-config
+    literals:
+      - DEBUG="false"
+      - SERVER_PORT="8080"
+      - SERVER_TIMEOUT_READ="3s"
+      - SERVER_TIMEOUT_WRITE="5s"
+      - SERVER_TIMEOUT_IDLE="5s"
+      - DB_PORT="5432"
+
+secretGenerator:
+  - name: myapp-secret
+    literals:
+      - DB_PASS="placeholder-default"

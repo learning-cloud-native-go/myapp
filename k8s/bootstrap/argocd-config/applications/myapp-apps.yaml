@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: myapp
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - env: dev
+            cluster: hub-sg-01
+          - env: stage
+            cluster: hub-sg-01
+          - env: prod
+            cluster: hub-sg-01
+  template:
+    metadata:
+      name: '{{env}}-myapp'
+      annotations:
+        argocd.argoproj.io/sync-wave: "5"
+    spec:
+      project: myapp
+      source:
+        repoURL: "https://github.com/learning-cloud-native-go/myapp.git"
+        targetRevision: HEAD
+        path: k8s/services/overlays/{{env}}/myapp
+      destination:
+        name: '{{cluster}}'
+        namespace: '{{env}}-myapp'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true

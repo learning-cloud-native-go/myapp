@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: myapp-migrate
+  labels:
+    component: migrate
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  template:
+    metadata:
+      labels:
+        app: myapp
+        component: migrate
+    spec:
+      containers:
+        - name: migrate
+          image: myapp:latest
+          command: ["/myapp/migrate"]
+          args: ["up"]
+          envFrom:
+            - configMapRef:
+                name: myapp-config
+            - secretRef:
+                name: myapp-secret
+      restartPolicy: OnFailure

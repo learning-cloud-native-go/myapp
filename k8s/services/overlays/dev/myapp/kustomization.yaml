@@ -1,0 +1,43 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - namespace.yaml
+  - ../../../base/myapp
+
+# 1. Image override
+images:
+  - name: myapp
+    newName: learningcloudnativego/myapp-app
+    newTag: 0.0.1
+
+# 2. Database & Config overrides
+configMapGenerator:
+  - name: myapp-config
+    behavior: merge
+    literals:
+      - DEBUG="true"
+      - DB_HOST="postgres-dev.db-system.svc.cluster.local"
+      - DB_USER="dev_user"
+
+secretGenerator:
+  - name: myapp-secret
+    behavior: merge
+    literals:
+      - DB_PASS="dev-password-123"
+
+# 3. Resource Limits override (using a patch)
+patches:
+  - target:
+      kind: Deployment
+      name: myapp
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            memory: "32Mi"
+            cpu: "100m"
+          limits:
+            memory: "64Mi"
+            cpu: "200m"

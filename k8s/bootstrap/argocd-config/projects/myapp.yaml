@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: myapp
+  namespace: argocd
+spec:
+  description: "Governance for myapp services"
+  sourceRepos:
+    - "https://github.com/learning-cloud-native-go/myapp.git"
+  destinations:
+    - namespace: 'myapp-*'
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
