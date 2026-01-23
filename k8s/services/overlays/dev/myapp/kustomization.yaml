@@ -11,29 +11,19 @@ resources:
 components:
   - ../../../../components/myapp-db
 
-# 1. Image override
 images:
   - name: myapp
     newName: learningcloudnativego/myapp-app
     newTag: 0.0.1
 
-# 2. Database & Config overrides
 configMapGenerator:
   - name: myapp-config
     behavior: merge
     literals:
-      - DB_HOST="dev-myapp-db-rw"
-      - DB_NAME="myapp-db"
-      - DB_USER="myapp-user"
+      - DB_HOST=dev-myapp-db-rw
+      - DB_NAME=myapp-db
+      - DB_USER=myapp-user
 
-secretGenerator:
-  - name: myapp-secret
-    behavior: merge
-    literals:
-      - username="myapp-user"
-      - password="myapp-pass"
-
-# 3. Resource Limits override (using a patch)
 patches:
   - target:
       group: postgresql.cnpg.io
@@ -55,7 +45,7 @@ patches:
         path: /spec/template/spec/containers/0/env
         value:
           - name: DB_USER
-            value: "myapp-user"
+            value: myapp-user
           - name: DB_PASS
             valueFrom:
               secretKeyRef:
@@ -65,8 +55,8 @@ patches:
         path: /spec/template/spec/containers/0/resources
         value:
           requests:
-            memory: "32Mi"
-            cpu: "100m"
+            memory: 32Mi
+            cpu: 100m
           limits:
-            memory: "64Mi"
-            cpu: "200m"
+            memory: 64Mi
+            cpu: 200m

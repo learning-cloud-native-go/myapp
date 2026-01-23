@@ -14,11 +14,11 @@ labels:
 configMapGenerator:
   - name: myapp-config
     literals:
-      - SERVER_DEBUG="true"
-      - SERVER_PORT="8080"
-      - SERVER_TIMEOUT_READ="3s"
-      - SERVER_TIMEOUT_WRITE="5s"
-      - SERVER_TIMEOUT_IDLE="5s"
-      - DB_HOST="myapp-db"
-      - DB_PORT="5432"
-      - DB_DEBUG="true"
+      - SERVER_DEBUG=true
+      - SERVER_PORT=8080
+      - SERVER_TIMEOUT_READ=3s
+      - SERVER_TIMEOUT_WRITE=5s
+      - SERVER_TIMEOUT_IDLE=5s
+      - DB_HOST=myapp-db
+      - DB_PORT=5432
+      - DB_DEBUG=true

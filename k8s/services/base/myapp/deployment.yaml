@@ -1,11 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: myapp
   labels:
     component: app
   annotations:
-    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/sync-wave: '2'
+
 spec:
   replicas: 1
   selector:
@@ -22,7 +24,7 @@ spec:
         - name: app
           image: myapp:latest
           imagePullPolicy: IfNotPresent
-          command: [ "/myapp/app" ]
+          command: [ /myapp/app ]
           ports:
             - name: httpport
               containerPort: 8080
@@ -44,8 +46,8 @@ spec:
             initialDelaySeconds: 10
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "250m"
+              memory: 64Mi
+              cpu: 250m
             limits:
-              memory: "128Mi"
-              cpu: "500m"
+              memory: 128Mi
+              cpu: 500m

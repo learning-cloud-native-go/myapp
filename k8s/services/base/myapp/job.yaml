@@ -1,11 +1,13 @@
 apiVersion: batch/v1
 kind: Job
+
 metadata:
   name: myapp-migrate
   labels:
     component: migrate
   annotations:
-    argocd.argoproj.io/sync-wave: "1"
+    argocd.argoproj.io/sync-wave: '1'
+
 spec:
   template:
     metadata:
@@ -16,8 +18,8 @@ spec:
       containers:
         - name: migrate
           image: myapp:latest
-          command: ["/myapp/migrate"]
-          args: ["up"]
+          command: [ /myapp/migrate ]
+          args: [ up ]
           envFrom:
             - configMapRef:
                 name: myapp-config

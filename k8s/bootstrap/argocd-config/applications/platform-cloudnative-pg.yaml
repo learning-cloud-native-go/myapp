@@ -2,7 +2,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 
 metadata:
-  name: platform-apps
+  name: platform-operators
   namespace: argocd
 
 spec:
@@ -10,33 +10,26 @@ spec:
     - list:
         elements:
           - cluster: hub-sg-01
-            path: k8s/platform/metrics-server
-            targetNamespace: kube-system
-          - cluster: hub-sg-01
-            path: k8s/platform/gateway-api
-            targetNamespace: kube-system
-          - cluster: hub-sg-01
-            path: k8s/platform/istio-ambient
-            targetNamespace: istio-system
   template:
     metadata:
-      name: '{{cluster}}-{{path.basename}}'
+      name: '{{cluster}}-cloudnative-pg'
     spec:
       project: platform
       source:
         repoURL: https://github.com/learning-cloud-native-go/myapp.git
         targetRevision: HEAD
-        path: '{{path}}'
+        path: k8s/platform/cloudnative-pg
         kustomize:
           commonLabels:
-            managed-by: argocd-appset
+            managed-by: argocd-platform
       destination:
         name: '{{cluster}}'
-        namespace: '{{targetNamespace}}'
+        namespace: cnpg-system
       syncPolicy:
         automated:
           prune: true
           selfHeal: true
         syncOptions:
-          - CreateNamespace=true
           - ServerSideApply=true
+          - Force=true
+          - CreateNamespace=true

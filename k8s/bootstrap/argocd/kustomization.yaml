@@ -10,8 +10,8 @@ secretGenerator:
   - name: argocd-secret
     behavior: merge
     literals:
-      - admin.password="$2y$10$pE/ig.utdh6NtQazu0BV7.inP8OhnBoPldZQO.suoXUaNJw479Gw."
-      - admin.passwordMtime="2026-01-22T00:00:00Z"
+      - admin.password='$2y$10$pE/ig.utdh6NtQazu0BV7.inP8OhnBoPldZQO.suoXUaNJw479Gw.'
+      - admin.passwordMtime='2026-01-22T00:00:00Z'
 
 commonAnnotations:
-  argocd.argoproj.io/sync-wave: "1"
+  argocd.argoproj.io/sync-wave: '1'

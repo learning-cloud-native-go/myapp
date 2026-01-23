@@ -146,3 +146,32 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 │
 └── pkg (middleware, logger, validator, ctxutil, paramsutil, errors)
 ```
+
+ArgoCD and `kustomization` based cloud native IaC & GitOps setup.
+
+```shell
+└── k8s
+    │
+    ├── bootstrap
+    │   ├── argocd
+    │   └── argocd-config
+    │       ├── applications
+    │       ├── clusters
+    │       └── projects
+    │
+    ├── platform
+    │   ├── cloudnative-pg
+    │   ├── gateway-api
+    │   ├── istio-ambient
+    │   └── metrics-server
+    │
+    ├── components
+    │   └── myapp-db
+    └── services
+        ├── base
+        │   └── myapp
+        └── overlays
+            ├── dev
+            ├── prod
+            └── stage
+```

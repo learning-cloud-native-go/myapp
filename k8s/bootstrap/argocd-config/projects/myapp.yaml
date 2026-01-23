@@ -4,10 +4,11 @@ kind: AppProject
 metadata:
   name: myapp
   namespace: argocd
+
 spec:
-  description: "Governance for myapp services"
+  description: Governance for myapp services
   sourceRepos:
-    - "https://github.com/learning-cloud-native-go/myapp.git"
+    - https://github.com/learning-cloud-native-go/myapp.git
   destinations:
     - namespace: '*-myapp'
       server: https://kubernetes.default.svc
@@ -17,11 +18,11 @@ spec:
       kind: Namespace
 
   namespaceResourceWhitelist:
-    - group: ""
+    - group: ''
       kind: ConfigMap
-    - group: ""
+    - group: ''
       kind: Secret
-    - group: ""
+    - group: ''
       kind: Service
     - group: apps
       kind: Deployment
@@ -29,3 +30,28 @@ spec:
       kind: Job
     - group: postgresql.cnpg.io
       kind: Cluster
+
+  roles:
+    - name: platform-admin
+      description: Platform Team; Full lifecycle management of myapp project and apps
+      policies:
+        - p, proj:myapp:platform-admin, applications, *, myapp/*, allow
+      groups:
+        - platform-team
+
+    - name: myapp-lead
+      description: Team Lead; Sync and modify myapp apps (without delete)
+      policies:
+        - p, proj:myapp:myapp-lead, applications, get, myapp/*, allow
+        - p, proj:myapp:myapp-lead, applications, sync, myapp/*, allow
+        - p, proj:myapp:myapp-lead, applications, update, myapp/*, allow
+      groups:
+        - myapp-team-leads
+
+    - name: myapp-dev
+      description: Dev; Read state and logs of myapp apps
+      policies:
+        - p, proj:myapp:myapp-dev, applications, get, myapp/*, allow
+        - p, proj:myapp:myapp-dev, logs, get, myapp/*, allow
+      groups:
+        - myapp-team-devs

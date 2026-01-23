@@ -6,12 +6,6 @@ metadata:
 
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:18.1
-
-  bootstrap:
-    initdb:
-      database: myapp-db
-      owner: myapp-user
-
   instances: 3
   storage:
     size: 1Gi
