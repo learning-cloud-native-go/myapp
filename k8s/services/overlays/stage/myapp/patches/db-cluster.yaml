@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+
+metadata:
+  name: myapp-db
+
+spec:
+  instances: 3
+  backup:
+    retentionPolicy: '4d'

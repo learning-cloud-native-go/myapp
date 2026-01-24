@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+
+metadata:
+  name: platform-apps
+  namespace: argocd
+
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: hub-sg-01
+            path: k8s/platform/metrics-server
+            targetNamespace: kube-system
+          - cluster: hub-sg-01
+            path: k8s/platform/gateway-api
+            targetNamespace: kube-system
+          - cluster: hub-sg-01
+            path: k8s/platform/istio-ambient
+            targetNamespace: istio-system
+  template:
+    metadata:
+      name: '{{cluster}}-{{path.basename}}'
+    spec:
+      project: platform
+      source:
+        repoURL: https://github.com/learning-cloud-native-go/myapp.git
+        targetRevision: HEAD
+        path: '{{path}}'
+        kustomize:
+          commonLabels:
+            managed-by: argocd-appset
+      destination:
+        name: '{{cluster}}'
+        namespace: '{{targetNamespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - ServerSideApply=true

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: myapp
+
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: app
+          env:
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: myapp-db-creds
+          resources:
+            requests:
+              cpu: 500m
+              memory: 512Mi
+            limits:
+              cpu: '1'
+              memory: 1Gi

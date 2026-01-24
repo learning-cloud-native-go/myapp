@@ -1,0 +1,49 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+
+metadata:
+  name: myapp-db
+
+spec:
+  instances: 3
+  imageName: ghcr.io/cloudnative-pg/postgresql:18.1
+  storage:
+    size: 50Gi
+    storageClass: premium-rwo
+  resources:
+    requests:
+      cpu: 1
+      memory: 2Gi
+    limits:
+      cpu: 2
+      memory: 4Gi
+
+  bootstrap:
+    initdb:
+      database: myapp_db
+      owner: myapp_user
+      secret:
+        name: myapp-db-creds
+  certificates:
+    clientCASecret: myapp-db-ca
+    serverCASecret: myapp-db-ca
+
+  affinity:
+    enablePodAntiAffinity: true
+    topologyKey: kubernetes.io/hostname
+
+#  backup:
+#    method: plugin
+#    pluginConfiguration:
+#      name: barman-cloud-pg
+#      parameters:
+#        destinationPath: s3://my-backups-bucket/
+#        endpointURL: https://s3.amazonaws.com
+#        s3Credentials:
+#          accessKeyId: { name: backup-creds, key: ID }
+#          secretAccessKey: { name: backup-creds, key: SECRET }
+#        wal:
+#          compression: gzip
+#
+#  plugins:
+#    - name: barman-cloud-pg

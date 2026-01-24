@@ -8,6 +8,7 @@ import (
 	"myapp/model"
 )
 
+//go:generate gorm gen -i repository.go -o bookrepo
 type IBookRepo interface {
 	// SELECT * FROM books LIMIT @limit OFFSET @offset
 	ListBooks(ctx context.Context, limit int64, offset int64) (model.Books, error)

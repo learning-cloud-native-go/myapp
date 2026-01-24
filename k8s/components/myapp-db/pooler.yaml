@@ -1,0 +1,13 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Pooler
+
+metadata:
+  name: myapp-db-pooler
+
+spec:
+  cluster:
+    name: myapp-db
+  instances: 3
+  type: rw
+  pgbouncer:
+    poolMode: transaction

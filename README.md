@@ -11,6 +11,7 @@
 - Use of [Zerolog](https://github.com/rs/zerolog) to generate request logs and centralized Syslog logging.
 - Use of [Swag.v2](https://github.com/swaggo/swag) to generate OpenAPI v3 specifications.
 - Use of GitHub Actions to run linters and tests, and to build and push production images to the registry.
+- Use of GitOps with ArgoCD to automate declarative environment orchestration and application lifecycle management.
 
 > 💡 Go v1.26rc2 for json/v2 and new compiler features.
 
@@ -32,6 +33,7 @@ $ just
     down                    # Run docker compose down
     lint                    # Run lints using gofumpt, go vet, staticcheck and govulncheck
     test                    # Run tests
+    gen                     # Run go generate for all packages
     gen-openapi             # Generate openapi v3 specification using swag v2
     gen-gorm-repos          # Generate gorm repositories using gorm cli
 ```
@@ -144,4 +146,35 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 │           └── 00001_create_books_table.sql
 │
 └── pkg (middleware, logger, validator, ctxutil, paramsutil, errors)
+```
+
+ArgoCD and `kustomization` based cloud native IaC & GitOps setup.
+
+> 💡 Consider moving to a Hub-and-Spoke architecture for Argo CD, combined with a separate repository strategy.
+
+```shell
+└── k8s
+    │
+    ├── bootstrap
+    │   ├── argocd
+    │   └── argocd-config
+    │       ├── clusters
+    │       ├── projects
+    │       └── applications
+    │
+    ├── platform
+    │   ├── metrics-server
+    │   ├── gateway-api
+    │   ├── istio-ambient
+    │   └── cloudnative-pg
+    │
+    ├── components
+    │   └── myapp-db
+    └── services
+        ├── base
+        │   └── myapp
+        └── overlays
+            ├── dev
+            ├── prod
+            └── stage
 ```

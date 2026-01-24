@@ -43,6 +43,10 @@ lint:
 test:
     go test -v -race ./...
 
+# Run go generate for all packages
+gen:
+    go generate ./...
+
 # Generate openapi v3 specification using swag v2
 gen-openapi:
     swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi-v3.yml
