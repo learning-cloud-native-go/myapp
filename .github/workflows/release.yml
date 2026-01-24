@@ -8,25 +8,34 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      GOEXPERIMENT: jsonv2
 
     steps:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          go-version: 1.26rc2
+          go-version: '1.26.0-rc.2'
 
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Generate OpenAPI specifications
-        run: ./bin/swag init -g cmd/api/main.go -o .swagger -ot yaml --v3.1
+      - name: go mod package cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - name: Upload OpenAPI specifications to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ github.token }}
-          file: .swagger/swagger.yaml
-          asset_name: swagger-myapp-${{ github.ref_name }}.yaml
+          file: openapi-v3.yml
+          asset_name: myapp-${{ github.ref_name }}.openapi-v3.yaml
           tag: ${{ github.ref }}
 
       - name: Setup Docker Buildx
