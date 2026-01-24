@@ -23,7 +23,7 @@ spec:
       serviceAccountName: myapp-sa
       containers:
         - name: app
-          image: learningcloudnativego/myapp-app:latest
+          image: learningcloudnativego/myapp-app:2.0.0
           imagePullPolicy: IfNotPresent
           command: [ /myapp/app ]
           ports:
@@ -32,8 +32,6 @@ spec:
           envFrom:
             - configMapRef:
                 name: myapp-config
-            - secretRef:
-                name: myapp-secret
           readinessProbe:
             httpGet:
               path: /livez

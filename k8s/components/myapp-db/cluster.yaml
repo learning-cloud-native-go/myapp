@@ -9,7 +9,7 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:18.1
   storage:
     size: 50Gi
-    storageClass: premium-rwo
+#    storageClass: premium-rwo
   resources:
     requests:
       cpu: 1
