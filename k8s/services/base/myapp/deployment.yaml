@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: myapp
+  labels:
+    component: app
+  annotations:
+    argocd.argoproj.io/sync-wave: '2'
+
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+      component: app
+  template:
+    metadata:
+      labels:
+        app: myapp
+        component: app
+    spec:
+      serviceAccountName: myapp-sa
+      containers:
+        - name: app
+          image: learningcloudnativego/myapp-app:latest
+          imagePullPolicy: IfNotPresent
+          command: [ /myapp/app ]
+          ports:
+            - name: httpport
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: myapp-config
+            - secretRef:
+                name: myapp-secret
+          readinessProbe:
+            httpGet:
+              path: /livez
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /livez
+              port: 8080
+            initialDelaySeconds: 10
+          resources:
+            requests:
+              cpu: 250m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi

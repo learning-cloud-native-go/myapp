@@ -1,0 +1,38 @@
+apiVersion: batch/v1
+kind: Job
+
+metadata:
+  name: myapp-migrate
+  labels:
+    component: migrate
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+    argocd.argoproj.io/sync-wave: '1'
+
+spec:
+  template:
+    metadata:
+      labels:
+        app: myapp
+        component: migrate
+    spec:
+      serviceAccountName: myapp-sa
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile: { type: RuntimeDefault }
+      containers:
+        - name: migrate
+          image: myapp:latest
+          command: [ /myapp/migrate ]
+          args: [ up ]
+          envFrom:
+            - configMapRef:
+                name: myapp-config
+          env:
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  key: password
+                  name: myapp-db-creds
+      restartPolicy: OnFailure

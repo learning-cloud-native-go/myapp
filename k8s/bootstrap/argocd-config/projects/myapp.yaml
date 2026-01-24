@@ -1,0 +1,57 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+
+metadata:
+  name: myapp
+  namespace: argocd
+
+spec:
+  description: Governance for myapp services
+  sourceRepos:
+    - https://github.com/learning-cloud-native-go/myapp.git
+  destinations:
+    - name: hub-sg-01
+      namespace: '*-myapp'
+
+  clusterResourceWhitelist:
+    - group: ''
+      kind: Namespace
+
+  namespaceResourceWhitelist:
+    - group: ''
+      kind: ConfigMap
+    - group: ''
+      kind: Secret
+    - group: ''
+      kind: Service
+    - group: apps
+      kind: Deployment
+    - group: batch
+      kind: Job
+    - group: postgresql.cnpg.io
+      kind: Cluster
+
+#  roles:
+#    - name: platform-admin
+#      description: Platform Team; Full lifecycle management of myapp project and apps
+#      policies:
+#        - p, proj:myapp:platform-admin, applications, *, myapp/*, allow
+#      groups:
+#        - platform-team
+#
+#    - name: myapp-lead
+#      description: Team Lead; Sync and modify myapp apps (without delete)
+#      policies:
+#        - p, proj:myapp:myapp-lead, applications, get, myapp/*, allow
+#        - p, proj:myapp:myapp-lead, applications, sync, myapp/*, allow
+#        - p, proj:myapp:myapp-lead, applications, update, myapp/*, allow
+#      groups:
+#        - myapp-team-leads
+#
+#    - name: myapp-dev
+#      description: Dev; Read state and logs of myapp apps
+#      policies:
+#        - p, proj:myapp:myapp-dev, applications, get, myapp/*, allow
+#        - p, proj:myapp:myapp-dev, logs, get, myapp/*, allow
+#      groups:
+#        - myapp-team-devs

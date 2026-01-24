@@ -1,0 +1,16 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+
+metadata:
+  name: myapp-db
+
+spec:
+  instances: 3
+  bootstrap:
+    initdb:
+      database: prod_myapp_db
+      owner: prod_myapp_user
+  backup:
+    barmanObjectStore:
+      destinationPath: s3://prod-myapp-backups-2026/
+      retentionPolicy: '30d'

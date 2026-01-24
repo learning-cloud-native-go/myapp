@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+
+metadata:
+  name: platform
+  namespace: argocd
+
+spec:
+  description: Governance for Cluster Infrastructure
+  sourceRepos:
+    - https://github.com/learning-cloud-native-go/myapp.git
+
+  destinations:
+    - name: hub-sg-01
+      namespace: kube-system
+    - name: hub-sg-01
+      namespace: istio-system
+    - name: hub-sg-01
+      namespace: cnpg-system
+    - name: hub-sg-01
+      namespace: default
+
+  clusterResourceWhitelist:
+    - group: apiextensions.k8s.io
+      kind: CustomResourceDefinition
+    - group: '*'
+      kind: '*'
+
+  # Allow any namespaced resource within the allowed destinations
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'

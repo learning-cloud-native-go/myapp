@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+
+metadata:
+  name: platform-operators
+  namespace: argocd
+
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: hub-sg-01
+  template:
+    metadata:
+      name: '{{cluster}}-cnpg-system-cloudnative-pg'
+    spec:
+      project: platform
+      source:
+        repoURL: https://github.com/learning-cloud-native-go/myapp.git
+        targetRevision: HEAD
+        path: k8s/platform/cloudnative-pg
+        kustomize:
+          commonLabels:
+            managed-by: argocd-platform
+      destination:
+        name: '{{cluster}}'
+        namespace: cnpg-system
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - ServerSideApply=true
+          - Force=true
