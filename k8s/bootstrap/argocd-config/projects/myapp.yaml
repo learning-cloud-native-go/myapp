@@ -23,6 +23,8 @@ spec:
     - group: ''
       kind: Secret
     - group: ''
+      kind: ServiceAccount
+    - group: ''
       kind: Service
     - group: apps
       kind: Deployment
@@ -30,28 +32,32 @@ spec:
       kind: Job
     - group: postgresql.cnpg.io
       kind: Cluster
+    - group: postgresql.cnpg.io
+      kind: Pooler
+    - group: postgresql.cnpg.io
+      kind: ScheduledBackup
 
-#  roles:
-#    - name: platform-admin
-#      description: Platform Team; Full lifecycle management of myapp project and apps
-#      policies:
-#        - p, proj:myapp:platform-admin, applications, *, myapp/*, allow
-#      groups:
-#        - platform-team
-#
-#    - name: myapp-lead
-#      description: Team Lead; Sync and modify myapp apps (without delete)
-#      policies:
-#        - p, proj:myapp:myapp-lead, applications, get, myapp/*, allow
-#        - p, proj:myapp:myapp-lead, applications, sync, myapp/*, allow
-#        - p, proj:myapp:myapp-lead, applications, update, myapp/*, allow
-#      groups:
-#        - myapp-team-leads
-#
-#    - name: myapp-dev
-#      description: Dev; Read state and logs of myapp apps
-#      policies:
-#        - p, proj:myapp:myapp-dev, applications, get, myapp/*, allow
-#        - p, proj:myapp:myapp-dev, logs, get, myapp/*, allow
-#      groups:
-#        - myapp-team-devs
+  roles:
+    - name: platform-admin
+      description: Platform Team; Full lifecycle management of myapp project and apps
+      policies:
+        - p, proj:myapp:platform-admin, applications, *, myapp/*, allow
+      groups:
+        - platform-team
+
+    - name: myapp-lead
+      description: Team Lead; Sync and modify myapp apps (without delete)
+      policies:
+        - p, proj:myapp:myapp-lead, applications, get, myapp/*, allow
+        - p, proj:myapp:myapp-lead, applications, sync, myapp/*, allow
+        - p, proj:myapp:myapp-lead, applications, update, myapp/*, allow
+      groups:
+        - myapp-team-leads
+
+    - name: myapp-dev
+      description: Dev; Read state and logs of myapp apps
+      policies:
+        - p, proj:myapp:myapp-dev, applications, get, myapp/*, allow
+        - p, proj:myapp:myapp-dev, logs, get, myapp/*, allow
+      groups:
+        - myapp-team-devs

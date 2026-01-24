@@ -21,6 +21,8 @@ configMapGenerator:
 secretGenerator:
   - name: myapp-db-creds
     type: kubernetes.io/basic-auth
+    options:
+      disableNameSuffixHash: true
     literals:
       - username=myapp_user
       - password=prod_pass_123
