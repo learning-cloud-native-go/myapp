@@ -23,7 +23,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: migrate
-          image: myapp:latest
+          image: learningcloudnativego/myapp-app:2.0.0
           command: [ /myapp/migrate ]
           args: [ up ]
           envFrom:

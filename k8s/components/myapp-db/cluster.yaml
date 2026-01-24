@@ -9,13 +9,13 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:18.1
   storage:
     size: 50Gi
-    storageClass: premium-rwo
+#    storageClass: premium-rwo
   resources:
     requests:
-      cpu: 1
+      cpu: '1'
       memory: 2Gi
     limits:
-      cpu: 2
+      cpu: '2'
       memory: 4Gi
 
   bootstrap:
@@ -24,9 +24,6 @@ spec:
       owner: myapp_user
       secret:
         name: myapp-db-creds
-  certificates:
-    clientCASecret: myapp-db-ca
-    serverCASecret: myapp-db-ca
 
   affinity:
     enablePodAntiAffinity: true
