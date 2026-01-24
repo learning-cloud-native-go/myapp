@@ -24,9 +24,6 @@ spec:
       owner: myapp_user
       secret:
         name: myapp-db-creds
-  certificates:
-    clientCASecret: myapp-db-ca
-    serverCASecret: myapp-db-ca
 
   affinity:
     enablePodAntiAffinity: true

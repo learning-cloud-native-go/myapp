@@ -5,6 +5,7 @@ resources:
   - job.yaml
   - deployment.yaml
   - service.yaml
+  - service-account.yaml
 
 labels:
   - includeSelectors: false
