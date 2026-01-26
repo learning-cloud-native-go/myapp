@@ -11,7 +11,7 @@ spec:
     - https://github.com/learning-cloud-native-go/myapp.git
   destinations:
     - name: hub-sg-01
-      namespace: '*-myapp'
+      namespace: 'myapp-*'
 
   clusterResourceWhitelist:
     - group: ''

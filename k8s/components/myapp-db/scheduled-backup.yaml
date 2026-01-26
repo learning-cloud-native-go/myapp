@@ -2,7 +2,10 @@ apiVersion: postgresql.cnpg.io/v1
 kind: ScheduledBackup
 
 metadata:
-  name: myapp-daily-backup
+  name: myapp-db-daily-backup
+  labels:
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/component: backup
 
 spec:
   schedule: '0 0 0 * * *'  # Every day at midnight

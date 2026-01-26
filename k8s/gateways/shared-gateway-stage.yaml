@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+
+metadata:
+  name: shared-gateway-stage
+
+spec:
+  gatewayClassName: istio
+  listeners:
+    - name: http
+      port: 8082
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: Selector
+          selector:
+            matchLabels:
+              shared-gateway-stage-access: 'true'

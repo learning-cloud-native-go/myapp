@@ -6,6 +6,9 @@ namespace: istio-system
 resources:
   - namespace.yaml
   - istio-ambient-manifest.yaml
+  - prometheus-addon.yaml
+  - kiali-addon.yaml
+  - grafana-addon.yaml
 
 commonAnnotations:
   argocd.argoproj.io/sync-wave: '3'

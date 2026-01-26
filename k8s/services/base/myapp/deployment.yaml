@@ -2,23 +2,25 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: myapp
-  labels:
-    component: app
+  name: myapp-app
   annotations:
     argocd.argoproj.io/sync-wave: '2'
+  labels:
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/component: api
+    app.kubernetes.io/version: '2.0.0'
 
 spec:
-  replicas: 1
+  replicas: 6
   selector:
     matchLabels:
-      app: myapp
-      component: app
+      app.kubernetes.io/name: myapp
+      app.kubernetes.io/component: api
   template:
     metadata:
       labels:
-        app: myapp
-        component: app
+        app.kubernetes.io/name: myapp
+        app.kubernetes.io/component: api
     spec:
       serviceAccountName: myapp-sa
       containers:
@@ -46,7 +48,7 @@ spec:
           resources:
             requests:
               cpu: 250m
-              memory: 64Mi
+              memory: 128Mi
             limits:
               cpu: 500m
-              memory: 128Mi
+              memory: 256Mi

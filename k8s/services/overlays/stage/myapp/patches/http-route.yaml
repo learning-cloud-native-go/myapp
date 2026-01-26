@@ -1,0 +1,3 @@
+- op: replace
+  path: /spec/parentRefs/0/name
+  value: shared-gateway-stage

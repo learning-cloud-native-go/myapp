@@ -3,6 +3,10 @@ kind: Cluster
 
 metadata:
   name: myapp-db
+  labels:
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/component: database
+    app.kubernetes.io/managed-by: cloudnative-pg
 
 spec:
   instances: 3
