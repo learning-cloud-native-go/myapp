@@ -14,7 +14,7 @@ spec:
             server: https://kubernetes.default.svc
   template:
     metadata:
-      name: '{{env}}-myapp'
+      name: 'myapp-{{env}}'
       annotations:
         argocd.argoproj.io/sync-wave: '5'
     spec:
@@ -25,7 +25,7 @@ spec:
         path: 'k8s/services/overlays/{{env}}/myapp'
       destination:
         name: '{{cluster}}'
-        namespace: '{{env}}-myapp'
+        namespace: 'myapp-{{env}}'
       syncPolicy:
         automated:
           prune: true

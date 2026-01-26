@@ -27,9 +27,6 @@ spec:
         repoURL: https://github.com/learning-cloud-native-go/myapp.git
         targetRevision: HEAD
         path: '{{path}}'
-        kustomize:
-          commonLabels:
-            managed-by: argocd-appset
       destination:
         name: '{{cluster}}'
         namespace: '{{targetNamespace}}'

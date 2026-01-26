@@ -148,7 +148,9 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 └── pkg (middleware, logger, validator, ctxutil, paramsutil, errors)
 ```
 
-ArgoCD and `kustomization` based cloud native IaC & GitOps setup.
+## 🏗️ ArgoCD and Kustomize
+
+ArgoCD and `Kustomize` based cloud native IaC & GitOps setup.
 
 > 💡 Consider moving to a Hub-and-Spoke architecture for Argo CD, combined with a separate repository strategy.
 
@@ -170,11 +172,25 @@ ArgoCD and `kustomization` based cloud native IaC & GitOps setup.
     │
     ├── components
     │   └── myapp-db
-    └── services
-        ├── base
-        │   └── myapp
-        └── overlays
-            ├── dev
-            ├── prod
-            └── stage
+    ├── services
+    │   ├── base
+    │   │   └── myapp
+    │   └── overlays
+    │       ├── dev
+    │       ├── prod
+    │       └── stage
+    │
+    └── gateways
 ```
+
+> 💡 Sample Kind Dev Cluster
+> kind create cluster --name dev
+> kubectl apply -k k8s/bootstrap/argocd
+> kubectl apply -k k8s/bootstrap/argocd-config
+> kubectl apply -k k8s/platform/istio-ambient
+> kubectl apply -k k8s/platform/gateway-api
+> kubectl apply -k k8s/gateways
+> kubectl port-forward svc/shared-gateway-dev-istio -n istio-ingress 8081:8081 # 💡 Shared Dev Gateway
+> curl -X GET 'localhost:8081/myapp/v1/books' --header 'Accept: application/json'
+> 
+> kubectl port-forward svc/argocd-server -n argocd 8080:443 # 💡 ArgoCD Dashboard(admin/password)
