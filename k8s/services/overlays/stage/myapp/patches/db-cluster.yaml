@@ -7,4 +7,4 @@ metadata:
 spec:
   instances: 3
   backup:
-    retentionPolicy: '4d'
+    retentionPolicy: '5d'

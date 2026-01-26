@@ -1,0 +1,26 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+
+metadata:
+  name: myapp-route
+  labels:
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/component: routing
+
+spec:
+  parentRefs:
+    - name: shared-gateway
+      namespace: istio-ingress
+  rules:
+    - matches:
+        - path:
+            value: /myapp
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      backendRefs:
+        - name: myapp-app
+          port: 8001

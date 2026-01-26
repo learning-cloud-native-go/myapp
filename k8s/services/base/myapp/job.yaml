@@ -3,19 +3,23 @@ kind: Job
 
 metadata:
   name: myapp-migrate
-  labels:
-    component: migrate
   annotations:
+    argocd.argoproj.io/sync-wave: '1'
     argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
-    argocd.argoproj.io/sync-wave: '1'
+  labels:
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/component: schema-migration
+    app.kubernetes.io/version: '2.0.0'
 
 spec:
+  backoffLimit: 6
+  ttlSecondsAfterFinished: 600
   template:
     metadata:
       labels:
-        app: myapp
-        component: migrate
+        app.kubernetes.io/name: myapp
+        app.kubernetes.io/component: schema-migration
     spec:
       serviceAccountName: myapp-sa
       securityContext:
@@ -26,6 +30,13 @@ spec:
           image: learningcloudnativego/myapp-app:2.0.0
           command: [ /myapp/migrate ]
           args: [ up ]
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
           envFrom:
             - configMapRef:
                 name: myapp-config

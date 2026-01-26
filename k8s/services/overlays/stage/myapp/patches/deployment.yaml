@@ -2,13 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: myapp
+  name: myapp-app
+  labels:
+    app.kubernetes.io/version: '2.0.0'
 
 spec:
+  replicas: 2
   template:
     spec:
       containers:
-        - name: myapp
+        - name: app
           env:
             - name: DB_PASS
               valueFrom:
@@ -17,7 +20,7 @@ spec:
                   name: myapp-db-creds
           resources:
             requests:
-              cpu: 200m
+              cpu: 250m
               memory: 128Mi
             limits:
               cpu: 500m

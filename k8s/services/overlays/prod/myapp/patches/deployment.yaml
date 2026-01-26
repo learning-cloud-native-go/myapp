@@ -2,7 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 
 metadata:
-  name: myapp
+  name: myapp-app
+  labels:
+    app.kubernetes.io/version: '2.0.0'
 
 spec:
   replicas: 3

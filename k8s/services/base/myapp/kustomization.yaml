@@ -6,11 +6,7 @@ resources:
   - deployment.yaml
   - service.yaml
   - service-account.yaml
-
-labels:
-  - includeSelectors: false
-    pairs:
-      app: myapp
+  - http-route.yaml
 
 configMapGenerator:
   - name: myapp-config

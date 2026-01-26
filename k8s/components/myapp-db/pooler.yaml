@@ -3,6 +3,9 @@ kind: Pooler
 
 metadata:
   name: myapp-db-pooler
+  labels:
+    app.kubernetes.io/name: myapp
+    app.kubernetes.io/component: database-pooler
 
 spec:
   cluster:

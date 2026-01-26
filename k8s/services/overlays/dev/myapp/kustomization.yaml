@@ -1,7 +1,12 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: dev-myapp
+namespace: myapp-dev
+labels:
+  - pairs:
+      app.kubernetes.io/instance: myapp-dev
+    includeSelectors: true
+    includeTemplates: true
 
 resources:
   - namespace.yaml
@@ -35,3 +40,7 @@ images:
 patches:
   - path: patches/db-cluster.yaml
   - path: patches/deployment.yaml
+  - path: patches/http-route.yaml
+    target:
+      kind: HTTPRoute
+      name: myapp-route
