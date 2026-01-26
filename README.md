@@ -184,6 +184,7 @@ ArgoCD and `Kustomize` based cloud native IaC & GitOps setup.
 ```
 
 > 💡 Sample Kind Dev Cluster
+> ```shell
 > kind create cluster --name dev
 > kubectl apply -k k8s/bootstrap/argocd
 > kubectl apply -k k8s/bootstrap/argocd-config
@@ -194,3 +195,4 @@ ArgoCD and `Kustomize` based cloud native IaC & GitOps setup.
 > curl -X GET 'localhost:8081/myapp/v1/books' --header 'Accept: application/json'
 > 
 > kubectl port-forward svc/argocd-server -n argocd 8080:443 # 💡 ArgoCD Dashboard(admin/password)
+> ```
