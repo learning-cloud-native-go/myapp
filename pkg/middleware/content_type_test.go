@@ -27,7 +27,7 @@ func TestContentTypeJSON(t *testing.T) {
 	}
 
 	if contentType := response.Header.Get(middleware.HeaderKeyContentType); contentType != middleware.HeaderValueContentTypeJSON {
-		t.Errorf("Wrong status code: got %v want %v", contentType, middleware.HeaderValueContentTypeJSON)
+		t.Errorf("Wrong content-type: got %v want %v", contentType, middleware.HeaderValueContentTypeJSON)
 	}
 }
 
