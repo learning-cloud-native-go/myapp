@@ -1,0 +1,276 @@
+components:
+  schemas:
+    form.BookForm:
+      properties:
+        author:
+          maxLength: 255
+          type: string
+        description:
+          type: string
+        image_url:
+          type: string
+        published_date:
+          type: string
+        title:
+          maxLength: 255
+          type: string
+      required:
+      - author
+      - published_date
+      - title
+      type: object
+    model.BookDTO:
+      properties:
+        author:
+          type: string
+        description:
+          type: string
+        id:
+          type: string
+        image_url:
+          type: string
+        published_date:
+          type: string
+        title:
+          type: string
+      type: object
+    myapp_pkg_errors.Error:
+      properties:
+        error:
+          type: string
+      type: object
+    myapp_pkg_errors.Errors:
+      properties:
+        errors:
+          items:
+            type: string
+          type: array
+          uniqueItems: false
+      type: object
+externalDocs:
+  description: ""
+  url: ""
+info:
+  contact:
+    name: Dumindu Madunuwan
+    url: https://github.com/dumindu
+  description: This is a sample RESTful API with a CRUD
+  license:
+    name: MIT License
+    url: https://github.com/learning-cloud-native-go/myapp/blob/master/LICENSE
+  title: MYAPP API
+  version: "1.0"
+openapi: 3.1.0
+paths:
+  /books:
+    get:
+      description: List books
+      parameters:
+      - description: Page number for pagination
+        in: query
+        name: page
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+      - description: Number of items per page
+        in: query
+        name: pageSize
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/model.BookDTO'
+                type: array
+          description: OK
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Error'
+          description: Internal Server Error
+      summary: List books
+      tags:
+      - books
+    post:
+      description: Create book
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/form.BookForm'
+                description: Book form
+                summary: body
+        description: Book form
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/model.BookDTO'
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Error'
+          description: Bad Request
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Errors'
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Error'
+          description: Internal Server Error
+      summary: Create book
+      tags:
+      - books
+  /books/{id}:
+    delete:
+      description: Delete book
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Error'
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Error'
+          description: Internal Server Error
+      summary: Delete book
+      tags:
+      - books
+    get:
+      description: Read book
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/model.BookDTO'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Error'
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Error'
+          description: Internal Server Error
+      summary: Read book
+      tags:
+      - books
+    put:
+      description: Update book
+      parameters:
+      - description: Book ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - type: object
+              - $ref: '#/components/schemas/form.BookForm'
+                description: Book form
+                summary: body
+        description: Book form
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/model.BookDTO'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Error'
+          description: Bad Request
+        "404":
+          description: Not Found
+        "422":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Errors'
+          description: Unprocessable Entity
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/myapp_pkg_errors.Error'
+          description: Internal Server Error
+      summary: Update book
+      tags:
+      - books
+servers:
+- url: localhost:8080/v1

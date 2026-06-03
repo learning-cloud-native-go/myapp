@@ -13,12 +13,10 @@
 - Use of GitHub Actions to run linters and tests, and to build and push production images to the registry.
 - Use of GitOps with ArgoCD to automate declarative environment orchestration and application lifecycle management.
 
-> 💡 Go v1.26rc2 for json/v2 and new compiler features.
-
-| Environment    | Go 1.26rc2 Image Size | Postgres v18 Image Size |
-|----------------|-----------------------|-------------------------|
-| Development    | 777 MB                | 300MB                   |
-| Production     | 30 MB                 |                         |
+| Environment    | Go 1.26 Image Size | Postgres v18 Image Size |
+|----------------|--------------------|-------------------------|
+| Development    | 800 MB             | 300MB                   |
+| Production     | 30 MB              |                         |
 
 ## 📟 Available Commands
 
@@ -26,6 +24,7 @@
 $ just
 🚀MYAPP
     help                    # List available commands
+    install                 # Install development tools
     go-run cmd="app"        # Run a specific cmd (defaults to app)
     go-run-migrate cmd="up" # Run database migrations (defaults to up)
     build                   # Run docker compose build
@@ -118,7 +117,7 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 ├── compose.yml
 ├── Dockerfile
 │
-├── openapi-v3.yml
+├── openapi-v3.yaml
 │
 ├── app
 │   ├── book

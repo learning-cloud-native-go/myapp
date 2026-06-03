@@ -13,38 +13,31 @@ jobs:
       GOEXPERIMENT: jsonv2
 
     steps:
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.26.0-rc.2'
-
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: go mod package cache
-        uses: actions/cache@v4
+      - name: Setup Go
+        uses: actions/setup-go@v6
         with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          go-version: '>=1.26.4'
 
-      - name: Tests
-        run: go test ./...
+      - name: Install Tools
+        run: go install tool
 
       - name: Gofumpt
-        run: ./.github/workflows/bin/gofumpt -l -w . 2>&1 | tee outfile && test -z "$(cat outfile)" && rm outfile
+        run: go tool gofumpt -d -e .
 
       - name: Go Vet
         run: go vet ./...
 
       - name: Staticcheck
-        run: ./.github/workflows/bin/staticcheck ./...
+        run: go tool staticcheck ./...
 
       - name: Govulncheck
-        run: ./.github/workflows/bin/govulncheck ./...
+        run: go tool govulncheck ./...
 
       - name: OpenAPI specification errors
-        run: ./.github/workflows/bin/swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency
+        run: go tool swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi-v3.yaml && git diff --exit-code openapi-v3.yaml
+
+      - name: Tests
+        run: go test ./...

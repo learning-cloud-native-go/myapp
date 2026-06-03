@@ -12,38 +12,28 @@ jobs:
       GOEXPERIMENT: jsonv2
 
     steps:
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.26.0-rc.2'
-
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: go mod package cache
-        uses: actions/cache@v4
+      - name: Setup Go
+        uses: actions/setup-go@v6
         with:
-          path: |
-            ~/.cache/go-build
-            ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
+          go-version: '1.26.x'
 
       - name: Upload OpenAPI specifications to release
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ github.token }}
-          file: openapi-v3.yml
+          file: openapi-v3.yaml
           asset_name: myapp-${{ github.ref_name }}.openapi-v3.yaml
           tag: ${{ github.ref }}
 
       - name: Setup Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -51,7 +41,7 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ghcr.io/learning-cloud-native-go/myapp
 

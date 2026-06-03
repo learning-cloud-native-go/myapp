@@ -8,6 +8,10 @@ db_host := "localhost"
 help:
     @just --list --unsorted --list-heading $'🚀MYAPP\n'
 
+# Install development tools
+install:
+    go install tool
+
 # Run a specific cmd (defaults to app)
 go-run cmd="app":
     @export $(grep -v '^#' .env | xargs) && \
@@ -34,10 +38,10 @@ down:
 
 # Run lints using gofumpt, go vet, staticcheck and govulncheck
 lint:
-    gofumpt -l -w . 2>&1 | tee outfile && test -z "$(cat outfile)" && rm outfile
+    go tool gofumpt -d -e .
     go vet ./...
-    staticcheck ./...
-    govulncheck ./...
+    go tool staticcheck ./...
+    go tool govulncheck ./...
 
 # Run tests
 test:
@@ -49,8 +53,8 @@ gen:
 
 # Generate openapi v3 specification using swag v2
 gen-openapi:
-    swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi-v3.yml
+    go tool swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi-v3.yaml
 
 # Generate gorm repositories using gorm cli
 gen-gorm-repos:
-    gorm gen -i ./app/book/repository.go -o ./app/book/bookrepo
+    go tool gorm gen -i ./app/book/repository.go -o ./app/book/bookrepo

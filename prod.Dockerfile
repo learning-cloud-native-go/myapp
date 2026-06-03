@@ -1,6 +1,6 @@
 # Build environment
 # -----------------
-FROM --platform=$BUILDPLATFORM golang:1.26rc2-alpine as build-env
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS build-env
 WORKDIR /myapp
 
 ENV GOEXPERIMENT=jsonv2
