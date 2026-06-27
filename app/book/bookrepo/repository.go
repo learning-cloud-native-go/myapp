@@ -21,7 +21,7 @@ func IBookRepo[T any](db *gorm.DB, opts ...clause.Expression) _IBookRepoInterfac
 
 type _IBookRepoInterface[T any] interface {
 	typed.Interface[T]
-	ListBooks(ctx context.Context, limit int64, offset int64) (model.Books, error)
+	ListBooks(ctx context.Context, limit int64, offset int64) ([]*model.Book, error)
 	CreateBook(ctx context.Context, data *model.Book) (*model.Book, error)
 	ReadBook(ctx context.Context, id uuid.UUID) (*model.Book, error)
 	UpdateBook(ctx context.Context, data *model.Book) (*model.Book, error)
@@ -32,14 +32,14 @@ type _IBookRepoImpl[T any] struct {
 	typed.Interface[T]
 }
 
-func (e _IBookRepoImpl[T]) ListBooks(ctx context.Context, limit int64, offset int64) (model.Books, error) {
+func (e _IBookRepoImpl[T]) ListBooks(ctx context.Context, limit int64, offset int64) ([]*model.Book, error) {
 	var sb strings.Builder
 	_params := make([]any, 0, 2)
 
 	sb.WriteString("SELECT * FROM books LIMIT ? OFFSET ?")
 	_params = append(_params, limit, offset)
 
-	var result model.Books
+	var result []*model.Book
 	err := e.Raw(sb.String(), _params...).Scan(ctx, &result)
 	return result, err
 }
