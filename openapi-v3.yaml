@@ -19,9 +19,11 @@ components:
       - published_date
       - title
       type: object
-    model.BookDTO:
+    model.Book:
       properties:
         author:
+          type: string
+        created_at:
           type: string
         description:
           type: string
@@ -32,6 +34,8 @@ components:
         published_date:
           type: string
         title:
+          type: string
+        updated_at:
           type: string
       type: object
     myapp_pkg_errors.Error:
@@ -92,7 +96,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/model.BookDTO'
+                  $ref: '#/components/schemas/model.Book'
                 type: array
           description: OK
         "500":
@@ -122,7 +126,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/model.BookDTO'
+                $ref: '#/components/schemas/model.Book'
           description: Created
         "400":
           content:
@@ -203,7 +207,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/model.BookDTO'
+                $ref: '#/components/schemas/model.Book'
           description: OK
         "400":
           content:
@@ -247,7 +251,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/model.BookDTO'
+                $ref: '#/components/schemas/model.Book'
           description: OK
         "400":
           content:

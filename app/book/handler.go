@@ -42,7 +42,7 @@ func New(logger *l.Logger, validator *validator.Validate, db *gorm.DB) *API {
 //	@produce		json
 //	@Param			page		query		int64	false	"Page number for pagination"	default(1)	minimum(1)
 //	@Param			pageSize	query		int64	false	"Number of items per page"		default(10)	minimum(1)	maximum(100)
-//	@success		200			{array}		model.BookDTO
+//	@success		200			{array}		model.Book
 //	@failure		500			{object}	e.Error
 //	@router			/books [get]
 func (a *API) List(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +62,7 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := json.MarshalWrite(w, books.ToDTO()); err != nil {
+	if err := json.MarshalWrite(w, books); err != nil {
 		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
@@ -77,7 +77,7 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 //	@accept			json
 //	@produce		json
 //	@param			body	body		form.BookForm	true	"Book form"
-//	@success		201		{object}	model.BookDTO
+//	@success		201		{object}	model.Book
 //	@failure		400		{object}	e.Error
 //	@failure		422		{object}	e.Errors
 //	@failure		500		{object}	e.Error
@@ -101,7 +101,7 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	if err := json.MarshalWrite(w, book.ToDTO()); err != nil {
+	if err := json.MarshalWrite(w, book); err != nil {
 		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
@@ -118,7 +118,7 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 //	@accept			json
 //	@produce		json
 //	@param			id	path		string	true	"Book ID"
-//	@success		200	{object}	model.BookDTO
+//	@success		200	{object}	model.Book
 //	@failure		400	{object}	e.Error
 //	@failure		404
 //	@failure		500	{object}	e.Error
@@ -145,7 +145,7 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := json.MarshalWrite(w, book.ToDTO()); err != nil {
+	if err := json.MarshalWrite(w, book); err != nil {
 		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
@@ -161,7 +161,7 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 //	@produce		json
 //	@param			id		path		string			true	"Book ID"
 //	@param			body	body		form.BookForm	true	"Book form"
-//	@success		200		{object}	model.BookDTO
+//	@success		200		{object}	model.Book
 //	@failure		400		{object}	e.Error
 //	@failure		404
 //	@failure		422	{object}	e.Errors
@@ -196,7 +196,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := json.MarshalWrite(w, book.ToDTO()); err != nil {
+	if err := json.MarshalWrite(w, book); err != nil {
 		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
