@@ -4,10 +4,10 @@ import (
 	"encoding/json/v2"
 	"fmt"
 	"net/http"
+	"uuid"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 
 	"myapp/app/book/bookrepo"
@@ -140,7 +140,7 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if book.ID == uuid.Nil {
+	if book.ID == uuid.Nil() {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -191,7 +191,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if book.ID == uuid.Nil {
+	if book.ID == uuid.Nil() {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}

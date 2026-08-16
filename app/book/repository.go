@@ -2,8 +2,7 @@ package book
 
 import (
 	"context"
-
-	"github.com/google/uuid"
+	"uuid"
 
 	"myapp/model"
 )

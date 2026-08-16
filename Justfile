@@ -1,5 +1,3 @@
-export GOEXPERIMENT := "jsonv2"
-
 server_port := "8080"
 db_port := "5432"
 db_host := "localhost"

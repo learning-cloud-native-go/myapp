@@ -6,8 +6,8 @@ import (
 	"context"
 	"myapp/model"
 	"strings"
+	"uuid"
 
-	"github.com/google/uuid"
 	"gorm.io/cli/gorm/typed"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"

@@ -2,15 +2,14 @@ package book
 
 import (
 	"time"
-
-	"github.com/google/uuid"
+	"uuid"
 
 	"myapp/form"
 	"myapp/model"
 )
 
 func CreateFormToModel(f *form.BookForm) *model.Book {
-	return UpdateFormToModel(f, uuid.New())
+	return UpdateFormToModel(f, uuid.NewV7())
 }
 
 func UpdateFormToModel(f *form.BookForm, id uuid.UUID) *model.Book {
