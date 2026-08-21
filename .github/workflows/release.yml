@@ -22,8 +22,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ github.token }}
-          file: openapi-v3.yaml
-          asset_name: myapp-${{ github.ref_name }}.openapi-v3.yaml
+          file: openapi.yaml
+          asset_name: myapp-${{ github.ref_name }}.openapi.yaml
           tag: ${{ github.ref }}
 
       - name: Setup Docker Buildx

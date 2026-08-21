@@ -35,7 +35,7 @@ jobs:
         run: go tool govulncheck ./...
 
       - name: OpenAPI specification errors
-        run: go tool swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi-v3.yaml && git diff --exit-code openapi-v3.yaml
+        run: go tool swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi.yaml && git diff --exit-code openapi.yaml
 
       - name: Tests
         run: go test ./...

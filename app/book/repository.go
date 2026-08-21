@@ -2,7 +2,8 @@ package book
 
 import (
 	"context"
-	"uuid"
+
+	"github.com/google/uuid"
 
 	"myapp/model"
 )
@@ -12,7 +13,7 @@ type IBookRepo interface {
 	// SELECT * FROM books LIMIT @limit OFFSET @offset
 	ListBooks(ctx context.Context, limit int64, offset int64) ([]*model.Book, error)
 
-	// INSERT INTO books (id, created_at, updated_at, title, author, published_date, image_url, description) VALUES (@data.ID, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, @data.Title, @data.Author, @data.PublishedDate, @data.ImageURL, @data.Description)
+	// INSERT INTO books (id, created_at, updated_at, title, published_date, image_url, description, status) VALUES (@data.ID, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, @data.Title, @data.PublishedDate, @data.ImageURL, @data.Description, @data.Status)
 	// RETURNING *
 	CreateBook(ctx context.Context, data *model.Book) (*model.Book, error)
 
@@ -20,7 +21,7 @@ type IBookRepo interface {
 	ReadBook(ctx context.Context, id uuid.UUID) (*model.Book, error)
 
 	// UPDATE books
-	// SET updated_at=CURRENT_TIMESTAMP, title=@data.Title, author=@data.Author, published_date=@data.PublishedDate, image_url=@data.ImageURL, description=@data.Description
+	// SET updated_at=CURRENT_TIMESTAMP, title=@data.Title, published_date=@data.PublishedDate, image_url=@data.ImageURL, description=@data.Description, status=@data.Status
 	// WHERE id = @data.ID
 	// RETURNING *
 	UpdateBook(ctx context.Context, data *model.Book) (*model.Book, error)

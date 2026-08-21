@@ -10,7 +10,7 @@ import (
 
 type testCase struct {
 	name     string
-	input    interface{}
+	input    any
 	expected map[string]string
 }
 
@@ -20,35 +20,37 @@ var tests = []*testCase{
 		input: struct {
 			Title string `json:"title" validate:"required"`
 		}{},
-		expected: map[string]string{"title": "This is a required field"},
+		expected: map[string]string{"title": "This field is required"},
 	},
 	{
 		name: `max`,
 		input: struct {
 			Course string `json:"course" validate:"max=7"`
 		}{Course: "CS-0001."},
-		expected: map[string]string{"course": "This must be a maximum of 7 in length"},
+		expected: map[string]string{"course": "Must be no more than 7 characters"},
 	},
 	{
 		name: `url`,
 		input: struct {
 			Image string `json:"image" validate:"url"`
 		}{Image: "image.png"},
-		expected: map[string]string{"image": "This must be a valid URL"},
+		expected: map[string]string{"image": "Must be a valid URL"},
 	},
 	{
-		name: `alpha_space`,
+		name: `oneof`,
 		input: struct {
-			Name string `json:"name" validate:"alpha_space"`
-		}{Name: "Some Name 2"},
-		expected: map[string]string{"name": "This can only contain alphabetic and space characters"},
+			Status string `json:"status" validate:"required,oneof=pending verified"`
+		}{
+			Status: "invalid",
+		},
+		expected: map[string]string{"status": "Must be one of pending, verified"},
 	},
 	{
 		name: `date`,
 		input: struct {
 			Date string `json:"date" validate:"datetime=2006-01-02"`
 		}{Date: "2020-02-31"},
-		expected: map[string]string{"date": "This must be a valid date"},
+		expected: map[string]string{"date": "Must be a valid date"},
 	},
 }
 
@@ -56,7 +58,6 @@ func TestToErrResponse(t *testing.T) {
 	vr := validator.New()
 
 	for _, tc := range tests {
-		tc := tc
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
 			err := vr.Struct(tc.input)

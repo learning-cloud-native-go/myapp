@@ -6,8 +6,8 @@ import (
 	"context"
 	"myapp/model"
 	"strings"
-	"uuid"
 
+	"github.com/google/uuid"
 	"gorm.io/cli/gorm/typed"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -48,8 +48,8 @@ func (e _IBookRepoImpl[T]) CreateBook(ctx context.Context, data *model.Book) (*m
 	var sb strings.Builder
 	_params := make([]any, 0, 6)
 
-	sb.WriteString("INSERT INTO books (id, created_at, updated_at, title, author, published_date, image_url, description) VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)")
-	_params = append(_params, data.ID, data.Title, data.Author, data.PublishedDate, data.ImageURL, data.Description)
+	sb.WriteString("INSERT INTO books (id, created_at, updated_at, title, published_date, image_url, description, status) VALUES (?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?)")
+	_params = append(_params, data.ID, data.Title, data.PublishedDate, data.ImageURL, data.Description, data.Status)
 	sb.WriteString(" RETURNING *")
 
 	var result *model.Book
@@ -74,8 +74,8 @@ func (e _IBookRepoImpl[T]) UpdateBook(ctx context.Context, data *model.Book) (*m
 	_params := make([]any, 0, 6)
 
 	sb.WriteString("UPDATE books")
-	sb.WriteString(" SET updated_at=CURRENT_TIMESTAMP, title=?, author=?, published_date=?, image_url=?, description=?")
-	_params = append(_params, data.Title, data.Author, data.PublishedDate, data.ImageURL, data.Description)
+	sb.WriteString(" SET updated_at=CURRENT_TIMESTAMP, title=?, published_date=?, image_url=?, description=?, status=?")
+	_params = append(_params, data.Title, data.PublishedDate, data.ImageURL, data.Description, data.Status)
 	sb.WriteString(" WHERE id = ?")
 	_params = append(_params, data.ID)
 	sb.WriteString(" RETURNING *")
