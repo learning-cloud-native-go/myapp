@@ -1,4 +1,4 @@
-//go:generate sh -c "go tool swag init -d ../../ -g cmd/app/main.go -o ../../ -ot yaml --v3.1 --parseDependency && mv ../../swagger.yaml ../../openapi-v3.yaml"
+//go:generate sh -c "go tool swag init -d ../../ -g cmd/app/main.go -o ../../ -ot yaml --v3.1 --parseDependency && mv ../../swagger.yaml ../../openapi.yaml"
 
 package main
 

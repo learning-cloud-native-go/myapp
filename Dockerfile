@@ -1,7 +1,5 @@
-FROM golang:1.26-alpine
+FROM golang:1.27-alpine
 WORKDIR /myapp
-
-ENV GOEXPERIMENT=jsonv2
 
 RUN apk add --no-cache gcc musl-dev tzdata
 

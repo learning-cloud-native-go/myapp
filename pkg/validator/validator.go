@@ -3,13 +3,10 @@ package validator
 import (
 	"fmt"
 	"reflect"
-	"regexp"
 	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
-
-const alphaSpaceRegexString string = "^[a-zA-Z ]+$"
 
 type ErrResponse struct {
 	Errors map[string]string `json:"errors"`
@@ -27,7 +24,7 @@ func New() *validator.Validate {
 		return name
 	})
 
-	validate.RegisterValidation("alpha_space", isAlphaSpace)
+	// custom validators
 
 	return validate
 }
@@ -43,21 +40,21 @@ func ToErrResponse(err error) *ErrResponse {
 
 			switch err.Tag() {
 			case "required":
-				msg = "This is a required field"
+				msg = "This field is required"
 			case "max":
-				msg = fmt.Sprintf("This must be a maximum of %s in length", err.Param())
+				msg = fmt.Sprintf("Must be no more than %s characters", err.Param())
 			case "url":
-				msg = "This must be a valid URL"
-			case "alpha_space":
-				msg = "This can only contain alphabetic and space characters"
+				msg = "Must be a valid URL"
+			case "oneof":
+				msg = fmt.Sprintf("Must be one of %s", strings.ReplaceAll(err.Param(), " ", ", "))
 			case "datetime":
 				if err.Param() == "2006-01-02" {
-					msg = "This must be a valid date"
+					msg = "Must be a valid date"
 				} else {
-					msg = fmt.Sprintf("This must follow %s format", err.Param())
+					msg = fmt.Sprintf("Must follow %s format", err.Param())
 				}
 			default:
-				msg = fmt.Sprintf("something wrong on this; %s", err.Tag())
+				msg = "This value is invalid"
 			}
 
 			resp.Errors[err.Field()] = msg
@@ -67,9 +64,4 @@ func ToErrResponse(err error) *ErrResponse {
 	}
 
 	return nil
-}
-
-func isAlphaSpace(fl validator.FieldLevel) bool {
-	reg := regexp.MustCompile(alphaSpaceRegexString)
-	return reg.MatchString(fl.Field().String())
 }

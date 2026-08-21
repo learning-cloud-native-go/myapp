@@ -1,9 +1,7 @@
 # Build environment
 # -----------------
-FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS build-env
+FROM --platform=$BUILDPLATFORM golang:1.27-alpine AS build-env
 WORKDIR /myapp
-
-ENV GOEXPERIMENT=jsonv2
 
 RUN apk add --no-cache tzdata ca-certificates
 
@@ -23,7 +21,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 
 # Deployment environment
 # ----------------------
-FROM gcr.io/distroless/static-debian12
+FROM gcr.io/distroless/static-debian13:nonroot
 
 ENV TZ=Asia/Singapore
 
@@ -32,7 +30,5 @@ COPY --from=build-env /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 COPY --from=build-env /myapp/bin/app /myapp/
 COPY --from=build-env /myapp/bin/migrate /myapp/
-
-USER 65532:65532
 
 CMD ["/myapp/app"]

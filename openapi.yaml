@@ -2,27 +2,27 @@ components:
   schemas:
     form.BookForm:
       properties:
-        author:
-          maxLength: 255
-          type: string
         description:
           type: string
         image_url:
           type: string
         published_date:
           type: string
+        status:
+          enum:
+          - pending
+          - verified
+          type: string
         title:
           maxLength: 255
           type: string
       required:
-      - author
       - published_date
+      - status
       - title
       type: object
     model.Book:
       properties:
-        author:
-          type: string
         created_at:
           type: string
         description:
@@ -33,11 +33,24 @@ components:
           type: string
         published_date:
           type: string
+        status:
+          $ref: '#/components/schemas/model.BookStatus'
         title:
           type: string
         updated_at:
           type: string
       type: object
+    model.BookStatus:
+      enum:
+      - 0
+      - 1
+      type: integer
+      x-enum-comments:
+        BookStatusPending: "0"
+        BookStatusVerified: "1"
+      x-enum-varnames:
+      - BookStatusPending
+      - BookStatusVerified
     myapp_pkg_errors.Error:
       properties:
         error:

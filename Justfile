@@ -1,28 +1,24 @@
-export GOEXPERIMENT := "jsonv2"
-
-server_port := "8080"
-db_port := "5432"
 db_host := "localhost"
 
 # List available commands
 help:
-    @just --list --unsorted --list-heading $'🚀MYAPP\n'
+    @just --list --unsorted --list-heading $'MYAPP\n'
 
 # Install development tools
 install:
     go install tool
 
-# Run a specific cmd (defaults to app)
-go-run cmd="app":
+# Run server app
+app:
     @export $(grep -v '^#' .env | xargs) && \
-    DB_PORT={{db_port}} DB_HOST={{db_host}} SERVER_PORT={{server_port}} \
-    go run ./cmd/{{cmd}}
+    DB_HOST={{ db_host }} \
+    go run ./cmd/app
 
-# Run database migrations (defaults to up)
-go-run-migrate cmd="up":
+# Run DB migration CLI (defaults to up)
+migrate cmd="up":
     @export $(grep -v '^#' .env | xargs) && \
-    DB_PORT={{db_port}} DB_HOST={{db_host}} SERVER_PORT={{server_port}} \
-    go run ./cmd/migrate {{cmd}}
+    DB_HOST={{ db_host }} \
+    go run ./cmd/migrate {{ cmd }}
 
 # Run docker compose build
 build:
@@ -30,7 +26,7 @@ build:
 
 # Run docker compose up
 up cmd="":
-    @docker compose up {{cmd}}
+    @docker compose up {{ cmd }}
 
 # Run docker compose down
 down:
@@ -51,10 +47,14 @@ test:
 gen:
     go generate ./...
 
-# Generate openapi v3 specification using swag v2
-gen-openapi:
-    go tool swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi-v3.yaml
+# Generate openapi.yaml
+apidoc:
+    go tool swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi.yaml
 
 # Generate gorm repositories using gorm cli
-gen-gorm-repos:
+repos:
     go tool gorm gen -i ./app/book/repository.go -o ./app/book/bookrepo
+
+# Build production distroless image
+build-for-prod:
+    docker build -f prod.Dockerfile . -t myapp-app
