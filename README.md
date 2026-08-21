@@ -76,6 +76,31 @@ We build a production-ready containerized RESTful API server application using f
 }
 ```
 
+## Database Design
+
+To keep this simple, we use only a single database table named `books`.
+
+| Column Name    | Datatype    | Not Null | Primary Key |
+|----------------|-------------|----------|-------------|
+| created_at     | TIMESTAMPTZ | ✅       |             |
+| updated_at     | TIMESTAMPTZ | ✅       |             |
+| id             | UUID        | ✅       | ✅          |
+| published_date | DATE        | ✅       |             |
+| status         | SMALLINT    | ✅       |             |
+| title          | TEXT        | ✅       |             |
+| description    | TEXT        |          |             |
+| image_url      | TEXT        |          |             |
+
+> [!important]
+> - For high-traffic systems with very large PostgreSQL tables that containing millions/billions of rows, arranging fixed-width columns by decreasing alignment requirements can reduce tuple alignment padding; potentially minimize row/ storage size. This technique is called "**Column Tetris**".
+> - For this optimization, order fixed-width table columns by decreasing alignment requirements.
+>   - 8-byte alignment types: `bigint`, `bigserial`, `double precision`/ `float8`, `timestamp`, `timestamptz`, `time`, `interval`
+>   - 4-byte alignment types: `integer`, `serial`, `real`/ `float4`, `uuid`, `date`
+>   - 2-byte alignment types: `smallint`, `smallserial`
+>   - 1-byte alignment types: `boolean`
+>   - Variable-width types (at last): `numeric`, `text`, `character varying`/ `varchar`, `bytea`
+> - However, it's ok to follow a more readable column format, when your table schema changes frequently.
+
 ## Just commands
 
 ```just
