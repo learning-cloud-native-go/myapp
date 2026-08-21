@@ -22,8 +22,8 @@ We build a production-ready containerized RESTful API server application using f
 
 | Environment    | Go Image Type                      | Go Image Size | Postgres Image Type | Postgres Image Size |
 |----------------|------------------------------------|---------------|---------------------|---------------------|
-| Development    | golang:1.27-alpine                 | ~ 900 MB      | postgres:18-alpine  | ~ 300MB             |
-| Production     | distroless/static-debian13:nonroot | ~ 15 MB       |                     |                     |
+| Development    | golang:1.27-alpine                 | ~ 800 MB      | postgres:18-alpine  | ~ 300MB             |
+| Production     | distroless/static-debian13:nonroot | ~ 30 MB       |                     |                     |
 
 ## Endpoints
 
@@ -136,7 +136,7 @@ app-1  |
 app-1  | [2.541ms] [rows:1] SELECT * FROM books WHERE id = '38ba23d1-9565-40ed-b781-aacd2f84018d'
 app-1  | {"level":"info","request_id":"d5mqa6a6hkls7397s44g","received_time":"2018-01-10T04:00:00+08:00","method":"GET","url":"/v1/books/38ba23d1-9565-40ed-b781-aacd2f84018d","header_size":82,"body_size":0,"agent":"yaak","referer":"","proto":"HTTP/1.1","remote_ip":"192.168.65.1","server_ip":"172.19.0.3","status":200,"resp_header_size":47,"resp_body_size":296,"latency":2.674625,"time":"2018-01-10T04:00:00+08:00"}
 app-1  |
-app-1  | [3.744ms] [rows:1] UPDATE books SET updated_at=CURRENT_TIMESTAMP, title='Death Note', published_date='2004-11-04 00:00:00', image_url='https://static.wikia.nocookie.net/deathnote/images/9/94/A_Death_Note.jpg', description='Light Yagami''s buried notebook', status=1 WHERE id = '38ba23d1-9565-40ed-b781-aacd2f84018d' RETURNING *
+app-1  | [3.744ms] [rows:1] UPDATE books SET updated_at=CURRENT_TIMESTAMP, title='Death Note', published_date='2004-11-04', image_url='https://static.wikia.nocookie.net/deathnote/images/9/94/A_Death_Note.jpg', description='Light Yagami''s buried notebook', status=1 WHERE id = '38ba23d1-9565-40ed-b781-aacd2f84018d' RETURNING *
 app-1  | {"level":"info","request_id":"d5mqesa6hkls7397s45g","id":"38ba23d1-9565-40ed-b781-aacd2f84018d","time":"2018-01-10T05:00:00+08:00","message":"book updated"}
 app-1  | {"level":"info","request_id":"d5mqesa6hkls7397s45g","received_time":"2018-01-10T05:00:00+08:00","method":"PUT","url":"/v1/books/38ba23d1-9565-40ed-b781-aacd2f84018d","header_size":135,"body_size":0,"agent":"yaak","referer":"","proto":"HTTP/1.1","remote_ip":"192.168.65.1","server_ip":"172.19.0.3","status":200,"resp_header_size":47,"resp_body_size":252,"latency":4.018875,"time":"2018-01-10T05:00:00+08:00"}
 app-1  |
