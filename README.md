@@ -1,6 +1,7 @@
 [![buymeacoffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-dumindu-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=ffffff&labelColor=333333)](https://www.buymeacoffee.com/dumindu)
 
 [![learning-cloud-native-go/myapp](https://img.shields.io/github/stars/learning-cloud-native-go/myapp?style=for-the-badge&logo=go&logoColor=ffffff&label=learning-cloud-native-go%2Fmyapp&labelColor=333333&color=00ADD8)](https://github.com/learning-cloud-native-go/myapp)
+
 [![learning-rust.github.io](https://img.shields.io/github/stars/learning-rust/learning-rust.github.io?style=for-the-badge&logo=rust&label=learning-rust.github.io&labelColor=333333&color=F46623)](https://learning-rust.github.io)
 [![dumindu/axum](https://img.shields.io/github/stars/dumindu/axum?style=for-the-badge&logo=rust&label=dumindu%2Faxum&labelColor=333333&color=F46623)](https://github.com/dumindu/axum)
 [![E25DX](https://img.shields.io/github/stars/dumindu/E25DX?style=for-the-badge&logo=hugo&logoColor=ffffff&label=E25DX&labelColor=333333&color=FF4088)](https://themes.gohugo.io/themes/e25dx/)
@@ -8,6 +9,7 @@
 # Learning Cloud Native Go - myapp
 
 ## In this series,
+
 We build a production-ready containerized RESTful API server application using following packages and tools.
 - Go Standard Library `net/http`: The most idiomatic way to write web API applications in Go.
 - [Chi](https://github.com/go-chi/chi): The most idiomatic router with middleware and route groups support.
@@ -50,14 +52,14 @@ We build a production-ready containerized RESTful API server application using f
 ### Response (`GET`/`POST`/`PUT`)
 ```json
 {
+  "id": "01bbbbbb-bbbb-7bbb-8bbb-bbbbbbbbbbbb",
   "created_at": "2027-01-01T00:00:00.123456Z",
   "updated_at": "2027-01-01T00:00:00.123456Z",
-  "id": "01bbbbbb-bbbb-7bbb-8bbb-bbbbbbbbbbbb",
   "published_date": "2007-07-21",
-  "status": "verified",
   "title": "Harry Potter and the Deathly Hallows",
   "description": "It is the seventh and final novel in the Harry Potter series",
   "image_url": "https://upload.wikimedia.org/wikipedia/en/a/a9/Harry_Potter_and_the_Deathly_Hallows.jpg"
+  "status": "verified",
 }
 ```
 > [!note]
@@ -119,7 +121,7 @@ MYAPP
     repos            # Generate gorm repositories using gorm cli
 ```
 
-## 📝 Request Logs and Centralized Syslog Logging
+## Sample Request Logs
 
 ```json lines
 db-1  | 2018-01-10 01:00:00.000 +08 [1] LOG:  database system is ready to accept connections
@@ -156,45 +158,49 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 // 💯 Real logs collected locally but with few rearrangements to make it easier to read.
 ```
 
-## 🗂️ Project Folder Structure
+## Folder Structure
+
+### API Server
 
 ```shell
-├── cmd   # 💡Entrypoint for app and migrate executables
+├── cmd
 │   ├── app
 │   │   └── main.go
 │   └── migrate
 │       ├── main.go
 │       └── migrations
 │           └── 00001_create_books_table.sql
-├── form    # 💡Form validation middleware rely on this and pkg folder only
+│
+├── form  # 💡Form validation middleware rely on this and pkg folder only
 │   └── book.go
+│
 ├── app
 │   ├── book
-│   │   ├── bookrepo      # 💡generated with gorm-cli via the interface in book/repository.go
+│   │   ├── bookrepo  # 💡generated with gorm-cli via the interface in book/repository.go
 │   │   │   └── repository.go
 │   │   ├── form_util.go
 │   │   ├── handler.go
 │   │   └── repository.go
 │   └── router
 │       └── router.go
+│
 ├── model
-│   └── book.go
+│   ├── book.go
+│   ├── book_status.go
+│   └── date.go
 │
 ├── config
 │   └── config.go
 │
 ├── pkg (middleware, logger, validator, ctxutil, paramsutil, errors)
+│
+├── openapi.yaml
 ├── compose.yml
 ├── Dockerfile
-├── prod.Dockerfile
-└── openapi.yaml
+└── prod.Dockerfile
 ```
 
-## 🏗️ ArgoCD and Kustomize
-
-ArgoCD and `Kustomize` based cloud native IaC & GitOps setup.
-
-> 💡 Consider moving to a Hub-and-Spoke architecture for Argo CD, combined with a separate repository strategy.
+### ArgoCD and Kustomize
 
 ```shell
 └── k8s
@@ -225,7 +231,8 @@ ArgoCD and `Kustomize` based cloud native IaC & GitOps setup.
     └── gateways
 ```
 
-> 💡 Sample Kind Dev Cluster
+> [!tip]
+> Sample Kind Dev Cluster
 > ```shell
 > kind create cluster --name dev
 > kubectl apply -k k8s/bootstrap/argocd
