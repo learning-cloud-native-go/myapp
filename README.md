@@ -192,7 +192,7 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 ├── config
 │   └── config.go
 │
-├── pkg (middleware, logger, validator, ctxutil, paramsutil, errors)
+├── pkg (middleware, validator, ctxutil, paramsutil, errors)
 │
 ├── openapi.yaml
 ├── compose.yml

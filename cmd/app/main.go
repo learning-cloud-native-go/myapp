@@ -12,13 +12,13 @@ import (
 	"time"
 	_ "time/tzdata"
 
+	"github.com/rs/zerolog"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	gormlogger "gorm.io/gorm/logger"
 
 	"myapp/app/router"
 	"myapp/config"
-	"myapp/pkg/logger"
 	"myapp/pkg/validator"
 )
 
@@ -41,24 +41,28 @@ func main() {
 	loc, _ := time.LoadLocation(c.TZ)
 	time.Local = loc
 
-	l := logger.New(c.Server.Debug)
+	logLevel := zerolog.InfoLevel
+	if c.Server.Debug {
+		logLevel = zerolog.DebugLevel
+	}
+	zerolog.SetGlobalLevel(logLevel)
+	l := zerolog.New(os.Stderr).With().Timestamp().Logger()
+
 	v := validator.New()
 
-	var logLevel gormlogger.LogLevel
+	logLevelDB := gormlogger.Error
 	if c.DB.Debug {
-		logLevel = gormlogger.Info
-	} else {
-		logLevel = gormlogger.Error
+		logLevelDB = gormlogger.Info
 	}
 
 	dbString := fmt.Sprintf(fmtDBString, c.DB.Host, c.DB.Username, c.DB.Password, c.DB.DBName, c.DB.Port)
-	db, err := gorm.Open(postgres.Open(dbString), &gorm.Config{Logger: gormlogger.Default.LogMode(logLevel)})
+	db, err := gorm.Open(postgres.Open(dbString), &gorm.Config{Logger: gormlogger.Default.LogMode(logLevelDB)})
 	if err != nil {
 		l.Fatal().Err(err).Msg("DB connection start failure")
 		return
 	}
 
-	r := router.New(l, v, db)
+	r := router.New(&l, v, db)
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", c.Server.Port),

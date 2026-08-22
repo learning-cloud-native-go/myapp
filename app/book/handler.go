@@ -8,6 +8,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	"github.com/rs/zerolog/hlog"
 	"gorm.io/gorm"
 
 	"myapp/app/book/bookrepo"
@@ -15,19 +16,18 @@ import (
 	"myapp/model"
 	"myapp/pkg/ctxutil"
 	e "myapp/pkg/errors"
-	l "myapp/pkg/logger"
 	"myapp/pkg/paramsutil"
 )
 
+const MsgErrCTXValidatedFormNotFound = "context validated form not found"
+
 type API struct {
-	logger    *l.Logger
 	validator *validator.Validate
 	bookRepo  IBookRepo
 }
 
-func New(logger *l.Logger, validator *validator.Validate, db *gorm.DB) *API {
+func New(validator *validator.Validate, db *gorm.DB) *API {
 	return &API{
-		logger:    logger,
 		validator: validator,
 		bookRepo:  bookrepo.IBookRepo[model.Book](db),
 	}
@@ -47,12 +47,12 @@ func New(logger *l.Logger, validator *validator.Validate, db *gorm.DB) *API {
 //	@router			/books [get]
 func (a *API) List(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	reqID := ctxutil.RequestID(ctx)
+	logger := hlog.FromRequest(r)
 
 	limit, offset := paramsutil.LimitOffset(r)
 	books, err := a.bookRepo.ListBooks(ctx, limit, offset)
 	if err != nil {
-		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
+		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataAccessFailure)
 		return
 	}
@@ -63,7 +63,7 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.MarshalWrite(w, books); err != nil {
-		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
+		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
 	}
@@ -84,30 +84,30 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 //	@router			/books [post]
 func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	reqID := ctxutil.RequestID(ctx)
+	logger := hlog.FromRequest(r)
 
 	ctxForm, ok := ctxutil.ValidatedForm[form.BookForm](ctx)
 	if !ok {
-		a.logger.Error().Str(l.KeyReqID, reqID).Msg(l.MsgErrCTXValidatedFormNotFound)
+		logger.Error().Msg(MsgErrCTXValidatedFormNotFound)
 		e.ServerError(w, e.RespValidatedFormNotFound)
 		return
 	}
 
 	book, err := a.bookRepo.CreateBook(ctx, CreateFormToModel(&ctxForm))
 	if err != nil {
-		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
+		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataInsertFailure)
 		return
 	}
 
 	w.WriteHeader(http.StatusCreated)
 	if err := json.MarshalWrite(w, book); err != nil {
-		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
+		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
 	}
 
-	a.logger.Info().Str(l.KeyReqID, reqID).Str("id", book.ID.String()).Msg("new book created")
+	logger.Info().Str("id", book.ID.String()).Msg("new book created")
 }
 
 // Read godoc
@@ -125,7 +125,7 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 //	@router			/books/{id} [get]
 func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	reqID := ctxutil.RequestID(ctx)
+	logger := hlog.FromRequest(r)
 
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
@@ -135,7 +135,7 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 
 	book, err := a.bookRepo.ReadBook(ctx, id)
 	if err != nil {
-		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
+		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataAccessFailure)
 		return
 	}
@@ -146,7 +146,7 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.MarshalWrite(w, book); err != nil {
-		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
+		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
 	}
@@ -169,7 +169,7 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 //	@router			/books/{id} [put]
 func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	reqID := ctxutil.RequestID(ctx)
+	logger := hlog.FromRequest(r)
 
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
@@ -179,14 +179,14 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 
 	ctxForm, ok := ctxutil.ValidatedForm[form.BookForm](ctx)
 	if !ok {
-		a.logger.Error().Str(l.KeyReqID, reqID).Msg(l.MsgErrCTXValidatedFormNotFound)
+		logger.Error().Msg(MsgErrCTXValidatedFormNotFound)
 		e.ServerError(w, e.RespValidatedFormNotFound)
 		return
 	}
 
 	book, err := a.bookRepo.UpdateBook(ctx, UpdateFormToModel(&ctxForm, id))
 	if err != nil {
-		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
+		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataUpdateFailure)
 		return
 	}
@@ -197,12 +197,12 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := json.MarshalWrite(w, book); err != nil {
-		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
+		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespJSONEncodeFailure)
 		return
 	}
 
-	a.logger.Info().Str(l.KeyReqID, reqID).Str("id", id.String()).Msg("book updated")
+	logger.Info().Str("id", id.String()).Msg("book updated")
 }
 
 // Delete godoc
@@ -220,7 +220,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 //	@router			/books/{id} [delete]
 func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	reqID := ctxutil.RequestID(ctx)
+	logger := hlog.FromRequest(r)
 
 	id, err := uuid.Parse(chi.URLParam(r, "id"))
 	if err != nil {
@@ -230,7 +230,7 @@ func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 
 	isDeleted, err := a.bookRepo.DeleteBook(ctx, id)
 	if err != nil {
-		a.logger.Error().Str(l.KeyReqID, reqID).Err(err).Msg("")
+		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataRemoveFailure)
 		return
 	}
@@ -239,5 +239,5 @@ func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	a.logger.Info().Str(l.KeyReqID, reqID).Str("id", id.String()).Msg("book deleted")
+	logger.Info().Str("id", id.String()).Msg("book deleted")
 }
