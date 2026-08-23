@@ -16,21 +16,28 @@ import (
 	"myapp/model"
 	"myapp/pkg/ctxutil"
 	e "myapp/pkg/errors"
+	m "myapp/pkg/middleware"
 	"myapp/pkg/paramsutil"
 )
 
-const MsgErrCTXValidatedFormNotFound = "context validated form not found"
-
-type API struct {
+type Handler struct {
 	validator *validator.Validate
 	bookRepo  IBookRepo
 }
 
-func New(validator *validator.Validate, db *gorm.DB) *API {
-	return &API{
+func New(validator *validator.Validate, db *gorm.DB) *Handler {
+	return &Handler{
 		validator: validator,
 		bookRepo:  bookrepo.IBookRepo[model.Book](db),
 	}
+}
+
+func (h *Handler) Register(r chi.Router) {
+	r.Get("/", h.List)
+	r.With(m.Validate[form.BookForm](h.validator)).Post("/", h.Create)
+	r.Get("/{id}", h.Read)
+	r.With(m.Validate[form.BookForm](h.validator)).Put("/{id}", h.Update)
+	r.Delete("/{id}", h.Delete)
 }
 
 // List godoc
@@ -45,12 +52,12 @@ func New(validator *validator.Validate, db *gorm.DB) *API {
 //	@success		200			{array}		model.Book
 //	@failure		500			{object}	e.Error
 //	@router			/books [get]
-func (a *API) List(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
 	limit, offset := paramsutil.LimitOffset(r)
-	books, err := a.bookRepo.ListBooks(ctx, limit, offset)
+	books, err := h.bookRepo.ListBooks(ctx, limit, offset)
 	if err != nil {
 		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataAccessFailure)
@@ -82,18 +89,18 @@ func (a *API) List(w http.ResponseWriter, r *http.Request) {
 //	@failure		422		{object}	e.Errors
 //	@failure		500		{object}	e.Error
 //	@router			/books [post]
-func (a *API) Create(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
 	ctxForm, ok := ctxutil.ValidatedForm[form.BookForm](ctx)
 	if !ok {
-		logger.Error().Msg(MsgErrCTXValidatedFormNotFound)
+		logger.Error().Msg(form.LogErrCTXValidatedFormNotFound)
 		e.ServerError(w, e.RespValidatedFormNotFound)
 		return
 	}
 
-	book, err := a.bookRepo.CreateBook(ctx, CreateFormToModel(&ctxForm))
+	book, err := h.bookRepo.CreateBook(ctx, createFormToModel(&ctxForm))
 	if err != nil {
 		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataInsertFailure)
@@ -123,7 +130,7 @@ func (a *API) Create(w http.ResponseWriter, r *http.Request) {
 //	@failure		404
 //	@failure		500	{object}	e.Error
 //	@router			/books/{id} [get]
-func (a *API) Read(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Read(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
@@ -133,7 +140,7 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := a.bookRepo.ReadBook(ctx, id)
+	book, err := h.bookRepo.ReadBook(ctx, id)
 	if err != nil {
 		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataAccessFailure)
@@ -167,7 +174,7 @@ func (a *API) Read(w http.ResponseWriter, r *http.Request) {
 //	@failure		422	{object}	e.Errors
 //	@failure		500	{object}	e.Error
 //	@router			/books/{id} [put]
-func (a *API) Update(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
@@ -179,12 +186,12 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 
 	ctxForm, ok := ctxutil.ValidatedForm[form.BookForm](ctx)
 	if !ok {
-		logger.Error().Msg(MsgErrCTXValidatedFormNotFound)
+		logger.Error().Msg(form.LogErrCTXValidatedFormNotFound)
 		e.ServerError(w, e.RespValidatedFormNotFound)
 		return
 	}
 
-	book, err := a.bookRepo.UpdateBook(ctx, UpdateFormToModel(&ctxForm, id))
+	book, err := h.bookRepo.UpdateBook(ctx, updateFormToModel(&ctxForm, id))
 	if err != nil {
 		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataUpdateFailure)
@@ -218,7 +225,7 @@ func (a *API) Update(w http.ResponseWriter, r *http.Request) {
 //	@failure		404
 //	@failure		500	{object}	e.Error
 //	@router			/books/{id} [delete]
-func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
@@ -228,7 +235,7 @@ func (a *API) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	isDeleted, err := a.bookRepo.DeleteBook(ctx, id)
+	isDeleted, err := h.bookRepo.DeleteBook(ctx, id)
 	if err != nil {
 		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataRemoveFailure)

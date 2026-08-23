@@ -1,5 +1,7 @@
 package form
 
+const LogErrCTXValidatedFormNotFound = "context validated form not found"
+
 type BookForm struct {
 	Title         string `json:"title" validate:"required,max=255"`
 	PublishedDate string `json:"published_date" validate:"required,datetime=2006-01-02"`

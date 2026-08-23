@@ -9,11 +9,11 @@ import (
 	"myapp/model"
 )
 
-func CreateFormToModel(f *form.BookForm) *model.Book {
-	return UpdateFormToModel(f, uuid.New())
+func createFormToModel(f *form.BookForm) *model.Book {
+	return updateFormToModel(f, uuid.New())
 }
 
-func UpdateFormToModel(f *form.BookForm, id uuid.UUID) *model.Book {
+func updateFormToModel(f *form.BookForm, id uuid.UUID) *model.Book {
 	pubDate, _ := time.Parse("2006-01-02", f.PublishedDate)
 	status, _ := model.ParseBookStatus(f.Status)
 
