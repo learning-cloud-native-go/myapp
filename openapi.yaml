@@ -1,72 +1,67 @@
-components:
-  schemas:
-    form.BookForm:
-      properties:
-        description:
+definitions:
+  form.BookForm:
+    properties:
+      description:
+        type: string
+      image_url:
+        type: string
+      published_date:
+        type: string
+      status:
+        enum:
+        - pending
+        - verified
+        type: string
+      title:
+        maxLength: 255
+        type: string
+    required:
+    - published_date
+    - status
+    - title
+    type: object
+  model.Book:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      image_url:
+        type: string
+      published_date:
+        type: string
+      status:
+        $ref: '#/definitions/model.BookStatus'
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.BookStatus:
+    enum:
+    - 0
+    - 1
+    type: integer
+    x-enum-comments:
+      BookStatusPending: "0"
+      BookStatusVerified: "1"
+    x-enum-varnames:
+    - BookStatusPending
+    - BookStatusVerified
+  myapp_pkg_errors.Error:
+    properties:
+      error:
+        type: string
+    type: object
+  myapp_pkg_errors.Errors:
+    properties:
+      errors:
+        items:
           type: string
-        image_url:
-          type: string
-        published_date:
-          type: string
-        status:
-          enum:
-          - pending
-          - verified
-          type: string
-        title:
-          maxLength: 255
-          type: string
-      required:
-      - published_date
-      - status
-      - title
-      type: object
-    model.Book:
-      properties:
-        created_at:
-          type: string
-        description:
-          type: string
-        id:
-          type: string
-        image_url:
-          type: string
-        published_date:
-          type: string
-        status:
-          $ref: '#/components/schemas/model.BookStatus'
-        title:
-          type: string
-        updated_at:
-          type: string
-      type: object
-    model.BookStatus:
-      enum:
-      - 0
-      - 1
-      type: integer
-      x-enum-comments:
-        BookStatusPending: "0"
-        BookStatusVerified: "1"
-      x-enum-varnames:
-      - BookStatusPending
-      - BookStatusVerified
-    myapp_pkg_errors.Error:
-      properties:
-        error:
-          type: string
-      type: object
-    myapp_pkg_errors.Errors:
-      properties:
-        errors:
-          items:
-            type: string
-          type: array
-          uniqueItems: false
-      type: object
-externalDocs:
-  description: ""
-  url: ""
+        type: array
+    type: object
 info:
   contact:
     name: Dumindu Madunuwan
@@ -77,217 +72,172 @@ info:
     url: https://github.com/learning-cloud-native-go/myapp/blob/master/LICENSE
   title: MYAPP API
   version: "1.0"
-openapi: 3.1.0
 paths:
   /books:
     get:
+      consumes:
+      - application/json
       description: List books
       parameters:
-      - description: Page number for pagination
+      - default: 1
+        description: Page number for pagination
         in: query
+        minimum: 1
         name: page
-        schema:
-          default: 1
-          minimum: 1
-          type: integer
-      - description: Number of items per page
+        type: integer
+      - default: 10
+        description: Number of items per page
         in: query
+        maximum: 100
+        minimum: 1
         name: pageSize
-        schema:
-          default: 10
-          maximum: 100
-          minimum: 1
-          type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
+        type: integer
+      produces:
+      - application/json
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/model.Book'
-                type: array
           description: OK
+          schema:
+            items:
+              $ref: '#/definitions/model.Book'
+            type: array
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Error'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Error'
       summary: List books
       tags:
       - books
     post:
+      consumes:
+      - application/json
       description: Create book
-      requestBody:
-        content:
-          application/json:
-            schema:
-              oneOf:
-              - type: object
-              - $ref: '#/components/schemas/form.BookForm'
-                description: Book form
-                summary: body
-        description: Book form
+      parameters:
+      - description: Book form
+        in: body
+        name: body
         required: true
+        schema:
+          $ref: '#/definitions/form.BookForm'
+      produces:
+      - application/json
       responses:
         "201":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/model.Book'
           description: Created
+          schema:
+            $ref: '#/definitions/model.Book'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Error'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Error'
         "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Errors'
           description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Errors'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Error'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Error'
       summary: Create book
       tags:
       - books
   /books/{id}:
     delete:
+      consumes:
+      - application/json
       description: Delete book
       parameters:
       - description: Book ID
         in: path
         name: id
         required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
+        type: string
+      produces:
+      - application/json
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                type: object
           description: OK
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Error'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Error'
         "404":
           description: Not Found
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Error'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Error'
       summary: Delete book
       tags:
       - books
     get:
+      consumes:
+      - application/json
       description: Read book
       parameters:
       - description: Book ID
         in: path
         name: id
         required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
+        type: string
+      produces:
+      - application/json
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/model.Book'
           description: OK
+          schema:
+            $ref: '#/definitions/model.Book'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Error'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Error'
         "404":
           description: Not Found
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Error'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Error'
       summary: Read book
       tags:
       - books
     put:
+      consumes:
+      - application/json
       description: Update book
       parameters:
       - description: Book ID
         in: path
         name: id
         required: true
-        schema:
-          type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              oneOf:
-              - type: object
-              - $ref: '#/components/schemas/form.BookForm'
-                description: Book form
-                summary: body
-        description: Book form
+        type: string
+      - description: Book form
+        in: body
+        name: body
         required: true
+        schema:
+          $ref: '#/definitions/form.BookForm'
+      produces:
+      - application/json
       responses:
         "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/model.Book'
           description: OK
+          schema:
+            $ref: '#/definitions/model.Book'
         "400":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Error'
           description: Bad Request
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Error'
         "404":
           description: Not Found
         "422":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Errors'
           description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Errors'
         "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/myapp_pkg_errors.Error'
           description: Internal Server Error
+          schema:
+            $ref: '#/definitions/myapp_pkg_errors.Error'
       summary: Update book
       tags:
       - books
-servers:
-- url: localhost:8080/v1
+swagger: "2.0"

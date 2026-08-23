@@ -16,7 +16,7 @@ We build a production-ready containerized RESTful API server application using f
 - [Zerolog](https://github.com/rs/zerolog): Zero Allocation JSON Logger and Faster than `slog`.
 - [Goose](https://github.com/pressly/goose): The database migration CLI builder library with lease dependency.
 - [Gorm CLI](https://gorm.io/cli/): Generate Go generics-based, type safe, repository functions with no runtime wrappers.
-- [Swag](https://github.com/swaggo/swag) and [Validator v10](https://github.com/go-playground/validator): The most prominent OpenAPI 3.1 specification generator and validation library in Go.
+- [Swag](https://github.com/swaggo/swag) and [Validator v10](https://github.com/go-playground/validator): The most prominent OpenAPI specification generator and validation library in Go.
 - Use of GitHub Actions to run linters and tests, and to build and push production images to the registry.
 - Use of GitOps with ArgoCD to automate declarative environment orchestration and application lifecycle management.
 
