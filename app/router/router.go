@@ -10,7 +10,6 @@ import (
 	"gorm.io/gorm"
 
 	"myapp/app/book"
-	"myapp/form"
 	m "myapp/pkg/middleware"
 	mrl "myapp/pkg/middleware/requestlog"
 )
@@ -26,13 +25,7 @@ func New(l *zerolog.Logger, v *validator.Validate, db *gorm.DB) *chi.Mux {
 		r.Use(hlog.RequestIDHandler("request_id", "X-Request-ID"))
 		r.Use(mrl.NewHandler)
 		r.Use(m.ContentTypeJSON)
-
-		bookAPI := book.New(v, db)
-		r.Get("/books", bookAPI.List)
-		r.With(m.Validate[form.BookForm](v)).Post("/books", bookAPI.Create)
-		r.Get("/books/{id}", bookAPI.Read)
-		r.With(m.Validate[form.BookForm](v)).Put("/books/{id}", bookAPI.Update)
-		r.Delete("/books/{id}", bookAPI.Delete)
+		r.Route("/books", book.New(v, db).Register)
 	})
 
 	return r
