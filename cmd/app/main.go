@@ -62,11 +62,11 @@ func main() {
 		return
 	}
 
-	r := router.New(&l, v, db)
+	mux := router.New(&c.CORS, &l, v, db)
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", c.Server.Port),
-		Handler:      r,
+		Handler:      mux,
 		ReadTimeout:  c.Server.TimeoutRead,
 		WriteTimeout: c.Server.TimeoutWrite,
 		IdleTimeout:  c.Server.TimeoutIdle,
