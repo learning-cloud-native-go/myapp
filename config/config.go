@@ -10,6 +10,7 @@ import (
 type Conf struct {
 	TZ     string `env:"TZ,required"`
 	Server ConfServer
+	CORS   ConfCORS
 	DB     ConfDB
 }
 
@@ -19,6 +20,12 @@ type ConfServer struct {
 	TimeoutWrite time.Duration `env:"SERVER_TIMEOUT_WRITE,required"`
 	TimeoutIdle  time.Duration `env:"SERVER_TIMEOUT_IDLE,required"`
 	Debug        bool          `env:"SERVER_DEBUG,required"`
+}
+
+type ConfCORS struct {
+	AllowedOrigins string `env:"CORS_ALLOWED_ORIGINS,required"`
+	AllowedHeaders string `env:"CORS_ALLOWED_HEADERS,required"`
+	MaxAge         int    `env:"CORS_MAX_AGE,required"`
 }
 
 type ConfDB struct {
