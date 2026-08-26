@@ -16,7 +16,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/go/pkg/mod \
     CGO_ENABLED=0 GOOS=$TARGETOS GOARCH=$TARGETARCH \
     go build -ldflags '-w -s' -o ./bin/app ./cmd/app \
-    && go build -ldflags '-w -s' -o ./bin/migrate ./cmd/migrate
+    && go build -tags=embed -ldflags '-w -s' -o ./bin/migration ./cmd/migration
 
 
 # Deployment environment
@@ -29,6 +29,6 @@ COPY --from=build-env /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=build-env /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 COPY --from=build-env /myapp/bin/app /myapp/
-COPY --from=build-env /myapp/bin/migrate /myapp/
+COPY --from=build-env /myapp/bin/migration /myapp/
 
 CMD ["/myapp/app"]

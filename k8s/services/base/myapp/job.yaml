@@ -2,7 +2,7 @@ apiVersion: batch/v1
 kind: Job
 
 metadata:
-  name: myapp-migrate
+  name: myapp-migration
   annotations:
     argocd.argoproj.io/sync-wave: '1'
     argocd.argoproj.io/hook: PreSync
@@ -26,9 +26,9 @@ spec:
         runAsNonRoot: true
         seccompProfile: { type: RuntimeDefault }
       containers:
-        - name: migrate
+        - name: migration
           image: learningcloudnativego/myapp-app:2.0.0
-          command: [ /myapp/migrate ]
+          command: [ /myapp/migration ]
           args: [ up ]
           resources:
             requests:

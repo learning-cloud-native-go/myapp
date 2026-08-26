@@ -15,10 +15,10 @@ app:
     go run ./cmd/app
 
 # Run DB migration CLI (defaults to up)
-migrate cmd="up":
+migration *cmd="up":
     @export $(grep -v '^#' .env | xargs) && \
     DB_HOST={{ db_host }} \
-    go run ./cmd/migrate {{ cmd }}
+    go run ./cmd/migration -dir={{ justfile_directory() }}/cmd/migration/migrations {{ cmd }}
 
 # Run docker compose build
 build:
