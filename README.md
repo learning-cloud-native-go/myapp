@@ -107,18 +107,18 @@ To keep this simple, we use only a single database table named `books`.
 
 ```just
 MYAPP
-    help             # List available commands
-    install          # Install development tools
-    app              # Run server app
-    migrate cmd="up" # Run DB migration CLI (defaults to up)
-    build            # Run docker compose build
-    up cmd=""        # Run docker compose up
-    down             # Run docker compose down
-    lint             # Run lints using gofumpt, go vet, staticcheck and govulncheck
-    test             # Run tests
-    gen              # Run go generate for all packages
-    apidoc           # Generate openapi.yaml
-    repos            # Generate gorm repositories using gorm cli
+    help               # List available commands
+    install            # Install development tools
+    app                # Run server app
+    migration cmd="up" # Run DB migration CLI (defaults to up)
+    build              # Run docker compose build
+    up cmd=""          # Run docker compose up
+    down               # Run docker compose down
+    lint               # Run lints using gofumpt, go vet, staticcheck and govulncheck
+    test               # Run tests
+    gen                # Run go generate for all packages
+    apidoc             # Generate openapi.yaml
+    repos              # Generate gorm repositories using gorm cli
 ```
 
 ## Sample Request Logs
@@ -166,8 +166,9 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 ├── cmd
 │   ├── app
 │   │   └── main.go
-│   └── migrate
+│   └── migration
 │       ├── main.go
+│       ├── embed.go
 │       └── migrations
 │           └── 00001_create_books_table.sql
 │

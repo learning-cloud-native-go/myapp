@@ -33,14 +33,14 @@ func New(validator *validator.Validate, db *gorm.DB) *Handler {
 }
 
 func (h *Handler) Register(r chi.Router) {
-	r.Get("/", h.List)
-	r.With(m.Validate[form.BookForm](h.validator)).Post("/", h.Create)
-	r.Get("/{id}", h.Read)
-	r.With(m.Validate[form.BookForm](h.validator)).Put("/{id}", h.Update)
-	r.Delete("/{id}", h.Delete)
+	r.Get("/", h.list)
+	r.With(m.Validate[form.BookForm](h.validator)).Post("/", h.create)
+	r.Get("/{id}", h.read)
+	r.With(m.Validate[form.BookForm](h.validator)).Put("/{id}", h.update)
+	r.Delete("/{id}", h.delete)
 }
 
-// List godoc
+// list godoc
 //
 //	@summary		List books
 //	@description	List books
@@ -52,7 +52,7 @@ func (h *Handler) Register(r chi.Router) {
 //	@success		200			{array}		model.Book
 //	@failure		500			{object}	e.Error
 //	@router			/books [get]
-func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) list(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
@@ -76,7 +76,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Create godoc
+// create godoc
 //
 //	@summary		Create book
 //	@description	Create book
@@ -89,7 +89,7 @@ func (h *Handler) List(w http.ResponseWriter, r *http.Request) {
 //	@failure		422		{object}	e.Errors
 //	@failure		500		{object}	e.Error
 //	@router			/books [post]
-func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
@@ -117,7 +117,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 	logger.Info().Str("id", book.ID.String()).Msg("new book created")
 }
 
-// Read godoc
+// read godoc
 //
 //	@summary		Read book
 //	@description	Read book
@@ -130,7 +130,7 @@ func (h *Handler) Create(w http.ResponseWriter, r *http.Request) {
 //	@failure		404
 //	@failure		500	{object}	e.Error
 //	@router			/books/{id} [get]
-func (h *Handler) Read(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) read(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
@@ -159,7 +159,7 @@ func (h *Handler) Read(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Update godoc
+// update godoc
 //
 //	@summary		Update book
 //	@description	Update book
@@ -174,7 +174,7 @@ func (h *Handler) Read(w http.ResponseWriter, r *http.Request) {
 //	@failure		422	{object}	e.Errors
 //	@failure		500	{object}	e.Error
 //	@router			/books/{id} [put]
-func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) update(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
@@ -212,7 +212,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 	logger.Info().Str("id", id.String()).Msg("book updated")
 }
 
-// Delete godoc
+// delete godoc
 //
 //	@summary		Delete book
 //	@description	Delete book
@@ -225,7 +225,7 @@ func (h *Handler) Update(w http.ResponseWriter, r *http.Request) {
 //	@failure		404
 //	@failure		500	{object}	e.Error
 //	@router			/books/{id} [delete]
-func (h *Handler) Delete(w http.ResponseWriter, r *http.Request) {
+func (h *Handler) delete(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 

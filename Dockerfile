@@ -8,7 +8,7 @@ RUN go mod download
 COPY . .
 
 RUN go build -ldflags '-w -s' -a -o ./bin/app ./cmd/app \
-    && go build -ldflags '-w -s' -a -o ./bin/migrate ./cmd/migrate
+    && go build -tags=embed -ldflags '-w -s' -a -o ./bin/migration ./cmd/migration
 
 CMD ["/myapp/bin/app"]
 EXPOSE 8080
