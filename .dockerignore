@@ -1,11 +1,10 @@
+.DS_Store
 .git
-.gitignore
 .idea
 .vscode
 .github
-.DS_Store
-doc
+.gitignore
+.gitattributes
+compose.yml
 README.md
 LICENSE
-compose.yml
-.swagger

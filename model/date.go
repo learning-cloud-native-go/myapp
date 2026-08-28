@@ -7,8 +7,8 @@ import (
 
 type CivilDate time.Time
 
-func (c CivilDate) String() string {
-	return time.Time(c).Format("2006-01-02")
+func (d CivilDate) String() string {
+	return time.Time(d).Format("2006-01-02")
 }
 
 func (d CivilDate) MarshalJSON() ([]byte, error) {

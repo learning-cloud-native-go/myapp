@@ -29,6 +29,23 @@ We build a production-ready containerized RESTful API server application using f
 
 ## Endpoints
 
+```go
+type Handler struct {
+    validator *validator.Validate
+    bookRepo  IBookRepo
+}
+
+func (h *Handler) Register(r chi.Router) {
+    r.Get("/", h.list)
+    r.With(m.Validate[form.BookForm](h.validator)).Post("/", h.create)
+    r.Get("/{id}", h.read)
+    r.With(m.Validate[form.BookForm](h.validator)).Put("/{id}", h.update)
+    r.Delete("/{id}", h.delete)
+}
+
+// ...
+```
+
 | Name        | HTTP Method | Route          |
 |-------------|-------------|----------------|
 | List Books  | GET         | /v1/books      |
@@ -168,7 +185,8 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 │   │   └── main.go
 │   └── migration
 │       ├── main.go
-│       ├── embed.go
+│       ├── usage_embed.go
+│       ├── usage_no_embed.go
 │       └── migrations
 │           └── 00001_create_books_table.sql
 │
