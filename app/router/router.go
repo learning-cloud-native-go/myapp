@@ -17,7 +17,7 @@ import (
 	mrl "myapp/pkg/middleware/requestlog"
 )
 
-func New(c *config.ConfCORS, l *zerolog.Logger, v *validator.Validate, db *gorm.DB) *chi.Mux {
+func New(c *config.ConfCORS, l *zerolog.Logger, db *gorm.DB, v *validator.Validate) *chi.Mux {
 	r := chi.NewRouter()
 	r.Get("/livez", func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("."))
@@ -34,12 +34,12 @@ func New(c *config.ConfCORS, l *zerolog.Logger, v *validator.Validate, db *gorm.
 
 	r.Route("/v1", func(r chi.Router) {
 		r.Use(cors.Handler)
+		r.Use(m.ContentTypeJSON)
 		r.Use(hlog.NewHandler(*l))
 		r.Use(hlog.RequestIDHandler("request_id", "X-Request-ID"))
 		r.Use(mrl.NewHandler)
-		r.Use(m.ContentTypeJSON)
 
-		r.Route("/books", book.New(v, db).Register)
+		r.Route("/books", book.New(db, v).Register)
 	})
 
 	return r

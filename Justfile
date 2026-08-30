@@ -47,13 +47,13 @@ test:
 gen:
     go generate ./...
 
-# Generate openapi.yaml
-apidoc:
-    go tool swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi.yaml
-
 # Generate gorm repositories using gorm cli
 repos:
     go tool gorm gen -i ./app/book/repository.go -o ./app/book/bookrepo
+
+# Generate openapi.yaml
+apidoc:
+    go tool swag init -g cmd/app/main.go -o . -ot yaml --v3.1 --parseDependency && mv swagger.yaml openapi.yaml
 
 # Build production distroless image
 build-for-prod:

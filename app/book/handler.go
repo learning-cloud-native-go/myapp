@@ -20,14 +20,14 @@ import (
 )
 
 type Handler struct {
-	validator *validator.Validate
 	bookRepo  IBookRepo
+	validator *validator.Validate
 }
 
-func New(validator *validator.Validate, db *gorm.DB) *Handler {
+func New(db *gorm.DB, validator *validator.Validate) *Handler {
 	return &Handler{
-		validator: validator,
 		bookRepo:  bookrepo.IBookRepo[model.Book](db),
+		validator: validator,
 	}
 }
 
