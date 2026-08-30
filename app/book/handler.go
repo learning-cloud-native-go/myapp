@@ -12,7 +12,6 @@ import (
 	"gorm.io/gorm"
 
 	"myapp/app/book/bookrepo"
-	"myapp/form"
 	"myapp/model"
 	"myapp/pkg/ctxutil"
 	e "myapp/pkg/errors"
@@ -34,9 +33,9 @@ func New(validator *validator.Validate, db *gorm.DB) *Handler {
 
 func (h *Handler) Register(r chi.Router) {
 	r.Get("/", h.list)
-	r.With(m.Validate[form.BookForm](h.validator)).Post("/", h.create)
+	r.With(m.Validate[Form](h.validator)).Post("/", h.create)
 	r.Get("/{id}", h.read)
-	r.With(m.Validate[form.BookForm](h.validator)).Put("/{id}", h.update)
+	r.With(m.Validate[Form](h.validator)).Put("/{id}", h.update)
 	r.Delete("/{id}", h.delete)
 }
 
@@ -83,7 +82,7 @@ func (h *Handler) list(w http.ResponseWriter, r *http.Request) {
 //	@tags			books
 //	@accept			json
 //	@produce		json
-//	@param			body	body		form.BookForm	true	"Book form"
+//	@param			body	body		Form	true	"Book form"
 //	@success		201		{object}	model.Book
 //	@failure		400		{object}	e.Error
 //	@failure		422		{object}	e.Errors
@@ -93,14 +92,14 @@ func (h *Handler) create(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	logger := hlog.FromRequest(r)
 
-	ctxForm, ok := ctxutil.ValidatedForm[form.BookForm](ctx)
+	ctxForm, ok := ctxutil.ValidatedForm[Form](ctx)
 	if !ok {
-		logger.Error().Msg(form.LogErrCTXValidatedFormNotFound)
+		logger.Error().Msg("validated form not found")
 		e.ServerError(w, e.RespValidatedFormNotFound)
 		return
 	}
 
-	book, err := h.bookRepo.CreateBook(ctx, createFormToModel(&ctxForm))
+	book, err := h.bookRepo.CreateBook(ctx, ctxForm.ToCreateModel())
 	if err != nil {
 		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataInsertFailure)
@@ -166,8 +165,8 @@ func (h *Handler) read(w http.ResponseWriter, r *http.Request) {
 //	@tags			books
 //	@accept			json
 //	@produce		json
-//	@param			id		path		string			true	"Book ID"
-//	@param			body	body		form.BookForm	true	"Book form"
+//	@param			id		path		string	true	"Book ID"
+//	@param			body	body		Form	true	"Book form"
 //	@success		200		{object}	model.Book
 //	@failure		400		{object}	e.Error
 //	@failure		404
@@ -184,14 +183,14 @@ func (h *Handler) update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctxForm, ok := ctxutil.ValidatedForm[form.BookForm](ctx)
+	ctxForm, ok := ctxutil.ValidatedForm[Form](ctx)
 	if !ok {
-		logger.Error().Msg(form.LogErrCTXValidatedFormNotFound)
+		logger.Error().Msg("validated form not found")
 		e.ServerError(w, e.RespValidatedFormNotFound)
 		return
 	}
 
-	book, err := h.bookRepo.UpdateBook(ctx, updateFormToModel(&ctxForm, id))
+	book, err := h.bookRepo.UpdateBook(ctx, ctxForm.ToUpdateModel(id))
 	if err != nil {
 		logger.Error().Err(err).Msg("")
 		e.ServerError(w, e.RespDBDataUpdateFailure)

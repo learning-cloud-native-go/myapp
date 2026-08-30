@@ -37,9 +37,9 @@ type Handler struct {
 
 func (h *Handler) Register(r chi.Router) {
     r.Get("/", h.list)
-    r.With(m.Validate[form.BookForm](h.validator)).Post("/", h.create)
+    r.With(m.Validate[Form](h.validator)).Post("/", h.create)
     r.Get("/{id}", h.read)
-    r.With(m.Validate[form.BookForm](h.validator)).Put("/{id}", h.update)
+    r.With(m.Validate[Form](h.validator)).Put("/{id}", h.update)
     r.Delete("/{id}", h.delete)
 }
 
@@ -190,14 +190,11 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
 │       └── migrations
 │           └── 00001_create_books_table.sql
 │
-├── form  # 💡Form validation middleware rely on this and pkg folder only
-│   └── book.go
-│
 ├── app
 │   ├── book
 │   │   ├── bookrepo  # 💡generated with gorm-cli via the interface in book/repository.go
 │   │   │   └── repository.go
-│   │   ├── form_util.go
+│   │   ├── form.go   # 💡validate via Go generics based form validation middleware
 │   │   ├── handler.go
 │   │   └── repository.go
 │   └── router

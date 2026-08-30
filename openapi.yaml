@@ -1,5 +1,5 @@
 definitions:
-  form.BookForm:
+  app_book.Form:
     properties:
       description:
         type: string
@@ -118,7 +118,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/form.BookForm'
+          $ref: '#/definitions/app_book.Form'
       produces:
       - application/json
       responses:
@@ -215,7 +215,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/form.BookForm'
+          $ref: '#/definitions/app_book.Form'
       produces:
       - application/json
       responses:
