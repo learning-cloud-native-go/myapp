@@ -48,8 +48,6 @@ func main() {
 	zerolog.SetGlobalLevel(logLevel)
 	l := zerolog.New(os.Stderr).With().Timestamp().Logger()
 
-	v := validator.New()
-
 	logLevelDB := gormlogger.Error
 	if c.DB.Debug {
 		logLevelDB = gormlogger.Info
@@ -62,7 +60,9 @@ func main() {
 		return
 	}
 
-	mux := router.New(&c.CORS, &l, v, db)
+	v := validator.New()
+
+	mux := router.New(&c.CORS, &l, db, v)
 
 	s := &http.Server{
 		Addr:         fmt.Sprintf(":%d", c.Server.Port),

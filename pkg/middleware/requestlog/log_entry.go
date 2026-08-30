@@ -1,5 +1,5 @@
 // Package requestlog
-// Copyright 2019-2025 The Go Cloud Development Kit Authors
+// Copyright 2018-2026 The Go Cloud Development Kit Authors
 // Modified by Dumindu Madunuwan
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
