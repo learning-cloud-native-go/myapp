@@ -10,7 +10,7 @@ metadata:
   labels:
     app.kubernetes.io/name: myapp
     app.kubernetes.io/component: schema-migration
-    app.kubernetes.io/version: '2.0.0'
+    app.kubernetes.io/version: '3.5.2'
 
 spec:
   backoffLimit: 6
@@ -27,7 +27,7 @@ spec:
         seccompProfile: { type: RuntimeDefault }
       containers:
         - name: migration
-          image: learningcloudnativego/myapp-app:2.0.0
+          image: learningcloudnativego/myapp-app:3.5.2
           command: [ /myapp/migration ]
           args: [ up ]
           resources:

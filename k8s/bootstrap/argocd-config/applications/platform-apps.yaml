@@ -11,16 +11,19 @@ spec:
         elements:
           - cluster: hub-sg-01
             path: k8s/platform/metrics-server
+            appName: metrics-server
             targetNamespace: kube-system
           - cluster: hub-sg-01
             path: k8s/platform/gateway-api
+            appName: gateway-api
             targetNamespace: kube-system
           - cluster: hub-sg-01
             path: k8s/platform/istio-ambient
+            appName: istio-ambient
             targetNamespace: istio-system
   template:
     metadata:
-      name: '{{cluster}}-{{path.basename}}'
+      name: '{{cluster}}-{{appName}}'
     spec:
       project: platform
       source:
