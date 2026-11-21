@@ -12,7 +12,7 @@ services:
     restart: always
 
   db:
-    image: postgres:18-alpine
+    image: postgres:19-alpine
     environment:
       TZ: "Asia/Singapore"
       POSTGRES_DB: book-service-db

@@ -10,7 +10,7 @@ metadata:
 
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.1
+  imageName: ghcr.io/cloudnative-pg/postgresql:19.0-minimal-trixie
   storage:
     size: 50Gi
 #    storageClass: premium-rwo

@@ -24,8 +24,8 @@ We build a production-ready containerized RESTful API server application using f
 
 | Environment    | Go Image Type                      | Go Image Size | Postgres Image Type | Postgres Image Size |
 |----------------|------------------------------------|---------------|---------------------|---------------------|
-| Development    | golang:1.27-alpine                 | ~ 800 MB      | postgres:18-alpine  | ~ 300MB             |
-| Production     | distroless/static-debian13:nonroot | ~ 30 MB       |                     |                     |
+| Development    | golang:1.27-alpine                 | ~ 1180 MB      | postgres:19-alpine  | ~ 440MB             |
+| Production     | distroless/static-debian13:nonroot | ~ 46 MB       |                     |                     |
 
 ## Endpoints
 

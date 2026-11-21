@@ -8,7 +8,7 @@ metadata:
   labels:
     app.kubernetes.io/name: myapp
     app.kubernetes.io/component: api
-    app.kubernetes.io/version: '2.0.0'
+    app.kubernetes.io/version: '3.0.0'
 
 spec:
   replicas: 6
@@ -25,7 +25,7 @@ spec:
       serviceAccountName: myapp-sa
       containers:
         - name: app
-          image: learningcloudnativego/myapp-app:2.0.0
+          image: learningcloudnativego/myapp-app:3.0.0
           imagePullPolicy: IfNotPresent
           command: [ /myapp/app ]
           ports:

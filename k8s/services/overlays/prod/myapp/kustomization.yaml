@@ -35,7 +35,7 @@ secretGenerator:
 
 images:
   - name: learningcloudnativego/myapp-app
-    newTag: 2.0.0
+    newTag: 3.5.2
 
 patches:
   - path: patches/db-cluster.yaml
