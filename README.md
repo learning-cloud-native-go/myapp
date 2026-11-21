@@ -247,22 +247,24 @@ app-1  | {"level":"info","request_id":"d5mqjmhqvtmc73foh3dg","received_time":"20
     └── gateways
 ```
 
-- Sample Kind Dev Cluster
-  ```shell
-  kind create cluster --name dev
-  kubectl apply -k k8s
-  ```
+## Sample Kind Dev Cluster
 
-- Access ArgoCD Dashboard
-  ```shell
-  kubectl port-forward svc/argocd-server -n argocd 8080:443
-  ```
+```shell
+kind create cluster --name dev
+kubectl apply -k k8s/bootstrap/argocd
+kubectl apply -k k8s/bootstrap/argocd-config
+```
 
-  > [!tip]
-  > ArgoCD Dashboard: localhost:8080 (admin/password)
-
-- Access Books API
-  ```shell
-  kubectl port-forward svc/shared-gateway-dev-istio -n istio-ingress 8081:8081
-  curl -X GET 'localhost:8081/myapp/v1/books' --header 'Accept: application/json'
-  ```
+> [!tip]
+> - Access ArgoCD Dashboard \
+>   💡 localhost:8080 (admin/password)
+>   ```shell
+>   kubectl port-forward svc/argocd-server -n argocd 8080:443
+>   ```
+>
+> - Access Books API \
+>   💡 localhost:8081/myapp/v1/books
+>   ```shell
+>   kubectl port-forward svc/shared-gateway-dev-istio -n istio-ingress 8081:8081
+>   curl -X GET 'localhost:8081/myapp/v1/books' --header 'Accept: application/json'
+>   ```
