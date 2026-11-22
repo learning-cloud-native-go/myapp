@@ -4,5 +4,15 @@ kind: Kustomization
 resources:
   - https://github.com/kubernetes-sigs/metrics-server/releases/download/v0.8.0/components.yaml
 
+patches:
+- target:
+    kind: Deployment
+    name: metrics-server
+    namespace: kube-system
+  patch: |-
+    - op: add
+      path: /spec/template/spec/containers/0/args/-
+      value: --kubelet-insecure-tls
+
 commonAnnotations:
   argocd.argoproj.io/sync-wave: '1'
