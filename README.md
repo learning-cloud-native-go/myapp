@@ -1,8 +1,9 @@
+![Map.jpg](images/Map.jpg)
+
 [![buymeacoffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-dumindu-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=ffffff&labelColor=333333)](https://www.buymeacoffee.com/dumindu)
 
-[![learning-cloud-native-go/myapp](https://img.shields.io/github/stars/learning-cloud-native-go/myapp?style=for-the-badge&logo=go&logoColor=ffffff&label=learning-cloud-native-go%2Fmyapp&labelColor=333333&color=00ADD8)](https://github.com/learning-cloud-native-go/myapp)
-
 [![learning-rust.github.io](https://img.shields.io/github/stars/learning-rust/learning-rust.github.io?style=for-the-badge&logo=rust&label=learning-rust.github.io&labelColor=333333&color=F46623)](https://learning-rust.github.io)
+[![learning-cloud-native-go/myapp](https://img.shields.io/github/stars/learning-cloud-native-go/myapp?style=for-the-badge&logo=go&logoColor=ffffff&label=learning-cloud-native-go%2Fmyapp&labelColor=333333&color=00ADD8)](https://github.com/learning-cloud-native-go/myapp)
 [![dumindu/axum](https://img.shields.io/github/stars/dumindu/axum?style=for-the-badge&logo=rust&label=dumindu%2Faxum&labelColor=333333&color=F46623)](https://github.com/dumindu/axum)
 [![E25DX](https://img.shields.io/github/stars/dumindu/E25DX?style=for-the-badge&logo=hugo&logoColor=ffffff&label=E25DX&labelColor=333333&color=FF4088)](https://themes.gohugo.io/themes/e25dx/)
 
@@ -268,3 +269,13 @@ kubectl apply -k k8s/bootstrap/argocd-config
 >   kubectl port-forward svc/shared-gateway-dev-istio -n istio-ingress 8081:8081
 >   curl -X GET 'localhost:8081/myapp/v1/books' --header 'Accept: application/json'
 >   ```
+
+### Images
+
+![ArgoCD.jpg](images/ArgoCD.jpg)
+![Workloads.jpg](images/Workloads.jpg)
+![Pods-all.jpg](images/Pods-all.jpg)
+![Grafana-Control-Plane-Dashboard.jpg](images/Grafana-Control-Plane-Dashboard.jpg)
+![Grafana-Workload-Dashboards.jpg](images/Grafana-Workload-Dashboards.jpg)
+
+[More images ...](images)
