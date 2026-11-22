@@ -21,6 +21,10 @@ spec:
             path: k8s/platform/istio-ambient
             appName: istio-ambient
             targetNamespace: istio-system
+          - cluster: hub-sg-01
+            path: k8s/gateways
+            appName: gateways
+            targetNamespace: istio-ingress
   template:
     metadata:
       name: '{{cluster}}-{{appName}}'

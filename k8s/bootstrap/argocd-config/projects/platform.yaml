@@ -16,6 +16,8 @@ spec:
     - name: hub-sg-01
       namespace: istio-system
     - name: hub-sg-01
+      namespace: istio-ingress
+    - name: hub-sg-01
       namespace: cnpg-system
     - name: hub-sg-01
       namespace: default
